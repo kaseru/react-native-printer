@@ -35,9 +35,24 @@ export const Printer = {
   },
 
   async disconnect(target?: Partial<PrinterTarget>) {
-    if (!target || target.transport === 'wifi') await NetPrinter.closeConn?.();
-    if (!target || target.transport === 'usb') await USBPrinter.closeConn?.();
-    if (!target || target.transport === 'bluetooth') {
+    if (!target) {
+      await NetPrinter.closeConn?.();
+      await USBPrinter.closeConn?.();
+      await BLEPrinter.closeConn?.();
+      return;
+    }
+
+    if (target.transport === 'wifi') {
+      await NetPrinter.closeConn?.();
+      return;
+    }
+
+    if (target.transport === 'usb') {
+      await USBPrinter.closeConn?.();
+      return;
+    }
+
+    if (target.transport === 'bluetooth') {
       await BLEPrinter.closeConn?.();
     }
   },
