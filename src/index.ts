@@ -17,7 +17,8 @@ const resolvePrinterByTarget = (target: PrinterTarget) => {
 export const Printer = {
   async connect(target: PrinterTarget) {
     if (target.transport === 'wifi') {
-      return NetPrinter.connectPrinter(target.host, target.port, target.timeout);
+      const { host, port } = target;
+      return NetPrinter.connectPrinter(host, port);
     }
 
     if (target.transport === 'usb') {
