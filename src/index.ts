@@ -54,7 +54,11 @@ export const Printer = {
     }
 
     if (target.transport === 'bluetooth') {
-      await BLEPrinter.closeConn?.();
+      if (target.language === 'tsc') {
+        await BluetoothTsc.closeConn?.();
+        return;
+      }
+      await BluetoothEscpos.closeConn?.();
     }
   },
 
