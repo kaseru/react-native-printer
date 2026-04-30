@@ -25,6 +25,9 @@ export const Printer = {
     }
 
     if (target.transport === 'bluetooth') {
+      if (target.language === 'tsc') {
+        return BluetoothTsc.connect?.(target.address) ?? BluetoothEscpos.connect(target.address);
+      }
       return BluetoothEscpos.connect(target.address);
     }
 
