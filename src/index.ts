@@ -61,7 +61,11 @@ export const Printer = {
         await BluetoothTsc.closeConn?.();
         return;
       }
-      await BluetoothEscpos.closeConn?.();
+      if (target.language === 'escpos') {
+        await BluetoothEscpos.closeConn?.();
+        return;
+      }
+      throw new Error('Printer.disconnect only supports bluetooth targets with escpos or tsc language');
     }
   },
 
