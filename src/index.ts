@@ -79,6 +79,12 @@ export const Printer = {
   },
 
   printLabel(options: LabelPrintOptions) {
-    return BluetoothTsc.printLabel(options as any);
+    const target = options.target;
+
+    if (target?.transport === 'bluetooth' && target.language === 'tsc') {
+      return BluetoothTsc.printLabel(options as any);
+    }
+
+    throw new Error('Printer.printLabel only supports bluetooth targets with tsc language');
   },
 };
