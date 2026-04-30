@@ -29,7 +29,10 @@ export const Printer = {
       if (target.language === 'tsc') {
         return BluetoothTsc.connect(target.address);
       }
-      return BluetoothEscpos.connect(target.address);
+      if (target.language === 'escpos') {
+        return BluetoothEscpos.connect(target.address);
+      }
+      throw new Error('Printer.connect only supports bluetooth targets with escpos or tsc language');
     }
 
     throw new Error('Unsupported printer target');
