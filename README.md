@@ -56,10 +56,15 @@ Lưu ý:
 Bước đầu sẽ bọc các engine hiện có thành API thống nhất.
 Sau đó mới tách tiếp renderer / capability / transport nếu cần.
 
+## iOS source of truth
+
+- Source iOS active hiện nằm ở `ios/`.
+- Hai cây cũ `ios-bluetooth/` và `ios-thermal/` đã được chuyển vào `_archive/` để giữ tham chiếu và tránh nhầm với source active.
+
 ## TODO
 
-- [ ] Import code nền Bluetooth từ repo Kaseru
-- [ ] Import code nền Net/USB/BLE từ repo thermal
+- [x] Import code nền Bluetooth từ repo Kaseru
+- [x] Import code nền Net/USB/BLE từ repo thermal
 - [ ] Chuẩn hoá TypeScript types
 - [ ] Thiết kế facade API chung
 - [ ] Thêm example app / sample usage
