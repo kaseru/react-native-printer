@@ -1,0 +1,25 @@
+{
+  "name": "@kaseru/react-native-printer",
+  "version": "0.1.0",
+  "description": "Unified React Native printer library for Kaseru apps (Bluetooth, Wi-Fi, USB; ESC/POS + TSC)",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "src",
+    "android",
+    "ios",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "react-native",
+    "printer",
+    "escpos",
+    "tsc",
+    "bluetooth",
+    "wifi",
+    "usb"
+  ],
+  "license": "MIT",
+  "private": true
+}
