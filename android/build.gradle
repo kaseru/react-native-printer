@@ -1,3 +1,21 @@
+buildscript {
+    ext {
+        buildToolsVersion = "35.0.0"
+        minSdkVersion = 23
+        compileSdkVersion = 35
+        targetSdkVersion = 35
+    }
+
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.5.2")
+    }
+}
+
 apply plugin: 'com.android.library'
 
 def safeExtGet(prop, fallback) {
@@ -5,24 +23,36 @@ def safeExtGet(prop, fallback) {
 }
 
 android {
-    compileSdkVersion safeExtGet('compileSdkVersion', 32)
-    buildToolsVersion safeExtGet('buildToolsVersion', '32.0.0')
+    namespace "com.xgitvn.printer"
+    compileSdkVersion safeExtGet('compileSdkVersion', 35)
+    buildToolsVersion safeExtGet('buildToolsVersion', '35.0.0')
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion safeExtGet('targetSdkVersion', 32)
+        minSdkVersion safeExtGet('minSdkVersion', 23)
+        targetSdkVersion safeExtGet('targetSdkVersion', 35)
         versionCode 1
         versionName '1.0'
+        consumerProguardFiles 'consumer-rules.pro'
     }
 
     lintOptions {
         abortOnError false
     }
 
+    buildFeatures {
+        aidl true
+        buildConfig false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
     sourceSets {
         main {
             manifest.srcFile 'src/main/AndroidManifest.xml'
-            java.srcDirs = ['src/main/java', 'src/main/thermal-java']
+            java.srcDirs = ['src/main/java']
             aidl.srcDirs = ['src/main/java', 'src/main/aidl']
             res.srcDirs = ['src/main/res']
         }
@@ -30,14 +60,14 @@ android {
 }
 
 repositories {
-    mavenCentral()
     google()
-    maven { url "$rootDir/../node_modules/react-native/android" }
+    mavenCentral()
+    maven { url("$rootDir/../node_modules/react-native/android") }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.facebook.react:react-native:+'
-    implementation 'androidx.appcompat:appcompat:1.0.0'
-    implementation 'com.google.zxing:core:3.3.0'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.zxing:core:3.5.3'
 }
