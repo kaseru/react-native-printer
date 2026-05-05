@@ -4,7 +4,6 @@ import com.xgitvn.printer.bluetooth.BluetoothService;
 import com.xgitvn.printer.bluetooth.RNBluetoothManagerModule;
 import com.xgitvn.printer.bluetooth.escpos.RNBluetoothEscposPrinterModule;
 import com.xgitvn.printer.bluetooth.tsc.RNBluetoothTscPrinterModule;
-import com.xgitvn.printer.sunmi.SunmiV2PrinterModule;
 import com.xgitvn.printer.tsc.TscPrinterModule;
 import com.xgitvn.printer.tsc.UsbPrinterModule;
 import com.facebook.react.ReactPackage;
@@ -31,7 +30,6 @@ public class RNPrinterPackage implements ReactPackage {
                 new RNBluetoothManagerModule(reactContext, bluetoothService),
                 new RNBluetoothEscposPrinterModule(reactContext, bluetoothService),
                 new RNBluetoothTscPrinterModule(reactContext, bluetoothService),
-                new SunmiV2PrinterModule(reactContext),
                 new TscPrinterModule(reactContext),
                 new UsbPrinterModule(reactContext),
         });

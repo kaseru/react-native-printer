@@ -5,7 +5,6 @@ Thư viện React Native chuẩn hoá cho nhu cầu in của Kaseru.
 Mục tiêu phase đầu:
 - Receipt ESC/POS
 - Label TSC
-- Sunmi internal printer
 - Kết nối Bluetooth / Wi-Fi / USB
 - Gom phần engine về 1 repo để dễ chủ động bảo trì
 - Mang các native module dùng thật trong app về cùng 1 nơi
@@ -19,8 +18,6 @@ Nguồn tham chiếu/chứa code nền đang dùng:
   - https://github.com/kaseru/react-native-bluetooth-escpos-printer
 - Wi-Fi / USB / BLE thermal printer:
   - https://github.com/thiendangit/react-native-thermal-receipt-printer-image-qr
-- Sunmi:
-  - https://github.com/defcon89/react-native-sunmi-v2-printer
 - App đang sử dụng flow in để tham chiếu khi thiết kế abstraction:
   - aSellerV5 internal app flow
 
@@ -33,7 +30,6 @@ Lưu ý:
 - `src/index.ts`: public facade và export tương thích
 - `src/legacy/bluetooth`: lớp bọc Bluetooth ESC/POS + TSC
 - `src/legacy/thermal`: lớp bọc Net / USB / BLE receipt
-- `src/legacy/sunmi`: export Sunmi native module
 - `android/`: source Android đã gom về `com.xgitvn.printer`
 - `ios/`: source iOS active duy nhất
 
@@ -44,7 +40,6 @@ Lưu ý:
 - Bluetooth TSC
 - Wi-Fi ESC/POS
 - USB ESC/POS
-- Sunmi bill printing
 - TSC TCP/USB native modules
 - API public ổn định ở mức cơ bản:
   - `connect()`
@@ -70,7 +65,6 @@ Sau đó mới tách tiếp renderer / capability / transport nếu cần.
 
 - [x] Import code nền Bluetooth từ repo Kaseru
 - [x] Import code nền Net/USB/BLE từ repo thermal
-- [x] Import Sunmi module
 - [x] Import TSC native module từ app
 - [x] Chuẩn hoá namespace Android về `com.xgitvn.printer`
 - [ ] Chuẩn hoá TypeScript types

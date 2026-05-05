@@ -1,14 +1,12 @@
 export * from './types';
 export * from './legacy/bluetooth';
 export * from './legacy/thermal';
-export * from './legacy/sunmi';
 
 import { NativeModules } from 'react-native';
 import { BluetoothEscpos, BluetoothTsc } from './legacy/bluetooth';
 import { NetPrinter, USBPrinter, BLEPrinter } from './legacy/thermal';
 import { BluetoothManager, BluetoothEscpos as BluetoothEscposPrinter, BluetoothTsc as BluetoothTscPrinter } from './legacy/bluetooth';
 import { COMMANDS } from './legacy/thermal';
-import { SunmiV2Printer } from './legacy/sunmi';
 import type { LabelPrintOptions, PrinterTarget, ReceiptPrintOptions, ImagePrintOptions } from './types';
 
 const resolvePrinterByTarget = (target: PrinterTarget) => {
@@ -108,7 +106,6 @@ export {
   BluetoothTscPrinter,
   COMMANDS,
   NetPrinter,
-  SunmiV2Printer,
   USBPrinter,
 };
 
