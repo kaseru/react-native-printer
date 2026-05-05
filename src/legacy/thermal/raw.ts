@@ -9,10 +9,9 @@ const RNUSBPrinter = NativeModules.XRNUSBPrinter || NativeModules.RNUSBPrinter;
 const RNBLEPrinter = NativeModules.XRNBLEPrinter || NativeModules.RNBLEPrinter;
 const RNNetPrinterLegacy = NativeModules.XRNNetPrinter || NativeModules.RNNetPrinter;
 const RNNetPrinterRaw = NativeModules.RNNetPrinterRaw;
-let iosNetPrinterMode = "legacy";
 
 const getRNNetPrinter = () => {
-  if (Platform.OS === "ios" && iosNetPrinterMode === "rawSocket" && RNNetPrinterRaw) {
+  if (Platform.OS === "ios" && RNNetPrinterRaw) {
     return RNNetPrinterRaw;
   }
   return RNNetPrinterLegacy;
@@ -406,23 +405,6 @@ const NetPrinter = {
         (error: Error) => reject(error)
       )
     ),
-
-  setConnectionMode: (mode: string): Promise<void> =>
-    new Promise((resolve, reject) => {
-      iosNetPrinterMode = mode === "legacy" ? "legacy" : "rawSocket";
-
-      const printer = getRNNetPrinter();
-      if (Platform.OS === "ios" && printer?.setConnectionMode) {
-        printer.setConnectionMode(
-          iosNetPrinterMode,
-          () => resolve(),
-          (error: Error) => reject(error)
-        );
-        return;
-      }
-
-      resolve();
-    }),
 
   getDeviceList: (): Promise<INetPrinter[]> =>
     new Promise((resolve, reject) =>
