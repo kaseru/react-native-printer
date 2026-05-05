@@ -7,7 +7,16 @@ import { connectToHost } from "./utils/net-connect";
 
 const RNUSBPrinter = NativeModules.RNUSBPrinter;
 const RNBLEPrinter = NativeModules.RNBLEPrinter;
-const RNNetPrinter = NativeModules.RNNetPrinter;
+const RNNetPrinterLegacy = NativeModules.RNNetPrinter;
+const RNNetPrinterRaw = NativeModules.RNNetPrinterRaw;
+let iosNetPrinterMode = "legacy";
+
+const getRNNetPrinter = () => {
+  if (Platform.OS === "ios" && iosNetPrinterMode === "rawSocket" && RNNetPrinterRaw) {
+    return RNNetPrinterRaw;
+  }
+  return RNNetPrinterLegacy;
+};
 
 export interface PrinterOptions {
   beep?: boolean;
@@ -392,15 +401,32 @@ const BLEPrinter = {
 const NetPrinter = {
   init: (): Promise<void> =>
     new Promise((resolve, reject) =>
-      RNNetPrinter.init(
+      getRNNetPrinter().init(
         () => resolve(),
         (error: Error) => reject(error)
       )
     ),
 
+  setConnectionMode: (mode: string): Promise<void> =>
+    new Promise((resolve, reject) => {
+      iosNetPrinterMode = mode === "legacy" ? "legacy" : "rawSocket";
+
+      const printer = getRNNetPrinter();
+      if (Platform.OS === "ios" && printer?.setConnectionMode) {
+        printer.setConnectionMode(
+          iosNetPrinterMode,
+          () => resolve(),
+          (error: Error) => reject(error)
+        );
+        return;
+      }
+
+      resolve();
+    }),
+
   getDeviceList: (): Promise<INetPrinter[]> =>
     new Promise((resolve, reject) =>
-      RNNetPrinter.getDeviceList(
+      getRNNetPrinter().getDeviceList(
         (printers: INetPrinter[]) => resolve(printers),
         (error: Error) => reject(error)
       )
@@ -414,7 +440,7 @@ const NetPrinter = {
     new Promise(async (resolve, reject) => {
       try {
         await connectToHost(host, timeout);
-        RNNetPrinter.connectPrinter(
+        getRNNetPrinter().connectPrinter(
           host,
           port,
           (printer: INetPrinter) => resolve(printer),
@@ -427,20 +453,20 @@ const NetPrinter = {
 
   closeConn: (): Promise<void> =>
     new Promise((resolve) => {
-      RNNetPrinter.closeConn();
+      getRNNetPrinter().closeConn();
       resolve();
     }),
 
   printText: (text: string, opts = {}): void => {
     if (Platform.OS === "ios") {
       const processedText = textPreprocessingIOS(text, false, false);
-      RNNetPrinter.printRawData(
+      getRNNetPrinter().printRawData(
         processedText.text,
         processedText.opts,
         (error: Error) => console.warn(error)
       );
     } else {
-      RNNetPrinter.printRawData(textTo64Buffer(text, opts), (error: Error) =>
+      getRNNetPrinter().printRawData(textTo64Buffer(text, opts), (error: Error) =>
         console.warn(error)
       );
     }
@@ -453,13 +479,13 @@ const NetPrinter = {
         opts?.cut ?? true,
         opts.beep ?? true
       );
-      RNNetPrinter.printRawData(
+      getRNNetPrinter().printRawData(
         processedText.text,
         processedText.opts,
         (error: Error) => console.warn(error)
       );
     } else {
-      RNNetPrinter.printRawData(billTo64Buffer(text, opts), (error: Error) =>
+      getRNNetPrinter().printRawData(billTo64Buffer(text, opts), (error: Error) =>
         console.warn(error)
       );
     }
@@ -471,11 +497,11 @@ const NetPrinter = {
    */
   printImage: function (imgUrl: string, opts: PrinterImageOptions = {}) {
     if (Platform.OS === "ios") {
-      RNNetPrinter.printImageData(imgUrl, opts, (error: Error) =>
+      getRNNetPrinter().printImageData(imgUrl, opts, (error: Error) =>
         console.warn(error)
       );
     } else {
-      RNNetPrinter.printImageData(
+      getRNNetPrinter().printImageData(
         imgUrl,
         opts?.imageWidth ?? 0,
         opts?.imageHeight ?? 0,
@@ -490,11 +516,11 @@ const NetPrinter = {
    */
   printImageBase64: function (Base64: string, opts: PrinterImageOptions = {}) {
     if (Platform.OS === "ios") {
-      RNNetPrinter.printImageBase64(Base64, opts, (error: Error) =>
+      getRNNetPrinter().printImageBase64(Base64, opts, (error: Error) =>
         console.warn(error)
       );
     } else {
-      RNNetPrinter.printImageBase64(
+      getRNNetPrinter().printImageBase64(
         Base64,
         opts?.imageWidth ?? 0,
         opts?.imageHeight ?? 0,
@@ -510,7 +536,7 @@ const NetPrinter = {
   printRaw: (text: string): void => {
     if (Platform.OS === "ios") {
     } else {
-      RNNetPrinter.printRawData(text, (error: Error) => console.warn(error));
+      getRNNetPrinter().printRawData(text, (error: Error) => console.warn(error));
     }
   },
 
@@ -534,13 +560,13 @@ const NetPrinter = {
     );
     if (Platform.OS === "ios") {
       const processedText = textPreprocessingIOS(result, false, false);
-      RNNetPrinter.printRawData(
+      getRNNetPrinter().printRawData(
         processedText.text,
         processedText.opts,
         (error: Error) => console.warn(error)
       );
     } else {
-      RNNetPrinter.printRawData(textTo64Buffer(result, opts), (error: Error) =>
+      getRNNetPrinter().printRawData(textTo64Buffer(result, opts), (error: Error) =>
         console.warn(error)
       );
     }
@@ -549,7 +575,7 @@ const NetPrinter = {
 
 const NetPrinterEventEmitter =
   Platform.OS === "ios"
-    ? new NativeEventEmitter(RNNetPrinter)
+    ? new NativeEventEmitter(getRNNetPrinter())
     : new NativeEventEmitter();
 
 export { COMMANDS, NetPrinter, BLEPrinter, USBPrinter, NetPrinterEventEmitter };

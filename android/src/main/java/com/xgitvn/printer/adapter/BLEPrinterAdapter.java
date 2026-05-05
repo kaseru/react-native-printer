@@ -1,6 +1,6 @@
 package com.xgitvn.printer.adapter;
-import static com.pinmi.react.printer.adapter.UtilsImage.getPixelsSlow;
-import static com.pinmi.react.printer.adapter.UtilsImage.recollectSlice;
+import static com.xgitvn.printer.adapter.UtilsImage.getPixelsSlow;
+import static com.xgitvn.printer.adapter.UtilsImage.recollectSlice;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;

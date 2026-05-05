@@ -1,0 +1,26 @@
+//
+//  TscPrinterModule.h
+//  QLBH
+//
+//  Created by dg on 19/11/24.
+//  Copyright © 2024 Facebook. All rights reserved.
+//
+
+#import <React/RCTBridgeModule.h>
+#import <React/RCTLog.h>
+#import "RNTscCommand.h"
+
+@interface TscPrinterModule : NSObject <RCTBridgeModule>
+
+@property (nonatomic, strong) NSOutputStream *outputStream;
+@property (nonatomic, strong) NSInputStream *inputStream;
+
+@end
+
+@interface MyTscCommand : RNTscCommand
+
+-(void)addBitmap:(NSInteger) x y:(NSInteger) y
+      bitmapMode:(NSInteger) mode width:(NSInteger) nWidth
+          bitmap:(UIImage *) b;
+
+@end

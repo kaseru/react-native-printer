@@ -1,42 +1,40 @@
 import { Buffer } from "buffer";
-
-export default class BufferHelper {
-  buffers: Buffer[];
-  size: number;
-
-  constructor() {
-    this.buffers = [];
-    this.size = 0;
-  }
-
-  get length() {
-    return this.size;
-  }
-
-  concat = (buffer: Buffer): BufferHelper => {
-    this.buffers.push(buffer);
-    this.size += buffer.length;
-    return this;
-  };
-
-  empty = (): BufferHelper => {
-    this.buffers = [];
-    this.size = 0;
-    return this;
-  };
-
-  toBuffer = (): Buffer => Buffer.concat(this.buffers, this.size);
-
-  toString = (encoding: BufferEncoding): string =>
-    this.toBuffer().toString(encoding);
-
-  load = (stream: any, callback: any) => {
-    stream.on("data", (trunk: Buffer) => {
-      this.concat(trunk);
+var BufferHelper = /** @class */ (function () {
+    function BufferHelper() {
+        var _this = this;
+        this.concat = function (buffer) {
+            _this.buffers.push(buffer);
+            _this.size += buffer.length;
+            return _this;
+        };
+        this.empty = function () {
+            _this.buffers = [];
+            _this.size = 0;
+            return _this;
+        };
+        this.toBuffer = function () { return Buffer.concat(_this.buffers, _this.size); };
+        this.toString = function (encoding) {
+            return _this.toBuffer().toString(encoding);
+        };
+        this.load = function (stream, callback) {
+            stream.on("data", function (trunk) {
+                _this.concat(trunk);
+            });
+            stream.on("end", function () {
+                callback(null, _this.toBuffer());
+            });
+            stream.once("error", callback);
+        };
+        this.buffers = [];
+        this.size = 0;
+    }
+    Object.defineProperty(BufferHelper.prototype, "length", {
+        get: function () {
+            return this.size;
+        },
+        enumerable: false,
+        configurable: true
     });
-    stream.on("end", () => {
-      callback(null, this.toBuffer());
-    });
-    stream.once("error", callback);
-  };
-}
+    return BufferHelper;
+}());
+export default BufferHelper;

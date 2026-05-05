@@ -4,6 +4,7 @@ buildscript {
         minSdkVersion = 23
         compileSdkVersion = 35
         targetSdkVersion = 35
+        reactNativeAndroidVersion = "0.75.4"
     }
 
     repositories {
@@ -67,7 +68,7 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.facebook.react:react-native:+'
+    implementation "com.facebook.react:react-android:${safeExtGet('reactNativeAndroidVersion', '0.75.4')}"
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.zxing:core:3.5.3'
 }

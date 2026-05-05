@@ -1,16 +1,10 @@
-import { ColumnAlignment } from "..";
-
 /**
  * Using to add space for each row
  * @param text
  * @param restLength
  * @param align
  */
-const processAlignText = (
-  text: string,
-  restLength: number,
-  align: ColumnAlignment
-): string => {
+var processAlignText = function (text, restLength, align) {
   if (align === 0) {
     return text + " ".repeat(restLength);
   } else if (align === 1) {
@@ -24,31 +18,26 @@ const processAlignText = (
   }
   return "";
 };
-
 /**
  * process down line when length of text is bigger than columnWidthAtRow
  * @param text
  * @param maxLength
  */
-const processNewLine = (
-  text: string,
-  maxLength: number
-): {
-  text: string;
-  text_tail: string;
-} => {
-  let newText: string;
-  let newTextTail: string;
-  const next_char = text.slice(maxLength, maxLength + 1);
-
+var processNewLine = function (text, maxLength) {
+  var _a;
+  var newText;
+  var newTextTail;
+  var next_char = text.slice(maxLength, maxLength + 1);
   if (next_char === " ") {
     newText = text.slice(0, maxLength);
     newTextTail = text.slice(maxLength, text.length);
   } else {
-    const newMaxLength = text
+    var newMaxLength = text
       .slice(0, maxLength)
       .split("")
-      .map((e) => e)
+      .map(function (e) {
+        return e;
+      })
       .lastIndexOf(" ");
     if (newMaxLength === -1) {
       newText = text.slice(0, maxLength);
@@ -58,27 +47,36 @@ const processNewLine = (
       newTextTail = text.slice(newMaxLength, text.length);
     }
   }
-
   return {
-    text: newText ?? "",
-    text_tail: newTextTail.trim() ?? "",
+    text: newText !== null && newText !== void 0 ? newText : "",
+    text_tail: (_a = newTextTail.trim()) !== null && _a !== void 0 ? _a : "",
   };
 };
-
-export const processColumnText = (
-  texts: string[],
-  columnWidth: number[],
-  columnAlignment: ColumnAlignment[],
-  columnStyle: string[] = []
-): string => {
-  let rest_texts: [string, string, string] = ["", "", ""];
-  let result = "";
-  texts.map((text, idx) => {
-    const columnWidthAtRow = Math.round(columnWidth?.[idx]);
+export var processColumnText = function (
+  texts,
+  columnWidth,
+  columnAlignment,
+  columnStyle
+) {
+  if (columnStyle === void 0) {
+    columnStyle = [];
+  }
+  var rest_texts = ["", "", ""];
+  var result = "";
+  texts.map(function (text, idx) {
+    var _a, _b;
+    var columnWidthAtRow = Math.round(
+      columnWidth === null || columnWidth === void 0 ? void 0 : columnWidth[idx]
+    );
     if (text.length >= columnWidth[idx]) {
-      const processedText = processNewLine(text, columnWidthAtRow);
+      var processedText = processNewLine(text, columnWidthAtRow);
       result +=
-        (columnStyle?.[idx] ?? "") +
+        ((_a =
+          columnStyle === null || columnStyle === void 0
+            ? void 0
+            : columnStyle[idx]) !== null && _a !== void 0
+          ? _a
+          : "") +
         processAlignText(
           processedText.text,
           columnWidthAtRow - processedText.text.length,
@@ -88,7 +86,12 @@ export const processColumnText = (
       rest_texts[idx] = processedText.text_tail;
     } else {
       result +=
-        (columnStyle?.[idx] ?? "") +
+        ((_b =
+          columnStyle === null || columnStyle === void 0
+            ? void 0
+            : columnStyle[idx]) !== null && _b !== void 0
+          ? _b
+          : "") +
         processAlignText(
           text.trim(),
           columnWidthAtRow - text.length,
@@ -97,7 +100,9 @@ export const processColumnText = (
         (idx !== 2 ? " " : "");
     }
   });
-  const index_nonEmpty = rest_texts.findIndex((rest_text) => rest_text != "");
+  var index_nonEmpty = rest_texts.findIndex(function (rest_text) {
+    return rest_text != "";
+  });
   if (index_nonEmpty !== -1) {
     result +=
       "\n" +
