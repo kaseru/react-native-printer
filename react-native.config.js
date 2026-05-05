@@ -2,8 +2,8 @@ module.exports = {
   dependency: {
     platforms: {
       android: {
-        packageImportPath: 'import com.xgitvn.printer.RNPrinterPackage;',
-        packageInstance: 'new RNPrinterPackage()',
+        packageImportPath: 'import com.xgitvn.printer.RNXPrinterPackage;',
+        packageInstance: 'new RNXPrinterPackage()',
       },
       ios: {},
     },

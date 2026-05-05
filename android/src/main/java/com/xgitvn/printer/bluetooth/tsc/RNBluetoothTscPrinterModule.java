@@ -26,7 +26,7 @@ implements BluetoothServiceStateObserver{
 
     @Override
     public String getName() {
-        return "BluetoothTscPrinter";
+        return "XBluetoothTscPrinter";
     }
 
     @ReactMethod

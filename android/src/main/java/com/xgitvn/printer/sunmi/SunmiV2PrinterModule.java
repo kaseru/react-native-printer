@@ -118,7 +118,7 @@ public class SunmiV2PrinterModule extends ReactContextBaseJavaModule {
 
     @Override
     public String getName() {
-        return "SunmiV2Printer";
+        return "XSunmiV2Printer";
     }
 
 

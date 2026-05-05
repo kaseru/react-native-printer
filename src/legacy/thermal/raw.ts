@@ -5,10 +5,10 @@ import { processColumnText } from "./utils/print-column";
 import { COMMANDS } from "./utils/printer-commands";
 import { connectToHost } from "./utils/net-connect";
 
-const RNUSBPrinter = NativeModules.RNUSBPrinter;
-const RNBLEPrinter = NativeModules.RNBLEPrinter;
-const RNNetPrinterLegacy = NativeModules.RNNetPrinter;
-const RNNetPrinterRaw = NativeModules.RNNetPrinterRaw;
+const RNUSBPrinter = NativeModules.XRNUSBPrinter || NativeModules.RNUSBPrinter;
+const RNBLEPrinter = NativeModules.XRNBLEPrinter || NativeModules.RNBLEPrinter;
+const RNNetPrinterLegacy = NativeModules.XRNNetPrinter || NativeModules.RNNetPrinter;
+const RNNetPrinterRaw = NativeModules.RNNetPrinterRawV2 || NativeModules.RNNetPrinterRaw;
 let iosNetPrinterMode = "legacy";
 
 const getRNNetPrinter = () => {

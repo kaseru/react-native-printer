@@ -66,7 +66,7 @@ public class UsbPrinterModule extends ReactContextBaseJavaModule {
 
     @Override
     public String getName() {
-        return "UsbPrinterModule";
+        return "XUsbPrinterModule";
     }
 
     @ReactMethod

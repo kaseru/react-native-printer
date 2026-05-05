@@ -112,5 +112,5 @@ export {
   USBPrinter,
 };
 
-export const TscPrinterModule = NativeModules.TscPrinterModule;
-export const UsbPrinterModule = NativeModules.UsbPrinterModule;
+export const TscPrinterModule = NativeModules.XTscPrinterModule || NativeModules.TscPrinterModule;
+export const UsbPrinterModule = NativeModules.XUsbPrinterModule || NativeModules.UsbPrinterModule;

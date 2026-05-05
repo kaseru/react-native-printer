@@ -44,7 +44,7 @@ public class RNBluetoothEscposPrinterModule extends ReactContextBaseJavaModule
 
     @Override
     public String getName() {
-        return "BluetoothEscposPrinter";
+        return "XBluetoothEscposPrinter";
     }
 
 

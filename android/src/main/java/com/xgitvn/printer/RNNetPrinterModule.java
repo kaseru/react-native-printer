@@ -85,6 +85,6 @@ public class RNNetPrinterModule extends ReactContextBaseJavaModule implements RN
 
     @Override
     public String getName() {
-        return "RNNetPrinter";
+        return "XRNNetPrinter";
     }
 }

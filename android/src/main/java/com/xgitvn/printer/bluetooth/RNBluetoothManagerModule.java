@@ -387,7 +387,7 @@ public class RNBluetoothManagerModule extends ReactContextBaseJavaModule
 
     @Override
     public String getName() {
-        return "BluetoothManager";
+        return "XBluetoothManager";
     }
 
 

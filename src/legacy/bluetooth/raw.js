@@ -1,6 +1,8 @@
 
 import { NativeModules } from 'react-native';
- const {BluetoothManager,BluetoothEscposPrinter, BluetoothTscPrinter }= NativeModules;
+const BluetoothManager = NativeModules.XBluetoothManager || NativeModules.BluetoothManager;
+const BluetoothEscposPrinter = NativeModules.XBluetoothEscposPrinter || NativeModules.BluetoothEscposPrinter;
+const BluetoothTscPrinter = NativeModules.XBluetoothTscPrinter || NativeModules.BluetoothTscPrinter;
 
 BluetoothTscPrinter.DIRECTION = {
     FORWARD: 0,

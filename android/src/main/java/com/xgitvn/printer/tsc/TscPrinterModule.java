@@ -21,7 +21,7 @@ public class TscPrinterModule extends ReactContextBaseJavaModule {
 
     @Override
     public String getName() {
-        return "TscPrinterModule";
+        return "XTscPrinterModule";
     }
 
     @ReactMethod
