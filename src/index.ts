@@ -12,15 +12,11 @@ export {
   USBEscPrinter,
 };
 
-const TscLabelPrinterModule = NativeModules.XTscPrinterModule || NativeModules.TscPrinterModule;
-
-export const TscPrinterModule = NativeModules.XTscPrinterModule || NativeModules.TscPrinterModule;
-export const TscNetEscPrinterModule = NativeModules.XTscPrinterModule || NativeModules.TscPrinterModule;
-export const UsbPrinterModule = NativeModules.XUsbPrinterModule || NativeModules.UsbPrinterModule;
+export const TscNetPrinterModule = NativeModules.XTscPrinterModule || NativeModules.TscPrinterModule;
 export const TscUsbPrinterModule = NativeModules.XUsbPrinterModule || NativeModules.UsbPrinterModule;
 export function ping(host: string, timeoutMs: number = 1000) {
-  if (TscLabelPrinterModule?.ping) {
-    return TscLabelPrinterModule.ping(host, timeoutMs);
+  if (TscNetPrinterModule?.ping) {
+    return TscNetPrinterModule.ping(host, timeoutMs);
   }
   throw new Error('Network printer ping is not available');
 }
