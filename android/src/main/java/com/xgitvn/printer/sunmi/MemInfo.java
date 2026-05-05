@@ -1,4 +1,4 @@
-package com.test.printertestdemo;
+package com.xgitvn.printer.sunmi;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

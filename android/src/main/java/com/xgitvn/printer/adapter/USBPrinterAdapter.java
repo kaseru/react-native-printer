@@ -51,7 +51,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
     private UsbDeviceConnection mUsbDeviceConnection;
     private UsbInterface mUsbInterface;
     private UsbEndpoint mEndPoint;
-    private static final String ACTION_USB_PERMISSION = "com.pinmi.react.USBPrinter.USB_PERMISSION";
+    private static final String ACTION_USB_PERMISSION = "com.xgitvn.printer.USBPrinter.USB_PERMISSION";
     private static final String EVENT_USB_DEVICE_ATTACHED = "usbAttached";
 
     private final static char ESC_CHAR = 0x1B;
