@@ -1,47 +1,49 @@
 # react-native-printer
 
-Thư viện React Native chuẩn hoá cho nhu cầu in của Kaseru.
+A unified React Native printer library for Kaseru apps.
 
-Mục tiêu phase đầu:
-- Receipt ESC/POS
-- Label TSC
-- Kết nối Bluetooth / Wi-Fi / USB
-- Gom phần engine về 1 repo để dễ chủ động bảo trì
-- Không mang business flow của app vào thư viện
+Current goal (phase 1):
 
-## Scope hiện tại
+- ESC/POS receipt printing
+- TSC label printing
+- Bluetooth / Wi-Fi / USB transports
+- One maintainable printer engine repo
+- No app-specific business flow inside the library
 
-Repo này được dựng để thay thế cách dùng rời rạc nhiều thư viện in ở app hiện tại.
+## Current scope
 
-Nguồn tham chiếu/chứa code nền đang dùng:
+This repo is intended to replace fragmented printer integrations in existing apps.
+
+Reference/upstream codebases currently used:
+
 - Bluetooth ESC/POS + TSC:
   - https://github.com/kaseru/react-native-bluetooth-escpos-printer
 - Wi-Fi / USB / BLE thermal printer:
   - https://github.com/thiendangit/react-native-thermal-receipt-printer-image-qr
-- App đang sử dụng flow in để tham chiếu khi thiết kế abstraction:
+- Real app printing flow used as abstraction reference:
   - aSellerV5 internal app flow
 
-Lưu ý:
-- Repo này **không copy `PrintUtils` từ app**.
-- Chỉ tham chiếu flow thực tế để rút API chung.
-- Sunmi hiện tại **không nằm trong scope**.
+Notes:
 
-## Định hướng kiến trúc
+- This repo does **not** copy `PrintUtils` from app code.
+- App flow is only used as implementation reference.
+- Sunmi is currently **out of scope**.
+
+## Architecture direction
 
 - `src/core`: types, facade, interfaces
-- `src/bluetooth`: adapter cho Bluetooth ESC/POS + TSC
-- `src/network`: adapter cho NetPrinter / Wi-Fi
-- `src/usb`: adapter cho USB printer
-- `src/legacy`: nơi chứa lớp bọc tương thích từ các thư viện gốc
+- `src/bluetooth`: Bluetooth ESC/POS + TSC adapter
+- `src/network`: NetPrinter / Wi-Fi adapter
+- `src/usb`: USB printer adapter
+- `src/legacy`: compatibility wrappers around upstream engines
 
-## Phase 1
+## Phase 1 priorities
 
-Ưu tiên:
 - Bluetooth ESC/POS
 - Bluetooth TSC
 - Wi-Fi ESC/POS
 - USB ESC/POS
-- API public ổn định ở mức cơ bản:
+- Stable baseline public API:
   - `connect()`
   - `disconnect()`
   - `printText()`
@@ -51,21 +53,23 @@ Lưu ý:
   - `cut()`
   - `openDrawer()`
 
-## Migrate strategy
+## Migration strategy
 
-Bước đầu sẽ bọc các engine hiện có thành API thống nhất.
-Sau đó mới tách tiếp renderer / capability / transport nếu cần.
+Start by wrapping existing engines under one API.
+Then progressively split renderer / capability / transport layers if needed.
 
-## iOS source of truth
+## iOS source status
 
-- Source iOS active hiện nằm ở `ios/`.
-- Hai cây cũ `ios-bluetooth/` và `ios-thermal/` đã được chuyển vào `_archive/` để giữ tham chiếu và tránh nhầm với source active.
+- Active iOS source is under `ios/`.
+- Legacy trees `ios-bluetooth/` and `ios-thermal/` are still kept in repo temporarily for compatibility/reference.
+- Archived copies also exist under `_archive/`.
+- New changes should target `ios/` unless explicitly maintaining legacy paths.
 
 ## TODO
 
-- [x] Import code nền Bluetooth từ repo Kaseru
-- [x] Import code nền Net/USB/BLE từ repo thermal
-- [ ] Chuẩn hoá TypeScript types
-- [ ] Thiết kế facade API chung
-- [ ] Thêm example app / sample usage
-- [ ] Thêm docs migrate từ app cũ
+- [x] Import baseline Bluetooth code from Kaseru repo
+- [x] Import baseline Net/USB/BLE thermal code
+- [ ] Standardize TypeScript types
+- [ ] Design common facade API
+- [ ] Add example app / sample usage
+- [ ] Add migration docs from old app integrations
