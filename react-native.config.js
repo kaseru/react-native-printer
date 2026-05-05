@@ -5,7 +5,7 @@ module.exports = {
         packageImportPath: 'import com.xgitvn.printer.RNXPrinterPackage;',
         packageInstance: 'new RNXPrinterPackage()',
       },
-      ios: {},
+      ios: null,
     },
   },
 };
