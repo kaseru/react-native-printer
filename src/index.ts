@@ -8,8 +8,8 @@ export {
   BluetoothManager,
   BluetoothTscPrinter,
   COMMANDS,
-  NetPrinter,
-  USBPrinter,
+  NetPrinter as NetEscPrinter,
+  USBPrinter as USBEscPrinter,
 };
 
 const TscLabelPrinterModule = NativeModules.XTscPrinterModule || NativeModules.TscPrinterModule;
