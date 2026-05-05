@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Unified React Native printer library for Kaseru apps (Bluetooth, Wi-Fi, USB; ESC/POS + TSC)",
   "main": "src/index.ts",
+  "react-native": "src/index.ts",
   "types": "src/index.ts",
   "source": "src/index.ts",
   "files": [

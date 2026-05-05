@@ -12,6 +12,16 @@ Pod::Spec.new do |s|
   s.platform     = :ios, '11.0'
   s.source       = { :git => 'https://github.com/kaseru/react-native-printer', :tag => "v#{s.version}" }
   s.source_files = 'ios/**/*.{h,m,swift}'
+  s.exclude_files = [
+    'ios/**/*.xcodeproj/**',
+    'ios/**/*.xcworkspace/**',
+    'ios/ZXingObjC-3.2.2/*.md',
+    'ios/ZXingObjC-3.2.2/AUTHORS',
+    'ios/ZXingObjC-3.2.2/COPYING',
+    'ios/ZXingObjC-3.2.2/NOTICE',
+    'ios/ZXingObjC-3.2.2/*-Info.plist',
+    'ios/ZXingObjC-3.2.2/*-Prefix.pch'
+  ]
   s.requires_arc = true
   s.dependency 'React'
   s.vendored_libraries = 'ios/PrinterSDK/libPrinterSDK.a'
