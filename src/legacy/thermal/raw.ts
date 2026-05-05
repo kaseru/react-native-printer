@@ -8,7 +8,7 @@ import { connectToHost } from "./utils/net-connect";
 const RNUSBPrinter = NativeModules.XRNUSBPrinter || NativeModules.RNUSBPrinter;
 const RNBLEPrinter = NativeModules.XRNBLEPrinter || NativeModules.RNBLEPrinter;
 const RNNetPrinterLegacy = NativeModules.XRNNetPrinter || NativeModules.RNNetPrinter;
-const RNNetPrinterRaw = NativeModules.RNNetPrinterRawV2 || NativeModules.RNNetPrinterRaw;
+const RNNetPrinterRaw = NativeModules.RNNetPrinterRaw;
 let iosNetPrinterMode = "legacy";
 
 const getRNNetPrinter = () => {

@@ -100,8 +100,8 @@ NSData* convertImageToBitmapBytes(UIImage *image) {
 
 RCT_EXPORT_MODULE();  // Đảm bảo module được export đúng
 
-// Pìng printer
-RCT_EXPORT_METHOD(pingPrinter:(NSString *)ip
+// Ping printer
+RCT_EXPORT_METHOD(ping:(NSString *)ip
                   timeout:(nonnull NSNumber *)timeoutMs
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)

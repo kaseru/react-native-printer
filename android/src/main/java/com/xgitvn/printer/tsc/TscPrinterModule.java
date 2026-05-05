@@ -25,10 +25,10 @@ public class TscPrinterModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void pingPrinter(String ip, int timeoutMs, Promise promise) {
+    public void ping(String host, int timeoutMs, Promise promise) {
         new Thread(() -> {
         try (Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress(ip, 9100), timeoutMs);
+            socket.connect(new InetSocketAddress(host, 9100), timeoutMs);
             promise.resolve(true);
         } catch (Exception e) {
             promise.resolve(false);
