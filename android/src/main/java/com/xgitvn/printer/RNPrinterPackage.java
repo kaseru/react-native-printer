@@ -4,7 +4,7 @@ import com.xgitvn.printer.bluetooth.BluetoothService;
 import com.xgitvn.printer.bluetooth.RNBluetoothManagerModule;
 import com.xgitvn.printer.bluetooth.escpos.RNBluetoothEscPrinterModule;
 import com.xgitvn.printer.bluetooth.tsc.RNBluetoothTscPrinterModule;
-import com.xgitvn.printer.tsc.TscNetPrinterModule;
+import com.xgitvn.printer.tsc.TscNetEscPrinterModule;
 import com.xgitvn.printer.tsc.TscUsbPrinterModule;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
@@ -24,12 +24,12 @@ public class RNPrinterPackage implements ReactPackage {
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         BluetoothService bluetoothService = new BluetoothService(reactContext);
         return Arrays.asList(new NativeModule[]{
-                new RNUSBPrinterModule(reactContext),
-                new RNNetPrinterModule(reactContext),
+                new RNUSBEscPrinterModule(reactContext),
+                new RNNetEscPrinterModule(reactContext),
                 new RNBluetoothManagerModule(reactContext, bluetoothService),
                 new RNBluetoothEscPrinterModule(reactContext, bluetoothService),
                 new RNBluetoothTscPrinterModule(reactContext, bluetoothService),
-                new TscNetPrinterModule(reactContext),
+                new TscNetEscPrinterModule(reactContext),
                 new TscUsbPrinterModule(reactContext),
         });
     }

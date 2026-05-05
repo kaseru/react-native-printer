@@ -4,16 +4,16 @@ package com.xgitvn.printer.adapter;
  * Created by xiesubin on 2017/9/21.
  */
 
-public class NetPrinterDeviceId extends PrinterDeviceId {
+public class NetEscPrinterDeviceId extends PrinterDeviceId {
     private String host;
     private Integer port;
 
 
-    public static NetPrinterDeviceId valueOf(String host, Integer port) {
-        return new NetPrinterDeviceId(host, port);
+    public static NetEscPrinterDeviceId valueOf(String host, Integer port) {
+        return new NetEscPrinterDeviceId(host, port);
     }
 
-    private NetPrinterDeviceId(String host, Integer port) {
+    private NetEscPrinterDeviceId(String host, Integer port) {
         this.host = host;
         this.port = port;
     }
@@ -32,7 +32,7 @@ public class NetPrinterDeviceId extends PrinterDeviceId {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        NetPrinterDeviceId that = (NetPrinterDeviceId) o;
+        NetEscPrinterDeviceId that = (NetEscPrinterDeviceId) o;
 
         if (!host.equals(that.host)) return false;
         return port.equals(that.port);

@@ -38,12 +38,12 @@ import java.util.List;
  * Created by xiesubin on 2017/9/20.
  */
 
-public class USBPrinterAdapter implements PrinterAdapter {
+public class USBEscPrinterAdapter implements PrinterAdapter {
     @SuppressLint("StaticFieldLeak")
-    private static USBPrinterAdapter mInstance;
+    private static USBEscPrinterAdapter mInstance;
 
 
-    private final String LOG_TAG = "RNUSBPrinter";
+    private final String LOG_TAG = "RNUSBEscPrinter";
     private Context mContext;
     private UsbManager mUSBManager;
     private PendingIntent mPermissionIndent;
@@ -51,7 +51,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
     private UsbDeviceConnection mUsbDeviceConnection;
     private UsbInterface mUsbInterface;
     private UsbEndpoint mEndPoint;
-    private static final String ACTION_USB_PERMISSION = "com.xgitvn.printer.USBPrinter.USB_PERMISSION";
+    private static final String ACTION_USB_PERMISSION = "com.xgitvn.printer.USBEscPrinter.USB_PERMISSION";
     private static final String EVENT_USB_DEVICE_ATTACHED = "usbAttached";
 
     private final static char ESC_CHAR = 0x1B;
@@ -61,12 +61,12 @@ public class USBPrinterAdapter implements PrinterAdapter {
     private final static byte[] LINE_FEED = new byte[]{0x0A};
     private static final byte[] CENTER_ALIGN = {0x1B, 0X61, 0X31};
 
-    private USBPrinterAdapter() {
+    private USBEscPrinterAdapter() {
     }
 
-    public static USBPrinterAdapter getInstance() {
+    public static USBEscPrinterAdapter getInstance() {
         if (mInstance == null) {
-            mInstance = new USBPrinterAdapter();
+            mInstance = new USBEscPrinterAdapter();
         }
         return mInstance;
     }
@@ -113,7 +113,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
         filter.addAction(UsbManager.ACTION_USB_ACCESSORY_ATTACHED);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
         mContext.registerReceiver(mUsbDeviceReceiver, filter);
-        Log.v(LOG_TAG, "RNUSBPrinter initialized");
+        Log.v(LOG_TAG, "RNUSBEscPrinter initialized");
         successCallback.invoke();
     }
 
@@ -136,7 +136,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
         }
 
         for (UsbDevice usbDevice : mUSBManager.getDeviceList().values()) {
-            lists.add(new USBPrinterDevice(usbDevice));
+            lists.add(new USBEscPrinterDevice(usbDevice));
         }
         return lists;
     }
@@ -149,14 +149,14 @@ public class USBPrinterAdapter implements PrinterAdapter {
             return;
         }
 
-        USBPrinterDeviceId usbPrinterDeviceId = (USBPrinterDeviceId) printerDeviceId;
+        USBEscPrinterDeviceId usbPrinterDeviceId = (USBEscPrinterDeviceId) printerDeviceId;
         if (mUsbDevice != null && mUsbDevice.getVendorId() == usbPrinterDeviceId.getVendorId() && mUsbDevice.getProductId() == usbPrinterDeviceId.getProductId()) {
             Log.i(LOG_TAG, "already selected device, do not need repeat to connect");
             if (!mUSBManager.hasPermission(mUsbDevice)) {
                 closeConnectionIfExists();
                 mUSBManager.requestPermission(mUsbDevice, mPermissionIndent);
             }
-            successCallback.invoke(new USBPrinterDevice(mUsbDevice).toRNWritableMap());
+            successCallback.invoke(new USBEscPrinterDevice(mUsbDevice).toRNWritableMap());
             return;
         }
         closeConnectionIfExists();
@@ -169,7 +169,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
                 Log.v(LOG_TAG, "request for device: vendor_id: " + usbPrinterDeviceId.getVendorId() + ", product_id: " + usbPrinterDeviceId.getProductId());
                 closeConnectionIfExists();
                 mUSBManager.requestPermission(usbDevice, mPermissionIndent);
-                successCallback.invoke(new USBPrinterDevice(usbDevice).toRNWritableMap());
+                successCallback.invoke(new USBEscPrinterDevice(usbDevice).toRNWritableMap());
                 return;
             }
         }

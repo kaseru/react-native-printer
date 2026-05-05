@@ -34,11 +34,11 @@ import androidx.annotation.RequiresApi;
  * Created by xiesubin on 2017/9/22.
  */
 
-public class NetPrinterAdapter implements PrinterAdapter {
-    private static NetPrinterAdapter mInstance;
+public class NetEscPrinterAdapter implements PrinterAdapter {
+    private static NetEscPrinterAdapter mInstance;
     private ReactApplicationContext mContext;
-    private final String LOG_TAG = "RNNetPrinter";
-    private NetPrinterDevice mNetDevice;
+    private final String LOG_TAG = "RNNetEscPrinter";
+    private NetEscPrinterDevice mNetDevice;
 
     // {TODO- support other ports later}
 
@@ -57,13 +57,13 @@ public class NetPrinterAdapter implements PrinterAdapter {
 
     private boolean isRunning = false;
 
-    private NetPrinterAdapter() {
+    private NetEscPrinterAdapter() {
 
     }
 
-    public static NetPrinterAdapter getInstance() {
+    public static NetEscPrinterAdapter getInstance() {
         if (mInstance == null) {
-            mInstance = new NetPrinterAdapter();
+            mInstance = new NetEscPrinterAdapter();
 
         }
         return mInstance;
@@ -168,7 +168,7 @@ public class NetPrinterAdapter implements PrinterAdapter {
 
     @Override
     public void selectDevice(PrinterDeviceId printerDeviceId, Callback sucessCallback, Callback errorCallback) {
-        NetPrinterDeviceId netPrinterDeviceId = (NetPrinterDeviceId) printerDeviceId;
+        NetEscPrinterDeviceId netPrinterDeviceId = (NetEscPrinterDeviceId) printerDeviceId;
 
         if (this.mSocket != null && !this.mSocket.isClosed()
                 && mNetDevice.getPrinterDeviceId().equals(netPrinterDeviceId)) {
@@ -182,7 +182,7 @@ public class NetPrinterAdapter implements PrinterAdapter {
             if (socket.isConnected()) {
                 closeConnectionIfExists();
                 this.mSocket = socket;
-                this.mNetDevice = new NetPrinterDevice(netPrinterDeviceId.getHost(), netPrinterDeviceId.getPort());
+                this.mNetDevice = new NetEscPrinterDevice(netPrinterDeviceId.getHost(), netPrinterDeviceId.getPort());
                 sucessCallback.invoke(this.mNetDevice.toRNWritableMap());
             } else {
                 errorCallback.invoke("unable to build connection with host: " + netPrinterDeviceId.getHost()

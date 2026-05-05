@@ -1,5 +1,5 @@
 import { NativeModules } from 'react-native';
-import { NetPrinter, USBPrinter } from './legacy/thermal';
+import { NetEscPrinter, USBEscPrinter } from './legacy/thermal';
 import { BluetoothManager, BluetoothEscpos as BluetoothEscPrinter, BluetoothTsc as BluetoothTscPrinter } from './legacy/bluetooth';
 import { COMMANDS } from './legacy/thermal';
 
@@ -8,14 +8,14 @@ export {
   BluetoothManager,
   BluetoothTscPrinter,
   COMMANDS,
-  NetPrinter as NetEscPrinter,
-  USBPrinter as USBEscPrinter,
+  NetEscPrinter as NetEscPrinter,
+  USBEscPrinter as USBEscPrinter,
 };
 
 const TscLabelPrinterModule = NativeModules.XTscPrinterModule || NativeModules.TscPrinterModule;
 
 export const TscPrinterModule = TscLabelPrinterModule;
-export const TscNetPrinterModule = TscLabelPrinterModule;
+export const TscNetEscPrinterModule = TscLabelPrinterModule;
 export const UsbPrinterModule = NativeModules.XUsbPrinterModule || NativeModules.UsbPrinterModule;
 export const TscUsbPrinterModule = UsbPrinterModule;
 export function ping(host: string, timeoutMs: number = 1000) {

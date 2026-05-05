@@ -9,20 +9,20 @@ import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.xgitvn.printer.adapter.NetPrinterAdapter;
-import com.xgitvn.printer.adapter.NetPrinterDeviceId;
+import com.xgitvn.printer.adapter.NetEscPrinterAdapter;
+import com.xgitvn.printer.adapter.NetEscPrinterDeviceId;
 import com.xgitvn.printer.adapter.PrinterAdapter;
 
 /**
  * Created by xiesubin on 2017/9/22.
  */
 
-public class RNNetPrinterModule extends ReactContextBaseJavaModule implements RNPrinterModule {
+public class RNNetEscPrinterModule extends ReactContextBaseJavaModule implements RNPrinterModule {
 
     private PrinterAdapter adapter;
     private ReactApplicationContext reactContext;
 
-    public RNNetPrinterModule(ReactApplicationContext reactContext) {
+    public RNNetEscPrinterModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
     }
@@ -30,7 +30,7 @@ public class RNNetPrinterModule extends ReactContextBaseJavaModule implements RN
     @ReactMethod
     @Override
     public void init(Callback successCallback, Callback errorCallback) {
-        this.adapter = NetPrinterAdapter.getInstance();
+        this.adapter = NetEscPrinterAdapter.getInstance();
         this.adapter.init(reactContext, successCallback, errorCallback);
     }
 
@@ -38,7 +38,7 @@ public class RNNetPrinterModule extends ReactContextBaseJavaModule implements RN
     @Override
     public void closeConn() {
         if (this.adapter == null) {
-            this.adapter = NetPrinterAdapter.getInstance();
+            this.adapter = NetEscPrinterAdapter.getInstance();
         }
         this.adapter.closeConnectionIfExists();
     }
@@ -57,7 +57,7 @@ public class RNNetPrinterModule extends ReactContextBaseJavaModule implements RN
 
     @ReactMethod
     public void connectPrinter(String host, Integer port, Callback successCallback, Callback errorCallback) {
-        adapter.selectDevice(NetPrinterDeviceId.valueOf(host, port), successCallback, errorCallback);
+        adapter.selectDevice(NetEscPrinterDeviceId.valueOf(host, port), successCallback, errorCallback);
     }
 
     @ReactMethod
@@ -85,6 +85,6 @@ public class RNNetPrinterModule extends ReactContextBaseJavaModule implements RN
 
     @Override
     public String getName() {
-        return "XRNNetPrinter";
+        return "XRNNetEscPrinter";
     }
 }
