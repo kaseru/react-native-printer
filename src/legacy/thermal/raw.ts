@@ -6,7 +6,6 @@ import { COMMANDS } from "./utils/printer-commands";
 import { connectToHost } from "./utils/net-connect";
 
 const RNUSBPrinter = NativeModules.XRNUSBPrinter || NativeModules.RNUSBPrinter;
-const RNBLEPrinter = NativeModules.XRNBLEPrinter || NativeModules.RNBLEPrinter;
 const RNNetPrinterLegacy = NativeModules.XRNNetPrinter || NativeModules.RNNetPrinter;
 const RNNetPrinterRaw = NativeModules.RNNetPrinterRaw;
 
@@ -45,11 +44,6 @@ export interface IUSBPrinter {
   device_name: string;
   vendor_id: string;
   product_id: string;
-}
-
-export interface IBLEPrinter {
-  device_name: string;
-  inner_mac_address: string;
 }
 
 export interface INetPrinter {
@@ -233,170 +227,6 @@ const USBPrinter = {
   },
 };
 
-const BLEPrinter = {
-  init: (): Promise<void> =>
-    new Promise((resolve, reject) =>
-      RNBLEPrinter.init(
-        () => resolve(),
-        (error: Error) => reject(error)
-      )
-    ),
-
-  getDeviceList: (): Promise<IBLEPrinter[]> =>
-    new Promise((resolve, reject) =>
-      RNBLEPrinter.getDeviceList(
-        (printers: IBLEPrinter[]) => resolve(printers),
-        (error: Error) => reject(error)
-      )
-    ),
-
-  connectPrinter: (inner_mac_address: string): Promise<IBLEPrinter> =>
-    new Promise((resolve, reject) =>
-      RNBLEPrinter.connectPrinter(
-        inner_mac_address,
-        (printer: IBLEPrinter) => resolve(printer),
-        (error: Error) => reject(error)
-      )
-    ),
-
-  closeConn: (): Promise<void> =>
-    new Promise((resolve) => {
-      RNBLEPrinter.closeConn();
-      resolve();
-    }),
-
-  printText: (text: string, opts: PrinterOptions = {}): void => {
-    if (Platform.OS === "ios") {
-      const processedText = textPreprocessingIOS(text, false, false);
-      RNBLEPrinter.printRawData(
-        processedText.text,
-        processedText.opts,
-        (error: Error) => console.warn(error)
-      );
-    } else {
-      RNBLEPrinter.printRawData(textTo64Buffer(text, opts), (error: Error) =>
-        console.warn(error)
-      );
-    }
-  },
-
-  printBill: (text: string, opts: PrinterOptions = {}): void => {
-    if (Platform.OS === "ios") {
-      const processedText = textPreprocessingIOS(
-        text,
-        opts?.cut ?? true,
-        opts.beep ?? true
-      );
-      RNBLEPrinter.printRawData(
-        processedText.text,
-        processedText.opts,
-        (error: Error) => console.warn(error)
-      );
-    } else {
-      RNBLEPrinter.printRawData(billTo64Buffer(text, opts), (error: Error) =>
-        console.warn(error)
-      );
-    }
-  },
-  /**
-   * image url
-   * @param imgUrl
-   * @param opts
-   */
-  printImage: function (imgUrl: string, opts: PrinterImageOptions = {}) {
-    if (Platform.OS === "ios") {
-      /**
-       * just development
-       */
-      RNBLEPrinter.printImageData(imgUrl, opts, (error: Error) =>
-        console.warn(error)
-      );
-    } else {
-      RNBLEPrinter.printImageData(
-        imgUrl,
-        opts?.imageWidth ?? 0,
-        opts?.imageHeight ?? 0,
-        (error: Error) => console.warn(error)
-      );
-    }
-  },
-  /**
-   * base 64 string
-   * @param Base64
-   * @param opts
-   */
-  printImageBase64: function (Base64: string, opts: PrinterImageOptions = {}) {
-    if (Platform.OS === "ios") {
-      /**
-       * just development
-       */
-      RNBLEPrinter.printImageBase64(Base64, opts, (error: Error) =>
-        console.warn(error)
-      );
-    } else {
-      /**
-       * just development
-       */
-      RNBLEPrinter.printImageBase64(
-        Base64,
-        opts?.imageWidth ?? 0,
-        opts?.imageHeight ?? 0,
-        (error: Error) => console.warn(error)
-      );
-    }
-  },
-  /**
-   * android print with encoder
-   * @param text
-   */
-  printRaw: (text: string): void => {
-    if (Platform.OS === "ios") {
-      var processedText = textPreprocessingIOS(text, false, false);
-
-      RNBLEPrinter.printRawData(
-        processedText.text,
-        processedText.opts,
-        function (error) {
-          return console.warn(error);
-        }
-      );
-    } else {
-      RNBLEPrinter.printRawData(text, (error: Error) => console.warn(error));
-    }
-  },
-  /**
-   * `columnWidth`
-   * 80mm => 46 character
-   * 58mm => 30 character
-   */
-  printColumnsText: (
-    texts: string[],
-    columnWidth: number[],
-    columnAlignment: ColumnAlignment[],
-    columnStyle: string[],
-    opts: PrinterOptions = {}
-  ): void => {
-    const result = processColumnText(
-      texts,
-      columnWidth,
-      columnAlignment,
-      columnStyle
-    );
-    if (Platform.OS === "ios") {
-      const processedText = textPreprocessingIOS(result, false, false);
-      RNBLEPrinter.printRawData(
-        processedText.text,
-        processedText.opts,
-        (error: Error) => console.warn(error)
-      );
-    } else {
-      RNBLEPrinter.printRawData(textTo64Buffer(result, opts), (error: Error) =>
-        console.warn(error)
-      );
-    }
-  },
-};
-
 const NetPrinter = {
   init: (): Promise<void> =>
     new Promise((resolve, reject) =>
@@ -560,7 +390,7 @@ const NetPrinterEventEmitter =
     ? new NativeEventEmitter(getRNNetPrinter())
     : new NativeEventEmitter();
 
-export { COMMANDS, NetPrinter, BLEPrinter, USBPrinter, NetPrinterEventEmitter };
+export { COMMANDS, NetPrinter, USBPrinter, NetPrinterEventEmitter };
 
 export enum RN_THERMAL_RECEIPT_PRINTER_EVENTS {
   EVENT_NET_PRINTER_SCANNED_SUCCESS = "scannerResolved",

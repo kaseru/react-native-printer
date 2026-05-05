@@ -426,7 +426,6 @@ RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCallback
                   fail:(RCTResponseSenderBlock)errorCallback)
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePrinterConnectedNotification:) name:PrinterConnectedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleBLEPrinterConnectedNotification:) name:@"BLEPrinterConnected" object:nil];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self scan:successCallback];
     });
@@ -471,11 +470,6 @@ RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCallback
     if (is_scanning) {
         [_printerArray addObject:@{ @"host": current_scan_ip, @"port": @9100 }];
     }
-}
-
-- (void)handleBLEPrinterConnectedNotification:(NSNotification *)notification
-{
-    connected_ip = nil;
 }
 
 RCT_EXPORT_METHOD(connectPrinter:(NSString *)host

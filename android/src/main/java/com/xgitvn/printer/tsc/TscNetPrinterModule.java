@@ -11,11 +11,11 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.InetSocketAddress;
 
-public class TscPrinterModule extends ReactContextBaseJavaModule {
+public class TscNetPrinterModule extends ReactContextBaseJavaModule {
     private Socket socket;
     private OutputStream outputStream;
 
-    public TscPrinterModule(ReactApplicationContext reactContext) {
+    public TscNetPrinterModule(ReactApplicationContext reactContext) {
         super(reactContext);
     }
 
