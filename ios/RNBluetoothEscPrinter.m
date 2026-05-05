@@ -3,13 +3,13 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "RNBluetoothManager.h"
-#import "RNBluetoothEscposPrinter.h"
+#import "RNBluetoothEscPrinter.h"
 #import "ColumnSplitedString.h"
 #import "PrintColumnBleWriteDelegate.h"
 #import "ImageUtils.h"
 #import "ZXingObjC.h"
 #import "PrintImageBleWriteDelegate.h"
-@implementation RNBluetoothEscposPrinter
+@implementation RNBluetoothEscPrinter
 
 int WIDTH_58 = 384;
 int WIDTH_80 = 576;
@@ -66,7 +66,7 @@ RCTPromiseRejectBlock pendingReject;
               @"width80":[NSString stringWithFormat:@"%i", WIDTH_80]};
 }
 
-RCT_EXPORT_MODULE(BluetoothEscposPrinter);
+RCT_EXPORT_MODULE(BluetoothEscPrinter);
 
 /**
  * Sets the current deivce width

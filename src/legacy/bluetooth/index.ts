@@ -5,5 +5,5 @@
 const raw = require('./raw');
 
 export const BluetoothManager = raw.BluetoothManager;
-export const BluetoothEscpos = raw.BluetoothEscposPrinter;
+export const BluetoothEscpos = raw.BluetoothEscPrinter;
 export const BluetoothTsc = raw.BluetoothTscPrinter;

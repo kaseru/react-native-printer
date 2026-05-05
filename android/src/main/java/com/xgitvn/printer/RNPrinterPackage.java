@@ -2,7 +2,7 @@ package com.xgitvn.printer;
 
 import com.xgitvn.printer.bluetooth.BluetoothService;
 import com.xgitvn.printer.bluetooth.RNBluetoothManagerModule;
-import com.xgitvn.printer.bluetooth.escpos.RNBluetoothEscposPrinterModule;
+import com.xgitvn.printer.bluetooth.escpos.RNBluetoothEscPrinterModule;
 import com.xgitvn.printer.bluetooth.tsc.RNBluetoothTscPrinterModule;
 import com.xgitvn.printer.tsc.TscNetPrinterModule;
 import com.xgitvn.printer.tsc.TscUsbPrinterModule;
@@ -27,7 +27,7 @@ public class RNPrinterPackage implements ReactPackage {
                 new RNUSBPrinterModule(reactContext),
                 new RNNetPrinterModule(reactContext),
                 new RNBluetoothManagerModule(reactContext, bluetoothService),
-                new RNBluetoothEscposPrinterModule(reactContext, bluetoothService),
+                new RNBluetoothEscPrinterModule(reactContext, bluetoothService),
                 new RNBluetoothTscPrinterModule(reactContext, bluetoothService),
                 new TscNetPrinterModule(reactContext),
                 new TscUsbPrinterModule(reactContext),

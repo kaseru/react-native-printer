@@ -1,20 +1,20 @@
 //
 //  PrintColumnBleWriteDelegate.h
-//  RNBluetoothEscposPrinter
+//  RNBluetoothEscPrinter
 //
 //  Created by januslo on 2018/10/6.
 //  Copyright © 2018年 Facebook. All rights reserved.
 //
 #import <React/RCTBridgeModule.h>
 #import "RNBluetoothManager.h"
-#import "RNBluetoothEscposPrinter.h"
+#import "RNBluetoothEscPrinter.h"
 
 @interface PrintColumnBleWriteDelegate:NSObject<WriteDataToBleDelegate>
 @property NSInteger now;
 @property Boolean error;
 @property RCTPromiseResolveBlock pendingResolve;
 @property RCTPromiseRejectBlock pendingReject;
-@property RNBluetoothEscposPrinter *printer;
+@property RNBluetoothEscPrinter *printer;
 @property Boolean canceled;
 @property NSString *encodig;
 @property NSInteger codePage;

@@ -1,7 +1,7 @@
 
 import { NativeModules } from 'react-native';
 const BluetoothManager = NativeModules.XBluetoothManager || NativeModules.BluetoothManager;
-const BluetoothEscposPrinter = NativeModules.XBluetoothEscposPrinter || NativeModules.BluetoothEscposPrinter;
+const BluetoothEscPrinter = NativeModules.XBluetoothEscPrinter || NativeModules.BluetoothEscPrinter;
 const BluetoothTscPrinter = NativeModules.XBluetoothTscPrinter || NativeModules.BluetoothTscPrinter;
 
 BluetoothTscPrinter.DIRECTION = {
@@ -116,14 +116,14 @@ BluetoothTscPrinter.READABLE={
   EANBLE:1
 };
 
-BluetoothEscposPrinter.ERROR_CORRECTION = {
+BluetoothEscPrinter.ERROR_CORRECTION = {
     L:1,
     M:0,
     Q:3,
     H:2
 };
 
-BluetoothEscposPrinter.BARCODETYPE={
+BluetoothEscPrinter.BARCODETYPE={
     UPC_A:65,//11<=n<=12
     UPC_E:66,//11<=n<=12
     JAN13:67,//12<=n<=12
@@ -134,15 +134,15 @@ BluetoothEscposPrinter.BARCODETYPE={
     CODE93:72,//1<=n<=255
     CODE128:73//2<=n<=255
 };
-BluetoothEscposPrinter.ROTATION={
+BluetoothEscPrinter.ROTATION={
     OFF:0,
     ON:1
 };
-BluetoothEscposPrinter.ALIGN={
+BluetoothEscPrinter.ALIGN={
     LEFT:0,
     CENTER:1,
     RIGHT:2
 };
 
  module.exports ={
-    BluetoothManager,BluetoothEscposPrinter, BluetoothTscPrinter };
+    BluetoothManager,BluetoothEscPrinter, BluetoothTscPrinter };
