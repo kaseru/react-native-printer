@@ -18,11 +18,9 @@ export const TscPrinterModule = TscLabelPrinterModule;
 export const TscNetPrinterModule = TscLabelPrinterModule;
 export const UsbPrinterModule = NativeModules.XUsbPrinterModule || NativeModules.UsbPrinterModule;
 export const TscUsbPrinterModule = UsbPrinterModule;
-export const NetworkPrinter = {
-  ping(host: string, timeoutMs: number = 1000) {
-    if (TscLabelPrinterModule?.ping) {
-      return TscLabelPrinterModule.ping(host, timeoutMs);
-    }
-    throw new Error('Network printer ping is not available');
-  },
-};
+export function ping(host: string, timeoutMs: number = 1000) {
+  if (TscLabelPrinterModule?.ping) {
+    return TscLabelPrinterModule.ping(host, timeoutMs);
+  }
+  throw new Error('Network printer ping is not available');
+}
