@@ -1,6 +1,6 @@
-package com.xgitvn.printer.adapter;
-import static com.xgitvn.printer.adapter.UtilsImage.getPixelsSlow;
-import static com.xgitvn.printer.adapter.UtilsImage.recollectSlice;
+package com.xgitvn.printer.esc.adapters.network;
+import static com.xgitvn.printer.adapters.UtilsImage.getPixelsSlow;
+import static com.xgitvn.printer.adapters.UtilsImage.recollectSlice;
 
 import android.content.Context;
 import android.graphics.Bitmap;

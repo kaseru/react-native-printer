@@ -1,4 +1,4 @@
-package com.xgitvn.printer;
+package com.xgitvn.printer.esc.usb;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,10 +10,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
-import com.xgitvn.printer.adapter.PrinterAdapter;
-import com.xgitvn.printer.adapter.PrinterDevice;
-import com.xgitvn.printer.adapter.EscUSBPrinterAdapter;
-import com.xgitvn.printer.adapter.EscUSBPrinterDeviceId;
+import com.xgitvn.printer.adapters.core.PrinterAdapter;
+import com.xgitvn.printer.adapters.core.PrinterDevice;
+import com.xgitvn.printer.esc.adapters.usb.EscUSBPrinterAdapter;
+import com.xgitvn.printer.esc.adapters.usb.EscUSBPrinterDeviceId;
 
 import java.util.List;
 

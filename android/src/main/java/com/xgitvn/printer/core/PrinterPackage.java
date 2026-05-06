@@ -1,4 +1,4 @@
-package com.xgitvn.printer;
+package com.xgitvn.printer.core;
 
 import com.xgitvn.printer.bluetooth.BluetoothService;
 import com.xgitvn.printer.bluetooth.BluetoothManager;

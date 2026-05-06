@@ -1,4 +1,4 @@
-package com.xgitvn.printer.adapter;
+package com.xgitvn.printer.esc.adapters.usb;
 
 import android.hardware.usb.UsbDevice;
 

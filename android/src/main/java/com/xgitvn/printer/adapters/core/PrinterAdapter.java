@@ -1,4 +1,4 @@
-package com.xgitvn.printer.adapter;
+package com.xgitvn.printer.adapters.core;
 
 import android.app.Activity;
 import android.content.Context;

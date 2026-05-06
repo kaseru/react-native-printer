@@ -1,7 +1,7 @@
-package com.xgitvn.printer.adapter;
+package com.xgitvn.printer.esc.adapters.usb;
 
-import static com.xgitvn.printer.adapter.UtilsImage.getPixelsSlow;
-import static com.xgitvn.printer.adapter.UtilsImage.recollectSlice;
+import static com.xgitvn.printer.adapters.UtilsImage.getPixelsSlow;
+import static com.xgitvn.printer.adapters.UtilsImage.recollectSlice;
 
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;

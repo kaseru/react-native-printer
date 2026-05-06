@@ -1,4 +1,4 @@
-package com.xgitvn.printer;
+package com.xgitvn.printer.esc.network;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,9 +9,9 @@ import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.xgitvn.printer.adapter.EscNetPrinterAdapter;
-import com.xgitvn.printer.adapter.EscNetPrinterDeviceId;
-import com.xgitvn.printer.adapter.PrinterAdapter;
+import com.xgitvn.printer.esc.adapters.network.EscNetPrinterAdapter;
+import com.xgitvn.printer.esc.adapters.network.EscNetPrinterDeviceId;
+import com.xgitvn.printer.adapters.core.PrinterAdapter;
 
 /**
  * Created by xiesubin on 2017/9/22.

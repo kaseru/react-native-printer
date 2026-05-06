@@ -1,4 +1,4 @@
-package com.xgitvn.printer.adapter;
+package com.xgitvn.printer.esc.adapters.network;
 
 /**
  * Created by xiesubin on 2017/9/21.

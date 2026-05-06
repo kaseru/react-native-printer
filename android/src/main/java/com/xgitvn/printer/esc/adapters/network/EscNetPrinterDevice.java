@@ -1,4 +1,4 @@
-package com.xgitvn.printer.adapter;
+package com.xgitvn.printer.esc.adapters.network;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;

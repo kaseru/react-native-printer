@@ -1,4 +1,4 @@
-package com.xgitvn.printer.adapter;
+package com.xgitvn.printer.adapters.common;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
