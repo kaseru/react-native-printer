@@ -13,10 +13,10 @@
 		001000000000000000000004 /* TscBluetoothPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 00200000000000000000000F /* TscBluetoothPrinter.m */; };
 		001000000000000000000005 /* TscCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 002000000000000000000011 /* TscCommand.m */; };
 		001000000000000000000006 /* TscNetPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 002000000000000000000013 /* TscNetPrinter.m */; };
-		001000000000000000000007 /* ColumnSplitedString.m in Sources */ = {isa = PBXBuildFile; fileRef = 002000000000000000000015 /* ColumnSplitedString.m */; };
-		001000000000000000000008 /* ImageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 002000000000000000000017 /* ImageUtils.m */; };
-		001000000000000000000009 /* PrintColumnBleWriteDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 002000000000000000000019 /* PrintColumnBleWriteDelegate.m */; };
-		00100000000000000000000A /* PrintImageBleWriteDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 00200000000000000000001B /* PrintImageBleWriteDelegate.m */; };
+		001000000000000000000007 /* ColumnTextSplitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 002000000000000000000015 /* ColumnTextSplitter.m */; };
+		001000000000000000000008 /* PrintImageRasterizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 002000000000000000000017 /* PrintImageRasterizer.m */; };
+		001000000000000000000009 /* ColumnPrintBleWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 002000000000000000000019 /* ColumnPrintBleWriter.m */; };
+		00100000000000000000000A /* ImagePrintBleWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 00200000000000000000001B /* ImagePrintBleWriter.m */; };
 		00100000000000000000000B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00200000000000000000001F /* UIKit.framework */; };
 		00100000000000000000000C /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 002000000000000000000020 /* CoreBluetooth.framework */; };
 		00100000000000000000000D /* libZXingObjC-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 006000000000000000000001 /* libZXingObjC-iOS.a */; };
@@ -93,14 +93,14 @@
 		002000000000000000000011 /* TscCommand.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TscCommand.m; sourceTree = "<group>"; };
 		002000000000000000000012 /* TscNetPrinter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TscNetPrinter.h; sourceTree = "<group>"; };
 		002000000000000000000013 /* TscNetPrinter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TscNetPrinter.m; sourceTree = "<group>"; };
-		002000000000000000000014 /* ColumnSplitedString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColumnSplitedString.h; sourceTree = "<group>"; };
-		002000000000000000000015 /* ColumnSplitedString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColumnSplitedString.m; sourceTree = "<group>"; };
-		002000000000000000000016 /* ImageUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageUtils.h; sourceTree = "<group>"; };
-		002000000000000000000017 /* ImageUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImageUtils.m; sourceTree = "<group>"; };
-		002000000000000000000018 /* PrintColumnBleWriteDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrintColumnBleWriteDelegate.h; sourceTree = "<group>"; };
-		002000000000000000000019 /* PrintColumnBleWriteDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PrintColumnBleWriteDelegate.m; sourceTree = "<group>"; };
-		00200000000000000000001A /* PrintImageBleWriteDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrintImageBleWriteDelegate.h; sourceTree = "<group>"; };
-		00200000000000000000001B /* PrintImageBleWriteDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PrintImageBleWriteDelegate.m; sourceTree = "<group>"; };
+		002000000000000000000014 /* ColumnTextSplitter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColumnTextSplitter.h; sourceTree = "<group>"; };
+		002000000000000000000015 /* ColumnTextSplitter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColumnTextSplitter.m; sourceTree = "<group>"; };
+		002000000000000000000016 /* PrintImageRasterizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrintImageRasterizer.h; sourceTree = "<group>"; };
+		002000000000000000000017 /* PrintImageRasterizer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PrintImageRasterizer.m; sourceTree = "<group>"; };
+		002000000000000000000018 /* ColumnPrintBleWriter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColumnPrintBleWriter.h; sourceTree = "<group>"; };
+		002000000000000000000019 /* ColumnPrintBleWriter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColumnPrintBleWriter.m; sourceTree = "<group>"; };
+		00200000000000000000001A /* ImagePrintBleWriter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImagePrintBleWriter.h; sourceTree = "<group>"; };
+		00200000000000000000001B /* ImagePrintBleWriter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImagePrintBleWriter.m; sourceTree = "<group>"; };
 		00200000000000000000001C /* libRNPrinter.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNPrinter.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		00200000000000000000001F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		002000000000000000000020 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
@@ -137,14 +137,14 @@
 				002000000000000000000011 /* TscCommand.m */,
 				002000000000000000000012 /* TscNetPrinter.h */,
 				002000000000000000000013 /* TscNetPrinter.m */,
-				002000000000000000000014 /* ColumnSplitedString.h */,
-				002000000000000000000015 /* ColumnSplitedString.m */,
-				002000000000000000000016 /* ImageUtils.h */,
-				002000000000000000000017 /* ImageUtils.m */,
-				002000000000000000000018 /* PrintColumnBleWriteDelegate.h */,
-				002000000000000000000019 /* PrintColumnBleWriteDelegate.m */,
-				00200000000000000000001A /* PrintImageBleWriteDelegate.h */,
-				00200000000000000000001B /* PrintImageBleWriteDelegate.m */,
+				002000000000000000000014 /* ColumnTextSplitter.h */,
+				002000000000000000000015 /* ColumnTextSplitter.m */,
+				002000000000000000000016 /* PrintImageRasterizer.h */,
+				002000000000000000000017 /* PrintImageRasterizer.m */,
+				002000000000000000000018 /* ColumnPrintBleWriter.h */,
+				002000000000000000000019 /* ColumnPrintBleWriter.m */,
+				00200000000000000000001A /* ImagePrintBleWriter.h */,
+				00200000000000000000001B /* ImagePrintBleWriter.m */,
 				002000000000000000000021 /* ZXingObjC.xcodeproj */,
 				004000000000000000000002 /* Products */,
 				004000000000000000000003 /* Frameworks */,
@@ -294,10 +294,10 @@
 				001000000000000000000004 /* TscBluetoothPrinter.m in Sources */,
 				001000000000000000000005 /* TscCommand.m in Sources */,
 				001000000000000000000006 /* TscNetPrinter.m in Sources */,
-				001000000000000000000007 /* ColumnSplitedString.m in Sources */,
-				001000000000000000000008 /* ImageUtils.m in Sources */,
-				001000000000000000000009 /* PrintColumnBleWriteDelegate.m in Sources */,
-				00100000000000000000000A /* PrintImageBleWriteDelegate.m in Sources */,
+				001000000000000000000007 /* ColumnTextSplitter.m in Sources */,
+				001000000000000000000008 /* PrintImageRasterizer.m in Sources */,
+				001000000000000000000009 /* ColumnPrintBleWriter.m in Sources */,
+				00100000000000000000000A /* ImagePrintBleWriter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,5 +1,5 @@
 //
-//  PrintColumnBleWriteDelegate.m
+//  ColumnPrintBleWriter.m
 //  EscBluetoothPrinter
 //
 //  Created by januslo on 2018/10/6.
@@ -7,8 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "PrintColumnBleWriteDelegate.h"
-@implementation RNPPrintColumnBleWriteDelegate
+#import "ColumnPrintBleWriter.h"
+@implementation ColumnPrintBleWriter
 
 static NSMutableArray<NSMutableString *>  *columns;
 static NSInteger maxRowCount;

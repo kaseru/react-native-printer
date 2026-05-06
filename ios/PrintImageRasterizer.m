@@ -1,5 +1,5 @@
 //
-//  RNPImageUtils.m
+//  PrintImageRasterizer.m
 //  EscBluetoothPrinter
 //
 //  Created by januslo on 2018/10/7.
@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "ImageUtils.h"
-@implementation RNPImageUtils : NSObject
+#import "PrintImageRasterizer.h"
+@implementation PrintImageRasterizer : NSObject
 static int p0[] = { 0, 0x80 };
 static int p1[] = { 0, 0x40 };
 static int p2[] = { 0, 0x20 };

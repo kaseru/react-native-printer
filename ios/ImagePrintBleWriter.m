@@ -1,5 +1,5 @@
 //
-//  PrintImageBleWriteDelegate.m
+//  ImagePrintBleWriter.m
 //  EscBluetoothPrinter
 //
 //  Created by januslo on 2018/10/8.
@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "PrintImageBleWriteDelegate.h"
+#import "ImagePrintBleWriter.h"
 
-@implementation RNPPrintImageBleWriteDelegate
+@implementation ImagePrintBleWriter
 
 - (void)didWriteDataToBle:(BOOL)success {
     NSLog(@"PrintImageBleWriteDelete didWriteDataToBle: %d", success ? 1 : 0);

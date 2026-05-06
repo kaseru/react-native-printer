@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "TscCommand.h"
-#import "ImageUtils.h"
+#import "PrintImageRasterizer.h"
 @implementation TscCommand
 -(id)init
 {
@@ -166,10 +166,10 @@ bitmap:(UIImage *) b{
         CGFloat imgHeigth = b.size.height;
         NSInteger width = (nWidth + 7) / 8 * 8;
         NSInteger height = imgHeigth * width / imgWidth;
-        UIImage *resized = [RNPImageUtils imageWithImage:b scaledToFillSize:CGSizeMake(width, height)];
-        uint8_t * graybits = [RNPImageUtils imageToGreyImage:resized];
+        UIImage *resized = [PrintImageRasterizer imageWithImage:b scaledToFillSize:CGSizeMake(width, height)];
+        uint8_t * graybits = [PrintImageRasterizer imageToGreyImage:resized];
         NSInteger srcLen = (int)resized.size.width*resized.size.height;
-        NSData *codecontent = [RNPImageUtils pixToTscCmd:graybits width:srcLen];
+        NSData *codecontent = [PrintImageRasterizer pixToTscCmd:graybits width:srcLen];
         height = srcLen / width;
         width /= 8;
         NSString *str =[NSString stringWithFormat:@ "BITMAP %ld,%ld,%ld,%ld,%ld,",

@@ -1,5 +1,5 @@
 //
-//  RNPPrintImageBleWriteDelegate.h
+//  ImagePrintBleWriter.h
 //  EscBluetoothPrinter
 //
 //  Created by januslo on 2018/10/8.
@@ -8,7 +8,7 @@
 #import <React/RCTBridge.h>
 #import "BluetoothManager.h"
 #import "EscBluetoothPrinter.h"
-@interface RNPPrintImageBleWriteDelegate :NSObject<WriteDataToBleDelegate>
+@interface ImagePrintBleWriter :NSObject<WriteDataToBleDelegate>
 @property NSData *toPrint;
 @property NSInteger width;
 @property NSInteger linesPerChunk;

@@ -17,10 +17,10 @@ static NSString *const EVENT_SCANNER_RUNNING = @"scannerRunning";
 static const NSInteger kPrinterConnectTimeoutMs = 3000;
 static const NSInteger kPrinterWriteChunkSize = 4096;
 
-@interface RNPPrivateIP : NSObject
+@interface PrivateIPHelper : NSObject
 @end
 
-@implementation RNPPrivateIP
+@implementation PrivateIPHelper
 
 - (NSString *)getIPAddress {
     NSString *address = @"error";
@@ -398,7 +398,7 @@ RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCallback
 - (void)scan:(RCTResponseSenderBlock)successCallback
 {
     @try {
-        RNPPrivateIP *privateIP = [[RNPPrivateIP alloc] init];
+        PrivateIPHelper *privateIP = [[PrivateIPHelper alloc] init];
         NSString *localIP = [privateIP getIPAddress];
         is_scanning = YES;
         [self sendEventWithName:EVENT_SCANNER_RUNNING body:@YES];
