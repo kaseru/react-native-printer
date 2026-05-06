@@ -57,7 +57,7 @@ public class EscPrinterNetwork extends ReactContextBaseJavaModule implements Esc
     }
 
     @ReactMethod
-    public void connectPrinter(String host, Integer port, Callback successCallback, Callback errorCallback) {
+    public void connect(String host, Integer port, Callback successCallback, Callback errorCallback) {
         adapter.selectDevice(EscNetPrinterDeviceId.valueOf(host, port), successCallback, errorCallback);
     }
 

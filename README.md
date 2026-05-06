@@ -40,7 +40,7 @@ import {
 ```ts
 async function printReceipt() {
   await EscNetPrinter.init();
-  await EscNetPrinter.connectPrinter("192.168.1.120", 9100, 2000);
+  await EscNetPrinter.connect("192.168.1.120", 9100, 2000);
 
   EscNetPrinter.printText("Store demo\n");
   EscNetPrinter.printColumnsText(
@@ -64,7 +64,7 @@ async function printViaUsb() {
   if (!devices.length) throw new Error("No USB printer found");
 
   const first = devices[0];
-  await EscUsbPrinter.connectPrinter(first.vendor_id, first.product_id);
+  await EscUsbPrinter.connect(first.vendor_id, first.product_id);
   EscUsbPrinter.printText("USB print test\n");
   EscUsbPrinter.printBill("Done\n", { cut: true });
   await EscUsbPrinter.closeConn();

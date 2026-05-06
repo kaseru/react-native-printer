@@ -38,7 +38,7 @@ public class TscNetPrinter extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void connectToPrinter(String host, int port, Promise promise) {
+    public void connect(String host, int port, Promise promise) {
         try {
             socket = new Socket(host, port);
             outputStream = socket.getOutputStream();

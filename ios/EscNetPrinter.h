@@ -20,7 +20,7 @@
 - (void)getDeviceList:(RCTResponseSenderBlock)successCallback
                  fail:(RCTResponseSenderBlock)errorCallback;
 
-- (void)connectPrinter:(NSString *)host
+- (void)connect:(NSString *)host
               withPort:(nonnull NSNumber *)port
                success:(RCTResponseSenderBlock)successCallback
                   fail:(RCTResponseSenderBlock)errorCallback;

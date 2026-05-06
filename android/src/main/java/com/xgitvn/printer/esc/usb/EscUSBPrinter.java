@@ -87,7 +87,7 @@ public class EscUSBPrinter extends ReactContextBaseJavaModule implements EscPrin
     }
 
     @ReactMethod
-    public void connectPrinter(Integer vendorId, Integer productId, Callback successCallback, Callback errorCallback) {
+    public void connect(Integer vendorId, Integer productId, Callback successCallback, Callback errorCallback) {
         adapter.selectDevice(EscUSBPrinterDeviceId.valueOf(vendorId, productId), successCallback, errorCallback);
     }
 

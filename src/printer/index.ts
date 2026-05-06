@@ -150,12 +150,12 @@ const EscUsbPrinter = {
       )
     ),
 
-  connectPrinter: (vendorId: string, productId: string): Promise<IEscUsbPrinter> =>
+  connect: (vendorId: string, productId: string): Promise<IEscUsbPrinter> =>
     Platform.OS === "ios"
       ? rejectUnsupportedIOSUSB("ESC USB printing")
       :
     new Promise((resolve, reject) =>
-      EscUsbPrinterModule.connectPrinter(
+      EscUsbPrinterModule.connect(
         vendorId,
         productId,
         (printer: IEscUsbPrinter) => resolve(printer),
@@ -264,7 +264,7 @@ const EscNetPrinter = {
       )
     ),
 
-  connectPrinter: (
+  connect: (
     host: string,
     port: number,
     timeout?: number
@@ -272,7 +272,7 @@ const EscNetPrinter = {
     new Promise(async (resolve, reject) => {
       try {
         await connectToHost(host, timeout);
-        EscNetPrinterModule.connectPrinter(
+        EscNetPrinterModule.connect(
           host,
           port,
           (printer: IEscNetPrinter) => resolve(printer),
@@ -399,7 +399,7 @@ const EscNetPrinterEventEmitter =
 const TscUsbPrinterModule =
   Platform.OS === "ios"
     ? {
-        connectToPrinter: (..._args: unknown[]) =>
+        connect: (..._args: unknown[]) =>
           rejectUnsupportedIOSUSB("TSC USB printing"),
         closeConnection: () => Promise.resolve(),
         printLabel: (..._args: unknown[]) =>

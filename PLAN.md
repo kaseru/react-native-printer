@@ -12,11 +12,11 @@
 ## Dinh huong ten ham
 
 - `getDeviceList` -> `getDevices`
-- `connectPrinter` -> `connect`
+- `connect` -> `connect`
 - `scanDevices` (bluetooth native) -> `searchDevices`
 - Tim may in mang: `searchPrinters`
 
 ## Ghi chu tuong thich
 
-- Giu lai ham cu (`getDeviceList`, `connectPrinter`) nhu alias de tranh breaking change.
+- Giu lai ham cu (`getDeviceList`, `connect`) nhu alias de tranh breaking change.
 - Them ham moi song song de de migrate.

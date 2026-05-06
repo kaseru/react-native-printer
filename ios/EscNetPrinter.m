@@ -431,7 +431,7 @@ RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCallback
     [self sendEventWithName:EVENT_SCANNER_RUNNING body:@NO];
 }
 
-RCT_EXPORT_METHOD(connectPrinter:(NSString *)host
+RCT_EXPORT_METHOD(connect:(NSString *)host
                   withPort:(nonnull NSNumber *)port
                   success:(RCTResponseSenderBlock)successCallback
                   fail:(RCTResponseSenderBlock)errorCallback)

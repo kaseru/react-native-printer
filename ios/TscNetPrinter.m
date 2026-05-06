@@ -158,7 +158,7 @@ RCT_EXPORT_METHOD(ping:(NSString *)ip
 }
 
 // Phương thức kết nối đến máy in qua TCP, nhận IP và cổng từ tham số
-RCT_EXPORT_METHOD(connectToPrinter:(NSString *)host port:(NSInteger)port) {
+RCT_EXPORT_METHOD(connect:(NSString *)host port:(NSInteger)port) {
   // Kiểm tra xem host có hợp lệ không
   if (host == nil || host.length == 0) {
     RCTLogError(@"Invalid host IP provided.");

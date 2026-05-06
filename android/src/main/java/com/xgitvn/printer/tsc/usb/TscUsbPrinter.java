@@ -71,7 +71,7 @@ public class TscUsbPrinter extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void connectToPrinter(int vendorId, int productId, Promise promise) {
+    public void connect(int vendorId, int productId, Promise promise) {
         try {
             // Lấy danh sách thiết bị USB hiện có
             HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();

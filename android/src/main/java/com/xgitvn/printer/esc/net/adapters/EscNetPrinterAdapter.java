@@ -217,7 +217,7 @@ public class EscNetPrinterAdapter implements PrinterAdapter {
     @Override
     public void printRawData(String rawBase64Data, Callback errorCallback) {
         if (this.mSocket == null) {
-            errorCallback.invoke("Net connection is not built, may be you forgot to connectPrinter");
+            errorCallback.invoke("Net connection is not built, may be you forgot to connect");
             return;
         }
         final String rawData = rawBase64Data;
@@ -270,7 +270,7 @@ public class EscNetPrinterAdapter implements PrinterAdapter {
         }
 
         if (this.mSocket == null) {
-            errorCallback.invoke("Net connection is not built, may be you forgot to connectPrinter");
+            errorCallback.invoke("Net connection is not built, may be you forgot to connect");
             return;
         }
 
@@ -316,7 +316,7 @@ public class EscNetPrinterAdapter implements PrinterAdapter {
         }
 
         if (this.mSocket == null) {
-            errorCallback.invoke("Net connection is not built, may be you forgot to connectPrinter");
+            errorCallback.invoke("Net connection is not built, may be you forgot to connect");
             return;
         }
 
