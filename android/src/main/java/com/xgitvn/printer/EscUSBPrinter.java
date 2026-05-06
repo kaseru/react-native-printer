@@ -21,7 +21,7 @@ import java.util.List;
  * Created by xiesubin on 2017/9/22.
  */
 
-public class EscUSBPrinter extends ReactContextBaseJavaModule implements Printer {
+public class EscUSBPrinter extends ReactContextBaseJavaModule implements EscPrinter {
 
     protected ReactApplicationContext reactContext;
 
