@@ -226,7 +226,7 @@ const EscUSBPrinter = {
   },
 };
 
-const EscNetPrinter = {
+const EscNetPrinterApi = {
   init: (): Promise<void> =>
     new Promise((resolve, reject) =>
       getEscNetPrinter().init(
@@ -367,7 +367,7 @@ const EscNetPrinter = {
   },
 
   openDrawer: (pin: number = 0, onTime: number = 37, offTime: number = 80): void => {
-    EscNetPrinter.printText(COMMANDS.CASH_DRAWER.CD_KICK_2);
+    EscNetPrinterApi.printText(COMMANDS.CASH_DRAWER.CD_KICK_2);
     if (Platform.OS !== "ios") {
       getEscNetPrinter().printRawData(
         buildOpenDrawerCommandBase64(pin, onTime, offTime),
@@ -523,7 +523,7 @@ EscBluetoothPrinter.ALIGN = {
 
 export {
   COMMANDS,
-  EscNetPrinter,
+  EscNetPrinter: EscNetPrinterApi,
   EscUSBPrinter,
   EscNetPrinterEventEmitter,
   BluetoothManager,
