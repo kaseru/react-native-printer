@@ -1,5 +1,5 @@
 //
-//  TscPrinter.h
+//  TscNetPrinter.h
 //  QLBH
 //
 //  Created by dg on 19/11/24.
@@ -10,7 +10,7 @@
 #import <React/RCTLog.h>
 #import "TscCommand.h"
 
-@interface TscPrinter : NSObject <RCTBridge>
+@interface TscNetPrinter : NSObject <RCTBridge>
 
 @property (nonatomic, strong) NSOutputStream *outputStream;
 @property (nonatomic, strong) NSInputStream *inputStream;

@@ -12,7 +12,7 @@
 		001000000000000000000003 /* EscNetPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 002000000000000000000005 /* EscNetPrinter.m */; };
 		001000000000000000000004 /* TscBluetoothPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 00200000000000000000000F /* TscBluetoothPrinter.m */; };
 		001000000000000000000005 /* TscCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 002000000000000000000011 /* TscCommand.m */; };
-		001000000000000000000006 /* TscPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 002000000000000000000013 /* TscPrinter.m */; };
+		001000000000000000000006 /* TscNetPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 002000000000000000000013 /* TscNetPrinter.m */; };
 		001000000000000000000007 /* ColumnSplitedString.m in Sources */ = {isa = PBXBuildFile; fileRef = 002000000000000000000015 /* ColumnSplitedString.m */; };
 		001000000000000000000008 /* ImageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 002000000000000000000017 /* ImageUtils.m */; };
 		001000000000000000000009 /* PrintColumnBleWriteDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 002000000000000000000019 /* PrintColumnBleWriteDelegate.m */; };
@@ -91,8 +91,8 @@
 		00200000000000000000000F /* TscBluetoothPrinter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TscBluetoothPrinter.m; sourceTree = "<group>"; };
 		002000000000000000000010 /* TscCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TscCommand.h; sourceTree = "<group>"; };
 		002000000000000000000011 /* TscCommand.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TscCommand.m; sourceTree = "<group>"; };
-		002000000000000000000012 /* TscPrinter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TscPrinter.h; sourceTree = "<group>"; };
-		002000000000000000000013 /* TscPrinter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TscPrinter.m; sourceTree = "<group>"; };
+		002000000000000000000012 /* TscNetPrinter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TscNetPrinter.h; sourceTree = "<group>"; };
+		002000000000000000000013 /* TscNetPrinter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TscNetPrinter.m; sourceTree = "<group>"; };
 		002000000000000000000014 /* ColumnSplitedString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColumnSplitedString.h; sourceTree = "<group>"; };
 		002000000000000000000015 /* ColumnSplitedString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColumnSplitedString.m; sourceTree = "<group>"; };
 		002000000000000000000016 /* ImageUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageUtils.h; sourceTree = "<group>"; };
@@ -135,8 +135,8 @@
 				00200000000000000000000F /* TscBluetoothPrinter.m */,
 				002000000000000000000010 /* TscCommand.h */,
 				002000000000000000000011 /* TscCommand.m */,
-				002000000000000000000012 /* TscPrinter.h */,
-				002000000000000000000013 /* TscPrinter.m */,
+				002000000000000000000012 /* TscNetPrinter.h */,
+				002000000000000000000013 /* TscNetPrinter.m */,
 				002000000000000000000014 /* ColumnSplitedString.h */,
 				002000000000000000000015 /* ColumnSplitedString.m */,
 				002000000000000000000016 /* ImageUtils.h */,
@@ -293,7 +293,7 @@
 				001000000000000000000003 /* EscNetPrinter.m in Sources */,
 				001000000000000000000004 /* TscBluetoothPrinter.m in Sources */,
 				001000000000000000000005 /* TscCommand.m in Sources */,
-				001000000000000000000006 /* TscPrinter.m in Sources */,
+				001000000000000000000006 /* TscNetPrinter.m in Sources */,
 				001000000000000000000007 /* ColumnSplitedString.m in Sources */,
 				001000000000000000000008 /* ImageUtils.m in Sources */,
 				001000000000000000000009 /* PrintColumnBleWriteDelegate.m in Sources */,

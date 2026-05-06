@@ -117,8 +117,21 @@ const buildOpenDrawerCommandBase64 = (
   return Buffer.from(command).toString("base64");
 };
 
+const createUnsupportedIOSUSBError = (printerType: string) =>
+  new Error(`${printerType} is not supported on iOS`);
+
+const rejectUnsupportedIOSUSB = <T>(printerType: string): Promise<T> =>
+  Promise.reject(createUnsupportedIOSUSBError(printerType));
+
+const throwUnsupportedIOSUSB = (printerType: string): never => {
+  throw createUnsupportedIOSUSBError(printerType);
+};
+
 const EscUSBPrinter = {
   init: (): Promise<void> =>
+    Platform.OS === "ios"
+      ? rejectUnsupportedIOSUSB("ESC USB printing")
+      :
     new Promise((resolve, reject) =>
       EscUsbPrinter.init(
         () => resolve(),
@@ -127,6 +140,9 @@ const EscUSBPrinter = {
     ),
 
   getDeviceList: (): Promise<IEscUSBPrinter[]> =>
+    Platform.OS === "ios"
+      ? rejectUnsupportedIOSUSB("ESC USB printing")
+      :
     new Promise((resolve, reject) =>
       EscUsbPrinter.getDeviceList(
         (printers: IEscUSBPrinter[]) => resolve(printers),
@@ -135,6 +151,9 @@ const EscUSBPrinter = {
     ),
 
   connectPrinter: (vendorId: string, productId: string): Promise<IEscUSBPrinter> =>
+    Platform.OS === "ios"
+      ? rejectUnsupportedIOSUSB("ESC USB printing")
+      :
     new Promise((resolve, reject) =>
       EscUsbPrinter.connectPrinter(
         vendorId,
@@ -145,56 +164,61 @@ const EscUSBPrinter = {
     ),
 
   closeConn: (): Promise<void> =>
+    Platform.OS === "ios"
+      ? Promise.resolve()
+      :
     new Promise((resolve) => {
       EscUsbPrinter.closeConn();
       resolve();
     }),
 
-  printText: (text: string, opts: PrinterOptions = {}): void =>
+  printText: (text: string, opts: PrinterOptions = {}): void => {
+    if (Platform.OS === "ios") {
+      throwUnsupportedIOSUSB("ESC USB printing");
+    }
     EscUsbPrinter.printRawData(textTo64Buffer(text, opts), (error: Error) =>
       console.warn(error)
-    ),
+    );
+  },
 
-  printBill: (text: string, opts: PrinterOptions = {}): void =>
+  printBill: (text: string, opts: PrinterOptions = {}): void => {
+    if (Platform.OS === "ios") {
+      throwUnsupportedIOSUSB("ESC USB printing");
+    }
     EscUsbPrinter.printRawData(billTo64Buffer(text, opts), (error: Error) =>
       console.warn(error)
-    ),
+    );
+  },
 
   printImage: function (imgUrl: string, opts: PrinterImageOptions = {}) {
     if (Platform.OS === "ios") {
-      EscUsbPrinter.printImageData(imgUrl, opts, (error: Error) =>
-        console.warn(error)
-      );
-    } else {
-      EscUsbPrinter.printImageData(
-        imgUrl,
-        opts?.imageWidth ?? 0,
-        opts?.imageHeight ?? 0,
-        (error: Error) => console.warn(error)
-      );
+      throwUnsupportedIOSUSB("ESC USB printing");
     }
+    EscUsbPrinter.printImageData(
+      imgUrl,
+      opts?.imageWidth ?? 0,
+      opts?.imageHeight ?? 0,
+      (error: Error) => console.warn(error)
+    );
   },
 
   printImageBase64: function (Base64: string, opts: PrinterImageOptions = {}) {
     if (Platform.OS === "ios") {
-      EscUsbPrinter.printImageBase64(Base64, opts, (error: Error) =>
-        console.warn(error)
-      );
-    } else {
-      EscUsbPrinter.printImageBase64(
-        Base64,
-        opts?.imageWidth ?? 0,
-        opts?.imageHeight ?? 0,
-        (error: Error) => console.warn(error)
-      );
+      throwUnsupportedIOSUSB("ESC USB printing");
     }
+    EscUsbPrinter.printImageBase64(
+      Base64,
+      opts?.imageWidth ?? 0,
+      opts?.imageHeight ?? 0,
+      (error: Error) => console.warn(error)
+    );
   },
 
   printRaw: (text: string): void => {
     if (Platform.OS === "ios") {
-    } else {
-      EscUsbPrinter.printRawData(text, (error: Error) => console.warn(error));
+      throwUnsupportedIOSUSB("ESC USB printing");
     }
+    EscUsbPrinter.printRawData(text, (error: Error) => console.warn(error));
   },
 
   printColumnsText: (
@@ -204,6 +228,9 @@ const EscUSBPrinter = {
     columnStyle: string[],
     opts: PrinterOptions = {}
   ): void => {
+    if (Platform.OS === "ios") {
+      throwUnsupportedIOSUSB("ESC USB printing");
+    }
     const result = processColumnText(
       texts,
       columnWidth,
@@ -216,13 +243,14 @@ const EscUSBPrinter = {
   },
 
   openDrawer: (pin: number = 0, onTime: number = 37, offTime: number = 80): void => {
-    EscUSBPrinter.printText(COMMANDS.CASH_DRAWER.CD_KICK_2);
-    if (Platform.OS !== "ios") {
-      EscUsbPrinter.printRawData(
-        buildOpenDrawerCommandBase64(pin, onTime, offTime),
-        (error: Error) => console.warn(error)
-      );
+    if (Platform.OS === "ios") {
+      throwUnsupportedIOSUSB("ESC USB printing");
     }
+    EscUSBPrinter.printText(COMMANDS.CASH_DRAWER.CD_KICK_2);
+    EscUsbPrinter.printRawData(
+      buildOpenDrawerCommandBase64(pin, onTime, offTime),
+      (error: Error) => console.warn(error)
+    );
   },
 };
 
@@ -382,6 +410,17 @@ const EscNetPrinterEventEmitter =
     ? new NativeEventEmitter(EscNetPrinterModule)
     : new NativeEventEmitter();
 
+const TscUsbPrinterModule =
+  Platform.OS === "ios"
+    ? {
+        connectToPrinter: (..._args: unknown[]) =>
+          rejectUnsupportedIOSUSB("TSC USB printing"),
+        closeConnection: () => Promise.resolve(),
+        printLabel: (..._args: unknown[]) =>
+          rejectUnsupportedIOSUSB("TSC USB printing"),
+      }
+    : TscUsbPrinter;
+
 TscBluetoothPrinter.DIRECTION = {
   FORWARD: 0,
   BACKWARD: 1,
@@ -528,7 +567,7 @@ export {
   EscNetPrinterEventEmitter,
   BluetoothManager,
   TscNetPrinter,
-  TscUsbPrinter,
+  TscUsbPrinterModule as TscUsbPrinter,
   EscBluetoothPrinter,
   TscBluetoothPrinter,
 };

@@ -1,12 +1,12 @@
 //
-//  TscPrinter.m
+//  TscNetPrinter.m
 //  QLBH
 //
 //  Created by dg on 19/11/24.
 //  Copyright © 2024 Facebook. All rights reserved.
 //
 
-#import "TscPrinter.h"
+#import "TscNetPrinter.h"
 #import <React/RCTLog.h>
 #import <React/RCTBridge.h>
 #import <UIKit/UIKit.h>
@@ -96,9 +96,9 @@ NSData* convertImageToBitmapBytes(UIImage *image) {
 }
 @end
 
-@implementation TscPrinter
+@implementation TscNetPrinter
 
-RCT_EXPORT_MODULE();  // Đảm bảo module được export đúng
+RCT_EXPORT_MODULE(TscNetPrinter);
 
 // Ping printer
 RCT_EXPORT_METHOD(ping:(NSString *)ip
