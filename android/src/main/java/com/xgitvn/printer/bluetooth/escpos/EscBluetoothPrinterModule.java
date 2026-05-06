@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 import java.nio.charset.Charset;
 import java.util.*;
 
-public class RNEscBluetoothPrinter extends ReactContextBaseJavaModule
+public class EscBluetoothPrinterModule extends ReactContextBaseJavaModule
         implements BluetoothServiceStateObserver {
     private static final String TAG = "EscBluetoothPrinter";
 
@@ -34,7 +34,7 @@ public class RNEscBluetoothPrinter extends ReactContextBaseJavaModule
     private BluetoothService mService;
 
 
-    public RNEscBluetoothPrinter(ReactApplicationContext reactContext,
+    public EscBluetoothPrinterModule(ReactApplicationContext reactContext,
                                           BluetoothService bluetoothService) {
         super(reactContext);
         this.reactContext = reactContext;

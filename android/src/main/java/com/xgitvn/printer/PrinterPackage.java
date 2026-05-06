@@ -1,9 +1,9 @@
 package com.xgitvn.printer;
 
 import com.xgitvn.printer.bluetooth.BluetoothService;
-import com.xgitvn.printer.bluetooth.RNBluetoothManager;
-import com.xgitvn.printer.bluetooth.escpos.RNEscBluetoothPrinter;
-import com.xgitvn.printer.bluetooth.tsc.RNTscBluetoothPrinter;
+import com.xgitvn.printer.bluetooth.BluetoothManagerModule;
+import com.xgitvn.printer.bluetooth.escpos.EscBluetoothPrinterModule;
+import com.xgitvn.printer.bluetooth.tsc.TscBluetoothPrinterModule;
 import com.xgitvn.printer.tsc.TscNetPrinter;
 import com.xgitvn.printer.tsc.TscUsbPrinter;
 import com.facebook.react.ReactPackage;
@@ -19,16 +19,16 @@ import java.util.List;
  * Created by xiesubin on 2017/9/21.
  */
 
-public class RNPrinterPackage implements ReactPackage {
+public class PrinterPackage implements ReactPackage {
     @Override
     public List<Native> createNativeModules(ReactApplicationContext reactContext) {
         BluetoothService bluetoothService = new BluetoothService(reactContext);
         return Arrays.asList(new Native[]{
                 new EscUSBPrinter(reactContext),
                 new EscPrinterNetwork(reactContext),
-                new RNBluetoothManager(reactContext, bluetoothService),
-                new RNEscBluetoothPrinter(reactContext, bluetoothService),
-                new RNTscBluetoothPrinter(reactContext, bluetoothService),
+                new BluetoothManagerModule(reactContext, bluetoothService),
+                new EscBluetoothPrinterModule(reactContext, bluetoothService),
+                new TscBluetoothPrinterModule(reactContext, bluetoothService),
                 new TscNetPrinter(reactContext),
                 new TscUsbPrinter(reactContext),
         });
