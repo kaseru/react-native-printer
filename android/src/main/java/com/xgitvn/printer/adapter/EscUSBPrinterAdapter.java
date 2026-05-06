@@ -38,12 +38,12 @@ import java.util.List;
  * Created by xiesubin on 2017/9/20.
  */
 
-public class USBEscPrinterAdapter implements PrinterAdapter {
+public class EscUSBPrinterAdapter implements PrinterAdapter {
     @SuppressLint("StaticFieldLeak")
-    private static USBEscPrinterAdapter mInstance;
+    private static EscUSBPrinterAdapter mInstance;
 
 
-    private final String LOG_TAG = "RNUSBEscPrinter";
+    private final String LOG_TAG = "RNEscUSBPrinter";
     private Context mContext;
     private UsbManager mUSBManager;
     private PendingIntent mPermissionIndent;
@@ -51,7 +51,7 @@ public class USBEscPrinterAdapter implements PrinterAdapter {
     private UsbDeviceConnection mUsbDeviceConnection;
     private UsbInterface mUsbInterface;
     private UsbEndpoint mEndPoint;
-    private static final String ACTION_USB_PERMISSION = "com.xgitvn.printer.USBEscPrinter.USB_PERMISSION";
+    private static final String ACTION_USB_PERMISSION = "com.xgitvn.printer.EscUSBPrinter.USB_PERMISSION";
     private static final String EVENT_USB_DEVICE_ATTACHED = "usbAttached";
 
     private final static char ESC_CHAR = 0x1B;
@@ -61,12 +61,12 @@ public class USBEscPrinterAdapter implements PrinterAdapter {
     private final static byte[] LINE_FEED = new byte[]{0x0A};
     private static final byte[] CENTER_ALIGN = {0x1B, 0X61, 0X31};
 
-    private USBEscPrinterAdapter() {
+    private EscUSBPrinterAdapter() {
     }
 
-    public static USBEscPrinterAdapter getInstance() {
+    public static EscUSBPrinterAdapter getInstance() {
         if (mInstance == null) {
-            mInstance = new USBEscPrinterAdapter();
+            mInstance = new EscUSBPrinterAdapter();
         }
         return mInstance;
     }
@@ -113,7 +113,7 @@ public class USBEscPrinterAdapter implements PrinterAdapter {
         filter.addAction(UsbManager.ACTION_USB_ACCESSORY_ATTACHED);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
         mContext.registerReceiver(mUsbDeviceReceiver, filter);
-        Log.v(LOG_TAG, "RNUSBEscPrinter initialized");
+        Log.v(LOG_TAG, "RNEscUSBPrinter initialized");
         successCallback.invoke();
     }
 
@@ -136,7 +136,7 @@ public class USBEscPrinterAdapter implements PrinterAdapter {
         }
 
         for (UsbDevice usbDevice : mUSBManager.getDeviceList().values()) {
-            lists.add(new USBEscPrinterDevice(usbDevice));
+            lists.add(new EscUSBPrinterDevice(usbDevice));
         }
         return lists;
     }
@@ -149,14 +149,14 @@ public class USBEscPrinterAdapter implements PrinterAdapter {
             return;
         }
 
-        USBEscPrinterDeviceId usbPrinterDeviceId = (USBEscPrinterDeviceId) printerDeviceId;
+        EscUSBPrinterDeviceId usbPrinterDeviceId = (EscUSBPrinterDeviceId) printerDeviceId;
         if (mUsbDevice != null && mUsbDevice.getVendorId() == usbPrinterDeviceId.getVendorId() && mUsbDevice.getProductId() == usbPrinterDeviceId.getProductId()) {
             Log.i(LOG_TAG, "already selected device, do not need repeat to connect");
             if (!mUSBManager.hasPermission(mUsbDevice)) {
                 closeConnectionIfExists();
                 mUSBManager.requestPermission(mUsbDevice, mPermissionIndent);
             }
-            successCallback.invoke(new USBEscPrinterDevice(mUsbDevice).toRNWritableMap());
+            successCallback.invoke(new EscUSBPrinterDevice(mUsbDevice).toRNWritableMap());
             return;
         }
         closeConnectionIfExists();
@@ -169,7 +169,7 @@ public class USBEscPrinterAdapter implements PrinterAdapter {
                 Log.v(LOG_TAG, "request for device: vendor_id: " + usbPrinterDeviceId.getVendorId() + ", product_id: " + usbPrinterDeviceId.getProductId());
                 closeConnectionIfExists();
                 mUSBManager.requestPermission(usbDevice, mPermissionIndent);
-                successCallback.invoke(new USBEscPrinterDevice(usbDevice).toRNWritableMap());
+                successCallback.invoke(new EscUSBPrinterDevice(usbDevice).toRNWritableMap());
                 return;
             }
         }

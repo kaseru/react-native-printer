@@ -1,14 +1,14 @@
 import { NativeModules } from 'react-native';
-import { NetEscPrinter, USBEscPrinter, COMMANDS } from './printer/thermal';
-import { BluetoothManager, BluetoothEscPrinter, TscBluetoothPrinter } from './printer/bluetooth';
+import { EscNetPrinter, EscUSBPrinter, COMMANDS } from './printer/thermal';
+import { BluetoothManager, EscBluetoothPrinter, TscBluetoothPrinter } from './printer/bluetooth';
 
 export {
-  BluetoothEscPrinter,
+  EscBluetoothPrinter,
   BluetoothManager,
   TscBluetoothPrinter,
   COMMANDS,
-  NetEscPrinter,
-  USBEscPrinter,
+  EscNetPrinter,
+  EscUSBPrinter,
 };
 
 export const TscNetPrinterModule = NativeModules.TscNetPrinterModule;

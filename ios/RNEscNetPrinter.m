@@ -1,9 +1,9 @@
 //
-//  RNNetEscPrinter.m
+//  RNEscNetPrinter.m
 //  Patched for raw TCP socket printing on iOS to avoid PrinterSDK connectIP side effects.
 //
 
-#import "RNNetEscPrinter.h"
+#import "RNEscNetPrinter.h"
 #import "PrinterSDK.h"
 #include <ifaddrs.h>
 #include <arpa/inet.h>
@@ -45,7 +45,7 @@ static const NSInteger kPrinterWriteChunkSize = 4096;
 
 @end
 
-@interface RNNetEscPrinter () <NSStreamDelegate>
+@interface RNEscNetPrinter () <NSStreamDelegate>
 @property (nonatomic, strong) NSInputStream *inputStream;
 @property (nonatomic, strong) NSOutputStream *outputStream;
 @property (nonatomic, copy) NSString *connectedHost;
@@ -53,7 +53,7 @@ static const NSInteger kPrinterWriteChunkSize = 4096;
 @property (nonatomic, copy) NSString *connectionMode;
 @end
 
-@implementation RNNetEscPrinter
+@implementation RNEscNetPrinter
 
 - (dispatch_queue_t)methodQueue
 {
@@ -121,7 +121,7 @@ RCT_EXPORT_MODULE()
 
     if (!readStream || !writeStream) {
         if (error) {
-            *error = [NSError errorWithDomain:@"RNNetEscPrinter" code:500 userInfo:@{NSLocalizedDescriptionKey: @"Cannot create socket streams"}];
+            *error = [NSError errorWithDomain:@"RNEscNetPrinter" code:500 userInfo:@{NSLocalizedDescriptionKey: @"Cannot create socket streams"}];
         }
         if (readStream) CFRelease(readStream);
         if (writeStream) CFRelease(writeStream);
@@ -153,7 +153,7 @@ RCT_EXPORT_MODULE()
         if (status == NSStreamStatusError || status == NSStreamStatusClosed) {
             NSError *streamError = self.outputStream.streamError ?: self.inputStream.streamError;
             if (error) {
-                *error = streamError ?: [NSError errorWithDomain:@"RNNetEscPrinter" code:501 userInfo:@{NSLocalizedDescriptionKey: @"Cannot open printer socket"}];
+                *error = streamError ?: [NSError errorWithDomain:@"RNEscNetPrinter" code:501 userInfo:@{NSLocalizedDescriptionKey: @"Cannot open printer socket"}];
             }
             [self cleanupStreams];
             return NO;
@@ -163,7 +163,7 @@ RCT_EXPORT_MODULE()
     }
 
     if (error) {
-        *error = [NSError errorWithDomain:@"RNNetEscPrinter" code:408 userInfo:@{NSLocalizedDescriptionKey: @"Printer socket connect timeout"}];
+        *error = [NSError errorWithDomain:@"RNEscNetPrinter" code:408 userInfo:@{NSLocalizedDescriptionKey: @"Printer socket connect timeout"}];
     }
     [self cleanupStreams];
     return NO;
@@ -173,7 +173,7 @@ RCT_EXPORT_MODULE()
 {
     if (![self isConnected]) {
         if (error) {
-            *error = [NSError errorWithDomain:@"RNNetEscPrinter" code:503 userInfo:@{NSLocalizedDescriptionKey: @"Printer is not connected"}];
+            *error = [NSError errorWithDomain:@"RNEscNetPrinter" code:503 userInfo:@{NSLocalizedDescriptionKey: @"Printer is not connected"}];
         }
         return NO;
     }
@@ -185,7 +185,7 @@ RCT_EXPORT_MODULE()
     while (totalWritten < totalLength) {
         if (self.outputStream.streamStatus != NSStreamStatusOpen) {
             if (error) {
-                *error = self.outputStream.streamError ?: [NSError errorWithDomain:@"RNNetEscPrinter" code:504 userInfo:@{NSLocalizedDescriptionKey: @"Printer output stream is closed"}];
+                *error = self.outputStream.streamError ?: [NSError errorWithDomain:@"RNEscNetPrinter" code:504 userInfo:@{NSLocalizedDescriptionKey: @"Printer output stream is closed"}];
             }
             return NO;
         }
@@ -199,7 +199,7 @@ RCT_EXPORT_MODULE()
         NSInteger written = [self.outputStream write:&buffer[totalWritten] maxLength:chunk];
         if (written < 0) {
             if (error) {
-                *error = self.outputStream.streamError ?: [NSError errorWithDomain:@"RNNetEscPrinter" code:505 userInfo:@{NSLocalizedDescriptionKey: @"Cannot write to printer"}];
+                *error = self.outputStream.streamError ?: [NSError errorWithDomain:@"RNEscNetPrinter" code:505 userInfo:@{NSLocalizedDescriptionKey: @"Cannot write to printer"}];
             }
             return NO;
         }
@@ -392,7 +392,7 @@ RCT_EXPORT_MODULE()
 - (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode
 {
     if (eventCode == NSStreamEventErrorOccurred) {
-        RCTLogWarn(@"RNNetEscPrinter stream error: %@", aStream.streamError.localizedDescription);
+        RCTLogWarn(@"RNEscNetPrinter stream error: %@", aStream.streamError.localizedDescription);
     } else if (eventCode == NSStreamEventEndEncountered) {
         if (aStream == self.outputStream || aStream == self.inputStream) {
             [self cleanupStreams];
@@ -492,7 +492,7 @@ RCT_EXPORT_METHOD(connectPrinter:(NSString *)host
             }
         }
 
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"NetEscPrinterConnected" object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"EscNetPrinterConnected" object:nil];
         successCallback(@[[NSString stringWithFormat:@"Connected to printer %@:%@ (%@)", host, port, self.connectionMode ?: @"rawSocket"]]);
     } @catch (NSException *exception) {
         errorCallback(@[exception.reason]);

@@ -4,7 +4,7 @@ package com.xgitvn.printer.adapter;
  * Created by xiesubin on 2017/9/21.
  */
 
-public class USBEscPrinterDeviceId extends PrinterDeviceId {
+public class EscUSBPrinterDeviceId extends PrinterDeviceId {
 
     private Integer vendorId;
     private Integer productId;
@@ -18,8 +18,8 @@ public class USBEscPrinterDeviceId extends PrinterDeviceId {
     }
 
 
-    public static USBEscPrinterDeviceId valueOf(Integer vendorId, Integer productId) {
-        return new USBEscPrinterDeviceId(vendorId, productId);
+    public static EscUSBPrinterDeviceId valueOf(Integer vendorId, Integer productId) {
+        return new EscUSBPrinterDeviceId(vendorId, productId);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class USBEscPrinterDeviceId extends PrinterDeviceId {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        USBEscPrinterDeviceId that = (USBEscPrinterDeviceId) o;
+        EscUSBPrinterDeviceId that = (EscUSBPrinterDeviceId) o;
 
         if (!vendorId.equals(that.vendorId)) return false;
         return productId.equals(that.productId);
@@ -42,7 +42,7 @@ public class USBEscPrinterDeviceId extends PrinterDeviceId {
         return result;
     }
 
-    private USBEscPrinterDeviceId(Integer vendorId, Integer productId){
+    private EscUSBPrinterDeviceId(Integer vendorId, Integer productId){
         this.vendorId = vendorId;
         this.productId = productId;
     }

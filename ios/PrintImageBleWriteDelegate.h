@@ -1,13 +1,13 @@
 //
 //  PrintImageBleWriteDelegate.h
-//  RNBluetoothEscPrinter
+//  RNEscBluetoothPrinter
 //
 //  Created by januslo on 2018/10/8.
 //  Copyright © 2018年 Facebook. All rights reserved.
 //
 #import <React/RCTBridgeModule.h>
 #import "RNBluetoothManager.h"
-#import "RNBluetoothEscPrinter.h"
+#import "RNEscBluetoothPrinter.h"
 @interface PrintImageBleWriteDelegate :NSObject<WriteDataToBleDelegate>
 @property NSData *toPrint;
 @property NSInteger width;

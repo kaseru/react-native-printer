@@ -3,7 +3,7 @@
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
 
-@interface RNNetEscPrinter : RCTEventEmitter <RCTBridgeModule>{
+@interface RNEscNetPrinter : RCTEventEmitter <RCTBridgeModule>{
     NSString *connected_ip;
     NSString *current_scan_ip;
     NSMutableArray* _printerArray;

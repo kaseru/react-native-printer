@@ -5,15 +5,15 @@ import { processColumnText } from "./utils/print-column";
 import { COMMANDS } from "./utils/printer-commands";
 import { connectToHost } from "./utils/net-connect";
 
-const RNUSBEscPrinter = NativeModules.RNUSBEscPrinter;
-const RNNetEscPrinterLegacy = NativeModules.RNNetEscPrinter;
-const RNNetEscPrinterRaw = NativeModules.RNNetEscPrinterRaw;
+const RNEscUSBPrinter = NativeModules.RNEscUSBPrinter;
+const RNEscNetPrinterLegacy = NativeModules.RNEscNetPrinter;
+const RNEscNetPrinterRaw = NativeModules.RNEscNetPrinterRaw;
 
-const getRNNetEscPrinter = () => {
-  if (Platform.OS === "ios" && RNNetEscPrinterRaw) {
-    return RNNetEscPrinterRaw;
+const getRNEscNetPrinter = () => {
+  if (Platform.OS === "ios" && RNEscNetPrinterRaw) {
+    return RNEscNetPrinterRaw;
   }
-  return RNNetEscPrinterLegacy;
+  return RNEscNetPrinterLegacy;
 };
 
 export interface PrinterOptions {
@@ -40,13 +40,13 @@ export interface PrinterImageOptions {
   paddingX?: number;
 }
 
-export interface IUSBEscPrinter {
+export interface IEscUSBPrinter {
   device_name: string;
   vendor_id: string;
   product_id: string;
 }
 
-export interface INetEscPrinter {
+export interface IEscNetPrinter {
   host: string;
   port: number;
 }
@@ -108,56 +108,56 @@ const textPreprocessingIOS = (text: string, canCut = true, beep = true) => {
   };
 };
 
-const USBEscPrinter = {
+const EscUSBPrinter = {
   init: (): Promise<void> =>
     new Promise((resolve, reject) =>
-      RNUSBEscPrinter.init(
+      RNEscUSBPrinter.init(
         () => resolve(),
         (error: Error) => reject(error)
       )
     ),
 
-  getDeviceList: (): Promise<IUSBEscPrinter[]> =>
+  getDeviceList: (): Promise<IEscUSBPrinter[]> =>
     new Promise((resolve, reject) =>
-      RNUSBEscPrinter.getDeviceList(
-        (printers: IUSBEscPrinter[]) => resolve(printers),
+      RNEscUSBPrinter.getDeviceList(
+        (printers: IEscUSBPrinter[]) => resolve(printers),
         (error: Error) => reject(error)
       )
     ),
 
-  connectPrinter: (vendorId: string, productId: string): Promise<IUSBEscPrinter> =>
+  connectPrinter: (vendorId: string, productId: string): Promise<IEscUSBPrinter> =>
     new Promise((resolve, reject) =>
-      RNUSBEscPrinter.connectPrinter(
+      RNEscUSBPrinter.connectPrinter(
         vendorId,
         productId,
-        (printer: IUSBEscPrinter) => resolve(printer),
+        (printer: IEscUSBPrinter) => resolve(printer),
         (error: Error) => reject(error)
       )
     ),
 
   closeConn: (): Promise<void> =>
     new Promise((resolve) => {
-      RNUSBEscPrinter.closeConn();
+      RNEscUSBPrinter.closeConn();
       resolve();
     }),
 
   printText: (text: string, opts: PrinterOptions = {}): void =>
-    RNUSBEscPrinter.printRawData(textTo64Buffer(text, opts), (error: Error) =>
+    RNEscUSBPrinter.printRawData(textTo64Buffer(text, opts), (error: Error) =>
       console.warn(error)
     ),
 
   printBill: (text: string, opts: PrinterOptions = {}): void =>
-    RNUSBEscPrinter.printRawData(billTo64Buffer(text, opts), (error: Error) =>
+    RNEscUSBPrinter.printRawData(billTo64Buffer(text, opts), (error: Error) =>
       console.warn(error)
     ),
 
   printImage: function (imgUrl: string, opts: PrinterImageOptions = {}) {
     if (Platform.OS === "ios") {
-      RNUSBEscPrinter.printImageData(imgUrl, opts, (error: Error) =>
+      RNEscUSBPrinter.printImageData(imgUrl, opts, (error: Error) =>
         console.warn(error)
       );
     } else {
-      RNUSBEscPrinter.printImageData(
+      RNEscUSBPrinter.printImageData(
         imgUrl,
         opts?.imageWidth ?? 0,
         opts?.imageHeight ?? 0,
@@ -168,11 +168,11 @@ const USBEscPrinter = {
 
   printImageBase64: function (Base64: string, opts: PrinterImageOptions = {}) {
     if (Platform.OS === "ios") {
-      RNUSBEscPrinter.printImageBase64(Base64, opts, (error: Error) =>
+      RNEscUSBPrinter.printImageBase64(Base64, opts, (error: Error) =>
         console.warn(error)
       );
     } else {
-      RNUSBEscPrinter.printImageBase64(
+      RNEscUSBPrinter.printImageBase64(
         Base64,
         opts?.imageWidth ?? 0,
         opts?.imageHeight ?? 0,
@@ -184,7 +184,7 @@ const USBEscPrinter = {
   printRaw: (text: string): void => {
     if (Platform.OS === "ios") {
     } else {
-      RNUSBEscPrinter.printRawData(text, (error: Error) => console.warn(error));
+      RNEscUSBPrinter.printRawData(text, (error: Error) => console.warn(error));
     }
   },
 
@@ -201,25 +201,25 @@ const USBEscPrinter = {
       columnAlignment,
       columnStyle
     );
-    RNUSBEscPrinter.printRawData(textTo64Buffer(result, opts), (error: Error) =>
+    RNEscUSBPrinter.printRawData(textTo64Buffer(result, opts), (error: Error) =>
       console.warn(error)
     );
   },
 };
 
-const NetEscPrinter = {
+const EscNetPrinter = {
   init: (): Promise<void> =>
     new Promise((resolve, reject) =>
-      getRNNetEscPrinter().init(
+      getRNEscNetPrinter().init(
         () => resolve(),
         (error: Error) => reject(error)
       )
     ),
 
-  getDeviceList: (): Promise<INetEscPrinter[]> =>
+  getDeviceList: (): Promise<IEscNetPrinter[]> =>
     new Promise((resolve, reject) =>
-      getRNNetEscPrinter().getDeviceList(
-        (printers: INetEscPrinter[]) => resolve(printers),
+      getRNEscNetPrinter().getDeviceList(
+        (printers: IEscNetPrinter[]) => resolve(printers),
         (error: Error) => reject(error)
       )
     ),
@@ -228,14 +228,14 @@ const NetEscPrinter = {
     host: string,
     port: number,
     timeout?: number
-  ): Promise<INetEscPrinter> =>
+  ): Promise<IEscNetPrinter> =>
     new Promise(async (resolve, reject) => {
       try {
         await connectToHost(host, timeout);
-        getRNNetEscPrinter().connectPrinter(
+        getRNEscNetPrinter().connectPrinter(
           host,
           port,
-          (printer: INetEscPrinter) => resolve(printer),
+          (printer: IEscNetPrinter) => resolve(printer),
           (error: Error) => reject(error)
         );
       } catch (error) {
@@ -245,20 +245,20 @@ const NetEscPrinter = {
 
   closeConn: (): Promise<void> =>
     new Promise((resolve) => {
-      getRNNetEscPrinter().closeConn();
+      getRNEscNetPrinter().closeConn();
       resolve();
     }),
 
   printText: (text: string, opts = {}): void => {
     if (Platform.OS === "ios") {
       const processedText = textPreprocessingIOS(text, false, false);
-      getRNNetEscPrinter().printRawData(
+      getRNEscNetPrinter().printRawData(
         processedText.text,
         processedText.opts,
         (error: Error) => console.warn(error)
       );
     } else {
-      getRNNetEscPrinter().printRawData(textTo64Buffer(text, opts), (error: Error) =>
+      getRNEscNetPrinter().printRawData(textTo64Buffer(text, opts), (error: Error) =>
         console.warn(error)
       );
     }
@@ -271,13 +271,13 @@ const NetEscPrinter = {
         opts?.cut ?? true,
         opts.beep ?? true
       );
-      getRNNetEscPrinter().printRawData(
+      getRNEscNetPrinter().printRawData(
         processedText.text,
         processedText.opts,
         (error: Error) => console.warn(error)
       );
     } else {
-      getRNNetEscPrinter().printRawData(billTo64Buffer(text, opts), (error: Error) =>
+      getRNEscNetPrinter().printRawData(billTo64Buffer(text, opts), (error: Error) =>
         console.warn(error)
       );
     }
@@ -285,11 +285,11 @@ const NetEscPrinter = {
 
   printImage: function (imgUrl: string, opts: PrinterImageOptions = {}) {
     if (Platform.OS === "ios") {
-      getRNNetEscPrinter().printImageData(imgUrl, opts, (error: Error) =>
+      getRNEscNetPrinter().printImageData(imgUrl, opts, (error: Error) =>
         console.warn(error)
       );
     } else {
-      getRNNetEscPrinter().printImageData(
+      getRNEscNetPrinter().printImageData(
         imgUrl,
         opts?.imageWidth ?? 0,
         opts?.imageHeight ?? 0,
@@ -300,11 +300,11 @@ const NetEscPrinter = {
 
   printImageBase64: function (Base64: string, opts: PrinterImageOptions = {}) {
     if (Platform.OS === "ios") {
-      getRNNetEscPrinter().printImageBase64(Base64, opts, (error: Error) =>
+      getRNEscNetPrinter().printImageBase64(Base64, opts, (error: Error) =>
         console.warn(error)
       );
     } else {
-      getRNNetEscPrinter().printImageBase64(
+      getRNEscNetPrinter().printImageBase64(
         Base64,
         opts?.imageWidth ?? 0,
         opts?.imageHeight ?? 0,
@@ -316,7 +316,7 @@ const NetEscPrinter = {
   printRaw: (text: string): void => {
     if (Platform.OS === "ios") {
     } else {
-      getRNNetEscPrinter().printRawData(text, (error: Error) => console.warn(error));
+      getRNEscNetPrinter().printRawData(text, (error: Error) => console.warn(error));
     }
   },
 
@@ -335,25 +335,25 @@ const NetEscPrinter = {
     );
     if (Platform.OS === "ios") {
       const processedText = textPreprocessingIOS(result, false, false);
-      getRNNetEscPrinter().printRawData(
+      getRNEscNetPrinter().printRawData(
         processedText.text,
         processedText.opts,
         (error: Error) => console.warn(error)
       );
     } else {
-      getRNNetEscPrinter().printRawData(textTo64Buffer(result, opts), (error: Error) =>
+      getRNEscNetPrinter().printRawData(textTo64Buffer(result, opts), (error: Error) =>
         console.warn(error)
       );
     }
   },
 };
 
-const NetEscPrinterEventEmitter =
+const EscNetPrinterEventEmitter =
   Platform.OS === "ios"
-    ? new NativeEventEmitter(getRNNetEscPrinter())
+    ? new NativeEventEmitter(getRNEscNetPrinter())
     : new NativeEventEmitter();
 
-export { COMMANDS, NetEscPrinter, USBEscPrinter, NetEscPrinterEventEmitter };
+export { COMMANDS, EscNetPrinter, EscUSBPrinter, EscNetPrinterEventEmitter };
 
 export enum RN_THERMAL_RECEIPT_PRINTER_EVENTS {
   EVENT_NET_PRINTER_SCANNED_SUCCESS = "scannerResolved",

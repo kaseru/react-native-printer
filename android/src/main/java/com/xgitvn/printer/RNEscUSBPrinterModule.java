@@ -12,8 +12,8 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
 import com.xgitvn.printer.adapter.PrinterAdapter;
 import com.xgitvn.printer.adapter.PrinterDevice;
-import com.xgitvn.printer.adapter.USBEscPrinterAdapter;
-import com.xgitvn.printer.adapter.USBEscPrinterDeviceId;
+import com.xgitvn.printer.adapter.EscUSBPrinterAdapter;
+import com.xgitvn.printer.adapter.EscUSBPrinterDeviceId;
 
 import java.util.List;
 
@@ -21,13 +21,13 @@ import java.util.List;
  * Created by xiesubin on 2017/9/22.
  */
 
-public class RNUSBEscPrinterModule extends ReactContextBaseJavaModule implements RNPrinterModule {
+public class RNEscUSBPrinterModule extends ReactContextBaseJavaModule implements RNPrinterModule {
 
     protected ReactApplicationContext reactContext;
 
     protected PrinterAdapter adapter;
 
-    public RNUSBEscPrinterModule(ReactApplicationContext reactContext) {
+    public RNEscUSBPrinterModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
     }
@@ -35,7 +35,7 @@ public class RNUSBEscPrinterModule extends ReactContextBaseJavaModule implements
     @ReactMethod
     @Override
     public void init(Callback successCallback, Callback errorCallback) {
-        this.adapter = USBEscPrinterAdapter.getInstance();
+        this.adapter = EscUSBPrinterAdapter.getInstance();
         this.adapter.init(reactContext,  successCallback, errorCallback);
     }
 
@@ -43,7 +43,7 @@ public class RNUSBEscPrinterModule extends ReactContextBaseJavaModule implements
     @Override
     public void closeConn()  {
         if (this.adapter == null) {
-            this.adapter = USBEscPrinterAdapter.getInstance();
+            this.adapter = EscUSBPrinterAdapter.getInstance();
         }
         this.adapter.closeConnectionIfExists();
     }
@@ -87,11 +87,11 @@ public class RNUSBEscPrinterModule extends ReactContextBaseJavaModule implements
 
     @ReactMethod
     public void connectPrinter(Integer vendorId, Integer productId, Callback successCallback, Callback errorCallback) {
-        adapter.selectDevice(USBEscPrinterDeviceId.valueOf(vendorId, productId), successCallback, errorCallback);
+        adapter.selectDevice(EscUSBPrinterDeviceId.valueOf(vendorId, productId), successCallback, errorCallback);
     }
 
     @Override
     public String getName() {
-        return "RNUSBEscPrinter";
+        return "RNEscUSBPrinter";
     }
 }

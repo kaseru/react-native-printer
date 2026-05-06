@@ -1,7 +1,7 @@
-#import "RNNetEscPrinterRaw.h"
+#import "RNEscNetPrinterRaw.h"
 #import <React/RCTBridgeModule.h>
 
-@interface RNNetEscPrinter (RawBridgeMethods)
+@interface RNEscNetPrinter (RawBridgeMethods)
 - (void)init:(RCTResponseSenderBlock)successCallback
         fail:(RCTResponseSenderBlock)errorCallback;
 - (void)setConnectionMode:(NSString *)mode
@@ -35,7 +35,7 @@
 - (void)closeConn;
 @end
 
-@implementation RNNetEscPrinterRaw
+@implementation RNEscNetPrinterRaw
 
 RCT_EXPORT_MODULE()
 

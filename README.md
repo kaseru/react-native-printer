@@ -59,7 +59,7 @@ Sau đó mới tách tiếp renderer / capability / transport nếu cần.
 ## iOS source of truth
 
 - Source iOS active hiện nằm ở `ios/`.
-- `RNNetEscPrinter.m` trong `ios/` là bản đã vá để hỗ trợ `rawSocket`.
+- `RNEscNetPrinter.m` trong `ios/` là bản đã vá để hỗ trợ `rawSocket`.
 
 ## TODO
 

@@ -9,12 +9,12 @@ import com.facebook.react.bridge.WritableMap;
  * Created by xiesubin on 2017/9/21.
  */
 
-public class USBEscPrinterDevice implements PrinterDevice{
+public class EscUSBPrinterDevice implements PrinterDevice{
     private UsbDevice mDevice;
-    private USBEscPrinterDeviceId usbPrinterDeviceId;
+    private EscUSBPrinterDeviceId usbPrinterDeviceId;
 
-    public USBEscPrinterDevice(UsbDevice device) {
-        this.usbPrinterDeviceId = USBEscPrinterDeviceId.valueOf(device.getVendorId(), device.getProductId());
+    public EscUSBPrinterDevice(UsbDevice device) {
+        this.usbPrinterDeviceId = EscUSBPrinterDeviceId.valueOf(device.getVendorId(), device.getProductId());
         this.mDevice = device;
     }
 
