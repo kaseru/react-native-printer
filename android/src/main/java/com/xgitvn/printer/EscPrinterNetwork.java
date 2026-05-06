@@ -17,7 +17,7 @@ import com.xgitvn.printer.adapter.PrinterAdapter;
  * Created by xiesubin on 2017/9/22.
  */
 
-public class EscPrinterNetwork extends ReactContextBaseJavaModule implements PrinterModule {
+public class EscPrinterNetwork extends ReactContextBaseJavaModule implements Printer {
 
     private PrinterAdapter adapter;
     private ReactApplicationContext reactContext;

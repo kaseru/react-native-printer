@@ -31,7 +31,7 @@ import java.util.Set;
 /**
  * Created by januslo on 2018/9/22.
  */
-public class BluetoothManagerModule extends ReactContextBaseJavaModule
+public class BluetoothManager extends ReactContextBaseJavaModule
         implements ActivityEventListener, BluetoothServiceStateObserver {
 
     private static final String TAG = "BluetoothManager";
@@ -76,7 +76,7 @@ public class BluetoothManagerModule extends ReactContextBaseJavaModule
     // Member object for the services
     private BluetoothService mService = null;
 
-    public BluetoothManagerModule(ReactApplicationContext reactContext, BluetoothService bluetoothService) {
+    public BluetoothManager(ReactApplicationContext reactContext, BluetoothService bluetoothService) {
         super(reactContext);
         this.reactContext = reactContext;
         this.reactContext.addActivityEventListener(this);

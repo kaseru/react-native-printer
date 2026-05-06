@@ -2,7 +2,7 @@ package com.xgitvn.printer;
 
 import com.facebook.react.bridge.Callback;
 
-public interface PrinterModule {
+public interface Printer {
     void init(Callback successCallback, Callback errorCallback);
 
     void closeConn();
