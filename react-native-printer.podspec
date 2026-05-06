@@ -24,8 +24,7 @@ Pod::Spec.new do |s|
   ]
   s.requires_arc = true
   s.dependency 'React'
-  s.vendored_libraries = 'ios/PrinterSDK/libPrinterSDK.a'
   s.xcconfig = {
-    'HEADER_SEARCH_PATHS' => '"${PODS_TARGET_SRCROOT}/ios/PrinterSDK/**" "${PODS_TARGET_SRCROOT}/ios/ZXingObjC-3.2.2/**"'
+    'HEADER_SEARCH_PATHS' => '"${PODS_TARGET_SRCROOT}/ios/ZXingObjC-3.2.2/**"'
   }
 end
