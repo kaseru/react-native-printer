@@ -1,7 +1,7 @@
-#import "RNEscUSBPrinter.h"
+#import "EscUSBPrinter.h"
 #import "PrinterSDK.h"
 
-@implementation RNEscUSBPrinter
+@implementation EscUSBPrinter
 
 - (dispatch_queue_t)methodQueue
 {

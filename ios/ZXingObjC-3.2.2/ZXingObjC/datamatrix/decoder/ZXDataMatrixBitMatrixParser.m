@@ -140,7 +140,7 @@
  * @param numColumns Number of columns in the mapping matrix
  * @return value of the given bit in the mapping matrix
  */
-- (BOOL)readModule:(int)row column:(int)column numRows:(int)numRows numColumns:(int)numColumns {
+- (BOOL)read:(int)row column:(int)column numRows:(int)numRows numColumns:(int)numColumns {
   if (row < 0) {
     row += numRows;
     column += 4 - ((numRows + 4) & 0x07);
@@ -166,35 +166,35 @@
  */
 - (int)readUtah:(int)row column:(int)column numRows:(int)numRows numColumns:(int)numColumns {
   int currentByte = 0;
-  if ([self readModule:row - 2 column:column - 2 numRows:numRows numColumns:numColumns]) {
+  if ([self read:row - 2 column:column - 2 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:row - 2 column:column - 1 numRows:numRows numColumns:numColumns]) {
+  if ([self read:row - 2 column:column - 1 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:row - 1 column:column - 2 numRows:numRows numColumns:numColumns]) {
+  if ([self read:row - 1 column:column - 2 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:row - 1 column:column - 1 numRows:numRows numColumns:numColumns]) {
+  if ([self read:row - 1 column:column - 1 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:row - 1 column:column numRows:numRows numColumns:numColumns]) {
+  if ([self read:row - 1 column:column numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:row column:column - 2 numRows:numRows numColumns:numColumns]) {
+  if ([self read:row column:column - 2 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:row column:column - 1 numRows:numRows numColumns:numColumns]) {
+  if ([self read:row column:column - 1 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:row column:column numRows:numRows numColumns:numColumns]) {
+  if ([self read:row column:column numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   return currentByte;
@@ -211,35 +211,35 @@
  */
 - (int)readCorner1:(int)numRows numColumns:(int)numColumns {
   int currentByte = 0;
-  if ([self readModule:numRows - 1 column:0 numRows:numRows numColumns:numColumns]) {
+  if ([self read:numRows - 1 column:0 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:numRows - 1 column:1 numRows:numRows numColumns:numColumns]) {
+  if ([self read:numRows - 1 column:1 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:numRows - 1 column:2 numRows:numRows numColumns:numColumns]) {
+  if ([self read:numRows - 1 column:2 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:0 column:numColumns - 2 numRows:numRows numColumns:numColumns]) {
+  if ([self read:0 column:numColumns - 2 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:0 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
+  if ([self read:0 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:1 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
+  if ([self read:1 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:2 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
+  if ([self read:2 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:3 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
+  if ([self read:3 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   return currentByte;
@@ -256,35 +256,35 @@
  */
 - (int)readCorner2:(int)numRows numColumns:(int)numColumns {
   int currentByte = 0;
-  if ([self readModule:numRows - 3 column:0 numRows:numRows numColumns:numColumns]) {
+  if ([self read:numRows - 3 column:0 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:numRows - 2 column:0 numRows:numRows numColumns:numColumns]) {
+  if ([self read:numRows - 2 column:0 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:numRows - 1 column:0 numRows:numRows numColumns:numColumns]) {
+  if ([self read:numRows - 1 column:0 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:0 column:numColumns - 4 numRows:numRows numColumns:numColumns]) {
+  if ([self read:0 column:numColumns - 4 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:0 column:numColumns - 3 numRows:numRows numColumns:numColumns]) {
+  if ([self read:0 column:numColumns - 3 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:0 column:numColumns - 2 numRows:numRows numColumns:numColumns]) {
+  if ([self read:0 column:numColumns - 2 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:0 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
+  if ([self read:0 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:1 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
+  if ([self read:1 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   return currentByte;
@@ -301,35 +301,35 @@
  */
 - (int)readCorner3:(int)numRows numColumns:(int)numColumns {
   int currentByte = 0;
-  if ([self readModule:numRows - 1 column:0 numRows:numRows numColumns:numColumns]) {
+  if ([self read:numRows - 1 column:0 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:numRows - 1 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
+  if ([self read:numRows - 1 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:0 column:numColumns - 3 numRows:numRows numColumns:numColumns]) {
+  if ([self read:0 column:numColumns - 3 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:0 column:numColumns - 2 numRows:numRows numColumns:numColumns]) {
+  if ([self read:0 column:numColumns - 2 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:0 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
+  if ([self read:0 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:1 column:numColumns - 3 numRows:numRows numColumns:numColumns]) {
+  if ([self read:1 column:numColumns - 3 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:1 column:numColumns - 2 numRows:numRows numColumns:numColumns]) {
+  if ([self read:1 column:numColumns - 2 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:1 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
+  if ([self read:1 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   return currentByte;
@@ -346,35 +346,35 @@
  */
 - (int)readCorner4:(int)numRows numColumns:(int)numColumns {
   int currentByte = 0;
-  if ([self readModule:numRows - 3 column:0 numRows:numRows numColumns:numColumns]) {
+  if ([self read:numRows - 3 column:0 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:numRows - 2 column:0 numRows:numRows numColumns:numColumns]) {
+  if ([self read:numRows - 2 column:0 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:numRows - 1 column:0 numRows:numRows numColumns:numColumns]) {
+  if ([self read:numRows - 1 column:0 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:0 column:numColumns - 2 numRows:numRows numColumns:numColumns]) {
+  if ([self read:0 column:numColumns - 2 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:0 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
+  if ([self read:0 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:1 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
+  if ([self read:1 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:2 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
+  if ([self read:2 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   currentByte <<= 1;
-  if ([self readModule:3 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
+  if ([self read:3 column:numColumns - 1 numRows:numRows numColumns:numColumns]) {
     currentByte |= 1;
   }
   return currentByte;

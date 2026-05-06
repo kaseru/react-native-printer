@@ -1,8 +1,8 @@
 
-#import <React/RCTBridgeModule.h>
-#import "RNBluetoothManager.h";
+#import <React/RCTBridge.h>
+#import "BluetoothManager.h";
 
-@interface RNEscBluetoothPrinter : NSObject <RCTBridgeModule,WriteDataToBleDelegate>
+@interface EscBluetoothPrinter : NSObject <RCTBridge,WriteDataToBleDelegate>
 
 @property (nonatomic,assign) NSInteger deviceWidth;
 -(void) textPrint:(NSString *) text

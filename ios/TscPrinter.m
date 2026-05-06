@@ -1,16 +1,16 @@
 //
-//  TscPrinterModule.m
+//  TscPrinter.m
 //  QLBH
 //
 //  Created by dg on 19/11/24.
 //  Copyright © 2024 Facebook. All rights reserved.
 //
 
-#import "TscPrinterModule.h"
+#import "TscPrinter.h"
 #import <React/RCTLog.h>
-#import <React/RCTBridgeModule.h>
+#import <React/RCTBridge.h>
 #import <UIKit/UIKit.h>
-#import "RNTscBluetoothPrinter.h"
+#import "TscBluetoothPrinter.h"
 #import "ImageUtils.h"
 #import <Foundation/Foundation.h>
 #import <sys/socket.h>
@@ -96,7 +96,7 @@ NSData* convertImageToBitmapBytes(UIImage *image) {
 }
 @end
 
-@implementation TscPrinterModule
+@implementation TscPrinter
 
 RCT_EXPORT_MODULE();  // Đảm bảo module được export đúng
 

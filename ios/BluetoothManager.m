@@ -1,15 +1,15 @@
 //
 //  RNBluethManager.m
-//  RNEscBluetoothPrinter
+//  EscBluetoothPrinter
 //
 //  Created by januslo on 2018/9/28.
 //  Copyright © 2018年 Facebook. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import "RNBluetoothManager.h"
+#import "BluetoothManager.h"
 #import <CoreBluetooth/CoreBluetooth.h>
-@implementation RNBluetoothManager
+@implementation BluetoothManager
 
 NSString *EVENT_DEVICE_ALREADY_PAIRED = @"EVENT_DEVICE_ALREADY_PAIRED";
 NSString *EVENT_DEVICE_DISCOVER_DONE = @"EVENT_DEVICE_DISCOVER_DONE";
@@ -21,7 +21,7 @@ static NSArray<CBUUID *> *supportServices = nil;
 static NSDictionary *writeableCharactiscs = nil;
 bool hasListeners;
 static CBPeripheral *connected;
-static RNBluetoothManager *instance;
+static BluetoothManager *instance;
 static NSObject<WriteDataToBleDelegate> *writeDataDelegate;// delegate of write data resule;
 static NSData *toWrite;
 static NSTimer *timer;

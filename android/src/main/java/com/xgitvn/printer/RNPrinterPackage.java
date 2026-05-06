@@ -1,13 +1,13 @@
 package com.xgitvn.printer;
 
 import com.xgitvn.printer.bluetooth.BluetoothService;
-import com.xgitvn.printer.bluetooth.RNBluetoothManagerModule;
-import com.xgitvn.printer.bluetooth.escpos.RNEscBluetoothPrinterModule;
-import com.xgitvn.printer.bluetooth.tsc.RNTscBluetoothPrinterModule;
-import com.xgitvn.printer.tsc.TscNetPrinterModule;
-import com.xgitvn.printer.tsc.TscUsbPrinterModule;
+import com.xgitvn.printer.bluetooth.RNBluetoothManager;
+import com.xgitvn.printer.bluetooth.escpos.RNEscBluetoothPrinter;
+import com.xgitvn.printer.bluetooth.tsc.RNTscBluetoothPrinter;
+import com.xgitvn.printer.tsc.TscNetPrinter;
+import com.xgitvn.printer.tsc.TscUsbPrinter;
 import com.facebook.react.ReactPackage;
-import com.facebook.react.bridge.NativeModule;
+import com.facebook.react.bridge.Native;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 
@@ -21,16 +21,16 @@ import java.util.List;
 
 public class RNPrinterPackage implements ReactPackage {
     @Override
-    public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
+    public List<Native> createNativeModules(ReactApplicationContext reactContext) {
         BluetoothService bluetoothService = new BluetoothService(reactContext);
-        return Arrays.asList(new NativeModule[]{
-                new RNEscUSBPrinterModule(reactContext),
-                new RNEscNetPrinterModule(reactContext),
-                new RNBluetoothManagerModule(reactContext, bluetoothService),
-                new RNEscBluetoothPrinterModule(reactContext, bluetoothService),
-                new RNTscBluetoothPrinterModule(reactContext, bluetoothService),
-                new TscNetPrinterModule(reactContext),
-                new TscUsbPrinterModule(reactContext),
+        return Arrays.asList(new Native[]{
+                new EscUSBPrinter(reactContext),
+                new EscPrinterNetwork(reactContext),
+                new RNBluetoothManager(reactContext, bluetoothService),
+                new RNEscBluetoothPrinter(reactContext, bluetoothService),
+                new RNTscBluetoothPrinter(reactContext, bluetoothService),
+                new TscNetPrinter(reactContext),
+                new TscUsbPrinter(reactContext),
         });
     }
 

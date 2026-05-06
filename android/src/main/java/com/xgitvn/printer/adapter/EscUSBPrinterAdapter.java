@@ -24,7 +24,7 @@ import android.graphics.BitmapFactory;
 
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.modules.core.DeviceEventManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class EscUSBPrinterAdapter implements PrinterAdapter {
     private static EscUSBPrinterAdapter mInstance;
 
 
-    private final String LOG_TAG = "RNEscUSBPrinter";
+    private final String LOG_TAG = "EscUSBPrinter";
     private Context mContext;
     private UsbManager mUSBManager;
     private PendingIntent mPermissionIndent;
@@ -95,7 +95,7 @@ public class EscUSBPrinterAdapter implements PrinterAdapter {
             } else if (UsbManager.ACTION_USB_ACCESSORY_ATTACHED.equals(action) || UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
                 synchronized (this) {
                     if (mContext != null) {
-                        ((ReactApplicationContext) mContext).getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                        ((ReactApplicationContext) mContext).getJS(DeviceEventManager.RCTDeviceEventEmitter.class)
                                 .emit(EVENT_USB_DEVICE_ATTACHED, null);
                     }
                 }
@@ -113,7 +113,7 @@ public class EscUSBPrinterAdapter implements PrinterAdapter {
         filter.addAction(UsbManager.ACTION_USB_ACCESSORY_ATTACHED);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
         mContext.registerReceiver(mUsbDeviceReceiver, filter);
-        Log.v(LOG_TAG, "RNEscUSBPrinter initialized");
+        Log.v(LOG_TAG, "EscUSBPrinter initialized");
         successCallback.invoke();
     }
 

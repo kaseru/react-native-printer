@@ -17,12 +17,12 @@ import com.xgitvn.printer.adapter.PrinterAdapter;
  * Created by xiesubin on 2017/9/22.
  */
 
-public class RNEscNetPrinterModule extends ReactContextBaseJavaModule implements RNPrinterModule {
+public class EscPrinterNetwork extends ReactContextBaseJavaModule implements RNPrinter {
 
     private PrinterAdapter adapter;
     private ReactApplicationContext reactContext;
 
-    public RNEscNetPrinterModule(ReactApplicationContext reactContext) {
+    public EscPrinterNetwork(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
     }
@@ -85,6 +85,6 @@ public class RNEscNetPrinterModule extends ReactContextBaseJavaModule implements
 
     @Override
     public String getName() {
-        return "RNEscNetPrinter";
+        return "EscNetPrinter";
     }
 }

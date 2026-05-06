@@ -1,17 +1,17 @@
 //
-//  RNTscBluetoothPrinter.m
-//  RNEscBluetoothPrinter
+//  TscBluetoothPrinter.m
+//  EscBluetoothPrinter
 //
 //  Created by januslo on 2018/10/1.
 //  Copyright © 2018年 Facebook. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import "RNTscBluetoothPrinter.h"
-#import "RNTscCommand.h"
-#import "RNBluetoothManager.h"
+#import "TscBluetoothPrinter.h"
+#import "TscCommand.h"
+#import "BluetoothManager.h"
 
-@implementation RNTscBluetoothPrinter
+@implementation TscBluetoothPrinter
 
 NSData *toPrint;
 RCTPromiseRejectBlock _pendingReject;
@@ -48,7 +48,7 @@ RCT_EXPORT_METHOD(printLabel:(NSDictionary *) options withResolve:(RCTPromiseRes
     NSArray* reference = [options objectForKey:@"reference"];
     NSInteger sound = [[options valueForKey:@"sound"] integerValue];
     NSInteger speed = [[options valueForKey:@"speed"] integerValue];
-    RNTscCommand *tsc = [[RNTscCommand alloc] init];
+    TscCommand *tsc = [[TscCommand alloc] init];
     if(speed){
         [tsc addSpeed:[tsc findSpeedValue:speed]];
     }
@@ -152,7 +152,7 @@ RCT_EXPORT_METHOD(printLabel:(NSDictionary *) options withResolve:(RCTPromiseRes
     _pendingResolve = resolve;
     toPrint = tsc.command;
     now = 0;
-    [RNBluetoothManager writeValue:toPrint withDelegate:self];
+    [BluetoothManager writeValue:toPrint withDelegate:self];
 }
 
 - (void) didWriteDataToBle: (BOOL)success{

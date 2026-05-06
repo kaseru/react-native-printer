@@ -1,9 +1,9 @@
 
 
-#import <React/RCTBridgeModule.h>
+#import <React/RCTBridge.h>
 #import <React/RCTEventEmitter.h>
 
-@interface RNEscNetPrinter : RCTEventEmitter <RCTBridgeModule>{
+@interface EscNetPrinter : RCTEventEmitter <RCTBridge>{
     NSString *connected_ip;
     NSString *current_scan_ip;
     NSMutableArray* _printerArray;

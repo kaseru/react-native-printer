@@ -16,7 +16,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.facebook.react.bridge.*;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.modules.core.DeviceEventManager;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -31,7 +31,7 @@ import java.util.Set;
 /**
  * Created by januslo on 2018/9/22.
  */
-public class RNBluetoothManagerModule extends ReactContextBaseJavaModule
+public class RNBluetoothManager extends ReactContextBaseJavaModule
         implements ActivityEventListener, BluetoothServiceStateObserver {
 
     private static final String TAG = "BluetoothManager";
@@ -76,7 +76,7 @@ public class RNBluetoothManagerModule extends ReactContextBaseJavaModule
     // Member object for the services
     private BluetoothService mService = null;
 
-    public RNBluetoothManagerModule(ReactApplicationContext reactContext, BluetoothService bluetoothService) {
+    public RNBluetoothManager(ReactApplicationContext reactContext, BluetoothService bluetoothService) {
         super(reactContext);
         this.reactContext = reactContext;
         this.reactContext.addActivityEventListener(this);
@@ -432,7 +432,7 @@ public class RNBluetoothManagerModule extends ReactContextBaseJavaModule
                         foundDevice.put(deviceFound);
                         WritableMap params = Arguments.createMap();
                         params.putString("device", deviceFound.toString());
-                        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                        reactContext.getJS(DeviceEventManager.RCTDeviceEventEmitter.class)
                                 .emit(EVENT_DEVICE_FOUND, params);
                     }
 
@@ -460,7 +460,7 @@ public class RNBluetoothManagerModule extends ReactContextBaseJavaModule
     };
 
     private void emitRNEvent(String event, @Nullable WritableMap params) {
-        getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+        getReactApplicationContext().getJS(DeviceEventManager.RCTDeviceEventEmitter.class)
                 .emit(event, params);
     }
 

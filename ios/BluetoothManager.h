@@ -1,11 +1,11 @@
 //
-//  RNBluetoothManager.h
-//  RNEscBluetoothPrinter
+//  BluetoothManager.h
+//  EscBluetoothPrinter
 //
 //  Created by januslo on 2018/9/28.
 //  Copyright © 2018年 Facebook. All rights reserved.
 //
-#import <React/RCTBridgeModule.h>
+#import <React/RCTBridge.h>
 #import <React/RCTEventEmitter.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 
@@ -14,7 +14,7 @@
 - (void) didWriteDataToBle: (BOOL)success;
 @end
 
-@interface RNBluetoothManager <CBCentralManagerDelegate,CBPeripheralDelegate> : RCTEventEmitter <RCTBridgeModule>
+@interface BluetoothManager <CBCentralManagerDelegate,CBPeripheralDelegate> : RCTEventEmitter <RCTBridge>
 @property (strong, nonatomic) CBCentralManager      *centralManager;
 @property (nonatomic,copy) RCTPromiseResolveBlock scanResolveBlock;
 @property (nonatomic,copy) RCTPromiseRejectBlock scanRejectBlock;

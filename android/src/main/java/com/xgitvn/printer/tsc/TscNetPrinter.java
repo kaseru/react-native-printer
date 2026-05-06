@@ -11,17 +11,17 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.InetSocketAddress;
 
-public class TscNetPrinterModule extends ReactContextBaseJavaModule {
+public class TscNetPrinter extends ReactContextBaseJavaModule {
     private Socket socket;
     private OutputStream outputStream;
 
-    public TscNetPrinterModule(ReactApplicationContext reactContext) {
+    public TscNetPrinter(ReactApplicationContext reactContext) {
         super(reactContext);
     }
 
     @Override
     public String getName() {
-        return "TscNetPrinterModule";
+        return "TscNetPrinter";
     }
 
     @ReactMethod

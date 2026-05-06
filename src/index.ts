@@ -17,11 +17,11 @@ export {
   EscUSBPrinter,
 };
 
-export const TscNetPrinterModule = NativeModules.TscNetPrinterModule;
-export const TscUsbPrinterModule = NativeModules.UsbPrinterModule;
+export const TscNetPrinter = NativeModules.TscNetPrinter;
+export const TscUsbPrinter = NativeModules.UsbPrinter;
 export function ping(host: string, timeoutMs: number = 1000) {
-  if (TscNetPrinterModule?.ping) {
-    return TscNetPrinterModule.ping(host, timeoutMs);
+  if (TscNetPrinter?.ping) {
+    return TscNetPrinter.ping(host, timeoutMs);
   }
   throw new Error('Network printer ping is not available');
 }

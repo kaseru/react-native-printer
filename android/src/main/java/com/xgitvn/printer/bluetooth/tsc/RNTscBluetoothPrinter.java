@@ -13,12 +13,12 @@ import java.util.Vector;
 /**
  * Created by januslo on 2018/9/22.
  */
-public class RNTscBluetoothPrinterModule extends ReactContextBaseJavaModule
+public class RNTscBluetoothPrinter extends ReactContextBaseJavaModule
 implements BluetoothServiceStateObserver{
     private static final String TAG="TscBluetoothPrinter";
     private BluetoothService mService;
 
-    public RNTscBluetoothPrinterModule(ReactApplicationContext reactContext,BluetoothService bluetoothService) {
+    public RNTscBluetoothPrinter(ReactApplicationContext reactContext,BluetoothService bluetoothService) {
         super(reactContext);
         this.mService = bluetoothService;
         this.mService.addStateObserver(this);

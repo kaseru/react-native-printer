@@ -24,7 +24,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public class TscUsbPrinterModule extends ReactContextBaseJavaModule {
+public class TscUsbPrinter extends ReactContextBaseJavaModule {
     private static final String ACTION_USB_PERMISSION = "com.xgitvn.printer.tsc.USB_PERMISSION";
     private final PendingIntent permissionIntent;
 
@@ -50,7 +50,7 @@ public class TscUsbPrinterModule extends ReactContextBaseJavaModule {
         }
     };
 
-    public TscUsbPrinterModule(ReactApplicationContext reactContext) {
+    public TscUsbPrinter(ReactApplicationContext reactContext) {
         super(reactContext);
         usbManager = (UsbManager) reactContext.getSystemService(Context.USB_SERVICE);
         permissionIntent = PendingIntent.getBroadcast(reactContext, 0, new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_IMMUTABLE);
@@ -66,7 +66,7 @@ public class TscUsbPrinterModule extends ReactContextBaseJavaModule {
 
     @Override
     public String getName() {
-        return "UsbPrinterModule";
+        return "UsbPrinter";
     }
 
     @ReactMethod

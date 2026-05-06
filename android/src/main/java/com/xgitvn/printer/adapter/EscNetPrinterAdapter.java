@@ -14,7 +14,7 @@ import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.modules.core.DeviceEventManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -37,7 +37,7 @@ import androidx.annotation.RequiresApi;
 public class EscNetPrinterAdapter implements PrinterAdapter {
     private static EscNetPrinterAdapter mInstance;
     private ReactApplicationContext mContext;
-    private final String LOG_TAG = "RNEscNetPrinter";
+    private final String LOG_TAG = "EscNetPrinter";
     private EscNetPrinterDevice mNetDevice;
 
     // {TODO- support other ports later}
@@ -132,7 +132,7 @@ public class EscNetPrinterAdapter implements PrinterAdapter {
 
     private void emitEvent(String eventName, Object data) {
         if (mContext != null) {
-            mContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, data);
+            mContext.getJS(DeviceEventManager.RCTDeviceEventEmitter.class).emit(eventName, data);
         }
     }
 

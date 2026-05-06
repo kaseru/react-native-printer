@@ -21,13 +21,13 @@ import java.util.List;
  * Created by xiesubin on 2017/9/22.
  */
 
-public class RNEscUSBPrinterModule extends ReactContextBaseJavaModule implements RNPrinterModule {
+public class EscUSBPrinter extends ReactContextBaseJavaModule implements RNPrinter {
 
     protected ReactApplicationContext reactContext;
 
     protected PrinterAdapter adapter;
 
-    public RNEscUSBPrinterModule(ReactApplicationContext reactContext) {
+    public EscUSBPrinter(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
     }
@@ -92,6 +92,6 @@ public class RNEscUSBPrinterModule extends ReactContextBaseJavaModule implements
 
     @Override
     public String getName() {
-        return "RNEscUSBPrinter";
+        return "EscUsbPrinter";
     }
 }
