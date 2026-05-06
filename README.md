@@ -1,68 +1,112 @@
 # react-native-printer
 
-Standardized React Native printing library for Kaseru use cases.
+React Native printer library for ESC/POS and TSC on Bluetooth, Wi-Fi and USB.
 
-Initial phase goals:
-- Receipt ESC/POS
-- Label TSC
-- Bluetooth / Wi-Fi / USB connectivity
-- Consolidate printing engines into one repo for easier maintenance
-- Bring production native modules into one place
+Based on:
+- https://github.com/kaseru/react-native-bluetooth-escpos-printer
+- https://github.com/thiendangit/react-native-thermal-receipt-printer-image-qr
 
-## Current scope
+## Usage guide
 
-This repository is built to replace fragmented printer-library usage in the current app.
+### Install
 
-Reference/base sources currently used:
-- Bluetooth ESC/POS + TSC:
-  - https://github.com/kaseru/react-native-bluetooth-escpos-printer
-- Wi-Fi / USB / BLE thermal printer:
-  - https://github.com/thiendangit/react-native-thermal-receipt-printer-image-qr
+```bash
+yarn add react-native-printer
+```
 
-Notes:
-- This repo already includes the TSC native modules used by the app.
-- iOS network printer files currently use a raw socket patch from the app.
+For iOS, install pods after adding the package:
 
-## Architecture direction
+```bash
+cd ios && pod install
+```
 
-- `src/index.ts`: public facade with compatible exports
-- `src/legacy/bluetooth`: wrapper for Bluetooth ESC/POS + TSC
-- `src/legacy/thermal`: wrapper for Net / USB / BLE receipt printing
-- `android/`: Android source consolidated under `com.xgitvn.printer`
-- `ios/`: single active iOS source
+### Import
 
-## Phase 1
+```ts
+import {
+  EscNetPrinter,
+  EscUsbPrinter,
+  EscBluetoothPrinter,
+  TscNetPrinter,
+  TscUsbPrinter,
+  TscBluetoothPrinter,
+  COMMANDS,
+  ping,
+} from "react-native-printer";
+```
 
-Priorities:
-- Bluetooth ESC/POS
-- Bluetooth TSC
-- Wi-Fi ESC/POS
-- USB ESC/POS
-- TSC TCP/USB native modules
-- Stable basic public API:
-  - `connect()`
-  - `disconnect()`
-  - `printText()`
-  - `printImageBase64()`
-  - `printReceipt()`
-  - `printLabel()`
-  - `cut()`
-  - `openDrawer()`
+### ESC/POS over Wi-Fi (receipt)
 
-## Migration strategy
+```ts
+async function printReceipt() {
+  await EscNetPrinter.init();
+  await EscNetPrinter.connectPrinter("192.168.1.120", 9100, 2000);
 
-The first step is to wrap existing engines into a unified API.
-Then split renderer / capability / transport layers further if needed.
+  EscNetPrinter.printText("Store demo\n");
+  EscNetPrinter.printColumnsText(
+    ["Coffee", "2", "50,000"],
+    [16, 6, 10],
+    [0, 2, 2],
+    []
+  );
+  EscNetPrinter.printBill("Thank you!\n", { cut: true, beep: true });
 
+  await EscNetPrinter.closeConn();
+}
+```
 
+### ESC/POS over USB (Android only)
 
-## TODO
+```ts
+async function printViaUsb() {
+  await EscUsbPrinter.init();
+  const devices = await EscUsbPrinter.getDeviceList();
+  if (!devices.length) throw new Error("No USB printer found");
 
-- [x] Import Bluetooth base code from the Kaseru repo
-- [x] Import Net/USB/BLE base code from the thermal repo
-- [x] Import TSC native modules from the app
-- [x] Standardize Android namespace to `com.xgitvn.printer`
-- [ ] Standardize TypeScript types
-- [ ] Design a shared facade API
-- [ ] Add an example app / sample usage
-- [ ] Add migration docs from the old app
+  const first = devices[0];
+  await EscUsbPrinter.connectPrinter(first.vendor_id, first.product_id);
+  EscUsbPrinter.printText("USB print test\n");
+  EscUsbPrinter.printBill("Done\n", { cut: true });
+  await EscUsbPrinter.closeConn();
+}
+```
+
+### Open cash drawer (ESC/POS)
+
+```ts
+EscNetPrinter.openDrawer();
+// or raw command directly
+EscNetPrinter.printText(COMMANDS.CASH_DRAWER.CD_KICK_2);
+```
+
+### TSC label printing
+
+TSC APIs are provided by native modules (`TscNetPrinter`, `TscUsbPrinter`, `TscBluetoothPrinter`).
+Available commands depend on platform native implementations in this repo.
+
+```ts
+// Example: check network reachability before using TscNetPrinter
+const ok = await ping("192.168.1.130", 1000);
+if (ok) {
+  // Call TscNetPrinter native methods here
+}
+```
+
+### Platform notes
+
+- ESC USB is Android-only. iOS will throw `...is not supported on iOS` for ESC USB calls.
+- ESC Net is available on both Android and iOS.
+- TSC USB fallback on iOS is not supported.
+- Some iOS ESC printing paths preprocess inline style tags such as `<B>`, `<C>`, `<M>`.
+
+### Exported API (current)
+
+- `EscNetPrinter`
+- `EscUsbPrinter`
+- `EscBluetoothPrinter`
+- `BluetoothManager`
+- `TscNetPrinter`
+- `TscUsbPrinter`
+- `TscBluetoothPrinter`
+- `COMMANDS`
+- `ping(host, timeoutMs?)`
