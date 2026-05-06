@@ -14,17 +14,8 @@ Pod::Spec.new do |s|
   s.source_files = 'ios/**/*.{h,m,swift}'
   s.exclude_files = [
     'ios/**/*.xcodeproj/**',
-    'ios/**/*.xcworkspace/**',
-    'ios/ZXingObjC-3.2.2/*.md',
-    'ios/ZXingObjC-3.2.2/AUTHORS',
-    'ios/ZXingObjC-3.2.2/COPYING',
-    'ios/ZXingObjC-3.2.2/NOTICE',
-    'ios/ZXingObjC-3.2.2/*-Info.plist',
-    'ios/ZXingObjC-3.2.2/*-Prefix.pch'
+    'ios/**/*.xcworkspace/**'
   ]
   s.requires_arc = true
   s.dependency 'React'
-  s.xcconfig = {
-    'HEADER_SEARCH_PATHS' => '"${PODS_TARGET_SRCROOT}/ios/ZXingObjC-3.2.2/**"'
-  }
 end
