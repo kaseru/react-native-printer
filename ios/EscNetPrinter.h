@@ -51,6 +51,6 @@
 - (void)sendHex:(NSString *)hex
            fail:(RCTResponseSenderBlock)errorCallback;
 
-- (void)closeConn;
+- (void)disconnect;
 
 @end

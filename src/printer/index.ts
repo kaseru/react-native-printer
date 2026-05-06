@@ -163,12 +163,12 @@ const EscUsbPrinter = {
       )
     ),
 
-  closeConn: (): Promise<void> =>
+  disconnect: (): Promise<void> =>
     Platform.OS === "ios"
       ? Promise.resolve()
       :
     new Promise((resolve) => {
-      EscUsbPrinterModule.closeConn();
+      EscUsbPrinterModule.disconnect();
       resolve();
     }),
 
@@ -283,9 +283,9 @@ const EscNetPrinter = {
       }
     }),
 
-  closeConn: (): Promise<void> =>
+  disconnect: (): Promise<void> =>
     new Promise((resolve) => {
-      EscNetPrinterModule.closeConn();
+      EscNetPrinterModule.disconnect();
       resolve();
     }),
 

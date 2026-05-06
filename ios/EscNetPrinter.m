@@ -597,7 +597,7 @@ RCT_EXPORT_METHOD(sendHex:(NSString *)hex
     }
 }
 
-RCT_EXPORT_METHOD(closeConn)
+RCT_EXPORT_METHOD(disconnect)
 {
     @try {
         [self cleanupStreams];

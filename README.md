@@ -51,7 +51,7 @@ async function printReceipt() {
   );
   EscNetPrinter.printBill("Thank you!\n", { cut: true, beep: true });
 
-  await EscNetPrinter.closeConn();
+  await EscNetPrinter.disconnect();
 }
 ```
 
@@ -67,7 +67,7 @@ async function printViaUsb() {
   await EscUsbPrinter.connect(first.vendor_id, first.product_id);
   EscUsbPrinter.printText("USB print test\n");
   EscUsbPrinter.printBill("Done\n", { cut: true });
-  await EscUsbPrinter.closeConn();
+  await EscUsbPrinter.disconnect();
 }
 ```
 

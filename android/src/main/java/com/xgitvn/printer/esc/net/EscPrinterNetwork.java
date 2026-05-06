@@ -37,7 +37,7 @@ public class EscPrinterNetwork extends ReactContextBaseJavaModule implements Esc
 
     @ReactMethod
     @Override
-    public void closeConn() {
+    public void disconnect() {
         if (this.adapter == null) {
             this.adapter = EscNetPrinterAdapter.getInstance();
         }

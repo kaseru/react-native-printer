@@ -5,7 +5,7 @@ import com.facebook.react.bridge.Callback;
 public interface EscPrinter {
     void init(Callback successCallback, Callback errorCallback);
 
-    void closeConn();
+    void disconnect();
 
     void getDeviceList(Callback successCallback, Callback errorCallback);
 

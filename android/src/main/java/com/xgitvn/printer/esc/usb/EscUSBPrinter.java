@@ -42,7 +42,7 @@ public class EscUSBPrinter extends ReactContextBaseJavaModule implements EscPrin
 
     @ReactMethod
     @Override
-    public void closeConn()  {
+    public void disconnect()  {
         if (this.adapter == null) {
             this.adapter = EscUSBPrinterAdapter.getInstance();
         }
