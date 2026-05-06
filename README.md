@@ -54,10 +54,7 @@ Priorities:
 The first step is to wrap existing engines into a unified API.
 Then split renderer / capability / transport layers further if needed.
 
-## iOS source of truth
 
-- The active iOS source is in `ios/`.
-- `EscNetPrinter.m` in `ios/` is the patched version that supports `rawSocket`.
 
 ## TODO
 

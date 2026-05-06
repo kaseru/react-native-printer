@@ -4,7 +4,6 @@
 //
 
 #import "EscNetPrinter.h"
-#import "PrinterSDK.h"
 #include <ifaddrs.h>
 #include <arpa/inet.h>
 #import <CoreFoundation/CoreFoundation.h>
@@ -50,7 +49,6 @@ static const NSInteger kPrinterWriteChunkSize = 4096;
 @property (nonatomic, strong) NSOutputStream *outputStream;
 @property (nonatomic, copy) NSString *connectedHost;
 @property (nonatomic, strong) NSNumber *connectedPort;
-@property (nonatomic, copy) NSString *connectionMode;
 @end
 
 @implementation EscNetPrinter
@@ -61,18 +59,6 @@ static const NSInteger kPrinterWriteChunkSize = 4096;
 }
 
 RCT_EXPORT_MODULE()
-
-- (NSString *)normalizedConnectionMode:(NSString *)mode
-{
-    (void)mode;
-    return @"rawSocket";
-}
-
-- (BOOL)useLegacyConnectionMode
-{
-    return [[self normalizedConnectionMode:self.connectionMode] isEqualToString:@"legacy"];
-}
-
 
 - (NSArray<NSString *> *)supportedEvents
 {
@@ -97,12 +83,6 @@ RCT_EXPORT_MODULE()
     self.connectedHost = nil;
     self.connectedPort = nil;
 } 
-
-- (void)setConnectionModeInternal:(NSString *)mode
-{
-    self.connectionMode = [self normalizedConnectionMode:mode];
-}
-
 
 - (BOOL)isConnected
 {
@@ -402,22 +382,9 @@ RCT_EXPORT_METHOD(init:(RCTResponseSenderBlock)successCallback
                   fail:(RCTResponseSenderBlock)errorCallback)
 {
     [self cleanupStreams];
-    [self setConnectionModeInternal:self.connectionMode ?: @"rawSocket"];
     is_scanning = NO;
     _printerArray = [NSMutableArray new];
     successCallback(@[@"Init successful"]);
-}
-
-RCT_EXPORT_METHOD(setConnectionMode:(NSString *)mode
-                  success:(RCTResponseSenderBlock)successCallback
-                  fail:(RCTResponseSenderBlock)errorCallback)
-{
-    @try {
-        [self setConnectionModeInternal:mode];
-        successCallback(@[self.connectionMode ?: @"rawSocket"]);
-    } @catch (NSException *exception) {
-        errorCallback(@[exception.reason]);
-    }
 }
 
 RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCallback
@@ -444,9 +411,11 @@ RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCallback
         for (NSInteger i = 1; i < 255; i++) {
             if (i == suffix) continue;
             NSString *testIP = [NSString stringWithFormat:@"%@.%ld", prefix, (long)i];
-            current_scan_ip = testIP;
-            [[PrinterSDK defaultPrinterSDK] connectIP:testIP];
-            [NSThread sleepForTimeInterval:0.5];
+            NSError *probeError = nil;
+            if ([self openSocketToHost:testIP port:@9100 error:&probeError]) {
+                [_printerArray addObject:@{ @"host": testIP, @"port": @9100 }];
+                [self cleanupStreams];
+            }
         }
 
         NSOrderedSet *orderedSet = [NSOrderedSet orderedSetWithArray:_printerArray];
@@ -458,16 +427,14 @@ RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCallback
     } @catch (NSException *exception) {
         NSLog(@"No connection");
     }
-    [[PrinterSDK defaultPrinterSDK] disconnect];
+    [self cleanupStreams];
     is_scanning = NO;
     [self sendEventWithName:EVENT_SCANNER_RUNNING body:@NO];
 }
 
 - (void)handlePrinterConnectedNotification:(NSNotification *)notification
 {
-    if (is_scanning) {
-        [_printerArray addObject:@{ @"host": current_scan_ip, @"port": @9100 }];
-    }
+    (void)notification;
 }
 
 RCT_EXPORT_METHOD(connectPrinter:(NSString *)host
@@ -476,22 +443,14 @@ RCT_EXPORT_METHOD(connectPrinter:(NSString *)host
                   fail:(RCTResponseSenderBlock)errorCallback)
 {
     @try {
-        if ([self useLegacyConnectionMode]) {
-            BOOL isConnectSuccess = [[PrinterSDK defaultPrinterSDK] connectIP:host];
-            !isConnectSuccess ? [NSException raise:@"Invalid connection" format:@"Can't connect to printer %@", host] : nil;
-            connected_ip = host;
-            self.connectedHost = host;
-            self.connectedPort = port;
-        } else {
-            NSError *error = nil;
-            BOOL ok = [self openSocketToHost:host port:port error:&error];
-            if (!ok) {
-                [NSException raise:@"Invalid connection" format:@"%@", error.localizedDescription ?: [NSString stringWithFormat:@"Can't connect to printer %@", host]];
-            }
+        NSError *error = nil;
+        BOOL ok = [self openSocketToHost:host port:port error:&error];
+        if (!ok) {
+            [NSException raise:@"Invalid connection" format:@"%@", error.localizedDescription ?: [NSString stringWithFormat:@"Can't connect to printer %@", host]];
         }
 
         [[NSNotificationCenter defaultCenter] postNotificationName:@"EscNetPrinterConnected" object:nil];
-        successCallback(@[[NSString stringWithFormat:@"Connected to printer %@:%@ (%@)", host, port, self.connectionMode ?: @"rawSocket"]]);
+        successCallback(@[[NSString stringWithFormat:@"Connected to printer %@:%@", host, port]]);
     } @catch (NSException *exception) {
         errorCallback(@[exception.reason]);
     }
@@ -506,16 +465,6 @@ RCT_EXPORT_METHOD(printRawData:(NSString *)text
         NSNumber *cutPtr = [options valueForKey:@"cut"];
         BOOL beep = (BOOL)[beepPtr intValue];
         BOOL cut = (BOOL)[cutPtr intValue];
-
-        if ([self useLegacyConnectionMode]) {
-            !connected_ip ? [NSException raise:@"Invalid connection" format:@"Can't connect to printer"] : nil;
-            if (![self containsEscPosControlCharacters:text]) {
-                [[PrinterSDK defaultPrinterSDK] printText:text ?: @""];
-            }
-            beep ? [[PrinterSDK defaultPrinterSDK] beep] : nil;
-            cut ? [[PrinterSDK defaultPrinterSDK] cutPaper] : nil;
-            return;
-        }
 
         NSError *error = nil;
         NSData *data = [self escposDataForText:text ?: @""];
@@ -549,17 +498,6 @@ RCT_EXPORT_METHOD(printImageData:(NSString *)imgUrl
 
         UIImage *image = [UIImage imageWithData:imageData];
         UIImage *printImage = [self getPrintImage:image printerOptions:options];
-
-        if ([self useLegacyConnectionMode]) {
-            NSString *printerWidthType = [options valueForKey:@"printerWidthType"];
-            NSInteger printerWidth = 576;
-            if (printerWidthType != nil && [printerWidthType isEqualToString:@"58"]) {
-                printerWidth = 384;
-            }
-            [[PrinterSDK defaultPrinterSDK] setPrintWidth:printerWidth];
-            [[PrinterSDK defaultPrinterSDK] printImage:printImage];
-            return;
-        }
 
         NSData *imageBytes = [self escposBitImageDataForImage:printImage];
         NSError *error = nil;
@@ -596,17 +534,6 @@ RCT_EXPORT_METHOD(printImageBase64:(NSString *)base64Qr
         UIImage *image = [UIImage imageWithData:imageData];
         UIImage *printImage = [self getPrintImage:image printerOptions:options];
 
-        if ([self useLegacyConnectionMode]) {
-            NSString *printerWidthType = [options valueForKey:@"printerWidthType"];
-            NSInteger printerWidth = 576;
-            if (printerWidthType != nil && [printerWidthType isEqualToString:@"58"]) {
-                printerWidth = 384;
-            }
-            [[PrinterSDK defaultPrinterSDK] setPrintWidth:printerWidth];
-            [[PrinterSDK defaultPrinterSDK] printImage:printImage];
-            return;
-        }
-
         NSData *imageBytes = [self escposBitImageDataForImage:printImage];
         NSError *error = nil;
         if (imageBytes && ![self writeData:imageBytes error:&error]) {
@@ -622,15 +549,6 @@ RCT_EXPORT_METHOD(printBill:(NSString *)text
                   fail:(RCTResponseSenderBlock)errorCallback)
 {
     @try {
-        if ([self useLegacyConnectionMode]) {
-            !connected_ip ? [NSException raise:@"Invalid connection" format:@"Can't connect to printer"] : nil;
-            if (text != nil && text.length > 0) {
-                [[PrinterSDK defaultPrinterSDK] printText:text];
-            }
-            [[PrinterSDK defaultPrinterSDK] cutPaper];
-            return;
-        }
-
         NSMutableData *data = [NSMutableData data];
         if (text != nil && text.length > 0) {
             [data appendData:[self escposDataForText:text]];
@@ -657,12 +575,6 @@ RCT_EXPORT_METHOD(printRaw:(NSString *)base64Data
                   fail:(RCTResponseSenderBlock)errorCallback)
 {
     @try {
-        if ([self useLegacyConnectionMode]) {
-            // Legacy mode uses PrinterSDK high-level APIs (printText/printImage/cutPaper),
-            // raw bytes are intentionally ignored to preserve original library behavior.
-            return;
-        }
-
         NSData *data = [[NSData alloc] initWithBase64EncodedString:base64Data options:NSDataBase64DecodingIgnoreUnknownCharacters];
         if (!data) {
             [NSException raise:@"Invalid raw data" format:@"Cannot decode base64 raw data"];
@@ -681,11 +593,6 @@ RCT_EXPORT_METHOD(sendHex:(NSString *)hex
                   fail:(RCTResponseSenderBlock)errorCallback)
 {
     @try {
-        if ([self useLegacyConnectionMode]) {
-            // Legacy mode should not send low-level raw commands.
-            return;
-        }
-
         NSData *data = [self dataForHexString:hex ?: @""];
         NSError *error = nil;
         if (![self writeData:data error:&error]) {
@@ -699,14 +606,7 @@ RCT_EXPORT_METHOD(sendHex:(NSString *)hex
 RCT_EXPORT_METHOD(closeConn)
 {
     @try {
-        if ([self useLegacyConnectionMode]) {
-            [[PrinterSDK defaultPrinterSDK] disconnect];
-            connected_ip = nil;
-            self.connectedHost = nil;
-            self.connectedPort = nil;
-        } else {
-            [self cleanupStreams];
-        }
+        [self cleanupStreams];
     } @catch (NSException *exception) {
         NSLog(@"%@", exception.reason);
     }
