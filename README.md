@@ -104,7 +104,7 @@ if (ok) {
 - `EscNetPrinter`
 - `EscUsbPrinter`
 - `EscBluetoothPrinter`
-- `BluetoothManager`
+- `BluetoothPrinter`
 - `TscNetPrinter`
 - `TscUsbPrinter`
 - `TscBluetoothPrinter`

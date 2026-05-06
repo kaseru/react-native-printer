@@ -1,5 +1,5 @@
 //
-//  BluetoothManager.h
+//  BluetoothPrinter.h
 //  EscBluetoothPrinter
 //
 //  Created by januslo on 2018/9/28.
@@ -15,7 +15,7 @@
 - (void) didWriteDataToBle: (BOOL)success;
 @end
 
-@interface BluetoothManager : RCTEventEmitter <RCTBridgeModule, CBCentralManagerDelegate, CBPeripheralDelegate>
+@interface BluetoothPrinter : RCTEventEmitter <RCTBridgeModule, CBCentralManagerDelegate, CBPeripheralDelegate>
 @property (strong, nonatomic) CBCentralManager      *centralManager;
 @property (nonatomic,copy) RCTPromiseResolveBlock scanResolveBlock;
 @property (nonatomic,copy) RCTPromiseRejectBlock scanRejectBlock;

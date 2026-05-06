@@ -6,7 +6,7 @@
 //  Copyright © 2018年 Facebook. All rights reserved.
 //
 #import <React/RCTBridge.h>
-#import "BluetoothManager.h"
+#import "BluetoothPrinter.h"
 #import "EscBluetoothPrinter.h"
 
 @interface ColumnPrintBleWriter:NSObject<WriteDataToBleDelegate>

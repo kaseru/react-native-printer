@@ -3,7 +3,7 @@ import com.xgitvn.printer.esc.usb.EscUSBPrinter;
 import com.xgitvn.printer.esc.net.EscPrinterNetwork;
 
 import com.xgitvn.printer.core.BluetoothService;
-import com.xgitvn.printer.core.BluetoothManager;
+import com.xgitvn.printer.core.BluetoothPrinter;
 import com.xgitvn.printer.esc.bluetooth.EscBluetoothPrinter;
 import com.xgitvn.printer.tsc.bluetooth.TscBluetoothPrinter;
 import com.xgitvn.printer.tsc.net.TscNetPrinter;
@@ -28,7 +28,7 @@ public class PrinterPackage implements ReactPackage {
         return Arrays.asList(new NativeModule[]{
                 new EscUSBPrinter(reactContext),
                 new EscPrinterNetwork(reactContext),
-                new BluetoothManager(reactContext, bluetoothService),
+                new BluetoothPrinter(reactContext, bluetoothService),
                 new EscBluetoothPrinter(reactContext, bluetoothService),
                 new TscBluetoothPrinter(reactContext, bluetoothService),
                 new TscNetPrinter(reactContext),

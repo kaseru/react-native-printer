@@ -32,10 +32,10 @@ import java.util.Set;
 /**
  * Created by januslo on 2018/9/22.
  */
-public class BluetoothManager extends ReactContextBaseJavaModule
+public class BluetoothPrinter extends ReactContextBaseJavaModule
         implements ActivityEventListener, BluetoothServiceStateObserver {
 
-    private static final String TAG = "BluetoothManager";
+    private static final String TAG = "BluetoothPrinter";
     private final ReactApplicationContext reactContext;
     public static final String EVENT_DEVICE_ALREADY_PAIRED = "EVENT_DEVICE_ALREADY_PAIRED";
     public static final String EVENT_DEVICE_FOUND = "EVENT_DEVICE_FOUND";
@@ -77,7 +77,7 @@ public class BluetoothManager extends ReactContextBaseJavaModule
     // Member object for the services
     private BluetoothService mService = null;
 
-    public BluetoothManager(ReactApplicationContext reactContext, BluetoothService bluetoothService) {
+    public BluetoothPrinter(ReactApplicationContext reactContext, BluetoothService bluetoothService) {
         super(reactContext);
         this.reactContext = reactContext;
         this.reactContext.addActivityEventListener(this);
@@ -388,7 +388,7 @@ public class BluetoothManager extends ReactContextBaseJavaModule
 
     @Override
     public String getName() {
-        return "BluetoothManager";
+        return "BluetoothPrinter";
     }
 
 

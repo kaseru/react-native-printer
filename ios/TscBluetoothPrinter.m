@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "TscBluetoothPrinter.h"
 #import "TscCommand.h"
-#import "BluetoothManager.h"
+#import "BluetoothPrinter.h"
 
 @implementation TscBluetoothPrinter
 
@@ -152,7 +152,7 @@ RCT_EXPORT_METHOD(printLabel:(NSDictionary *) options withResolve:(RCTPromiseRes
     _pendingResolve = resolve;
     toPrint = tsc.command;
     now = 0;
-    [BluetoothManager writeValue:toPrint withDelegate:self];
+    [BluetoothPrinter writeValue:toPrint withDelegate:self];
 }
 
 - (void) didWriteDataToBle: (BOOL)success{

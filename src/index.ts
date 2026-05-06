@@ -2,7 +2,7 @@ import {
   EscNetPrinter,
   EscUsbPrinter,
   COMMANDS,
-  BluetoothManager,
+  BluetoothPrinter,
   EscBluetoothPrinter,
   TscBluetoothPrinter,
   TscNetPrinter,
@@ -11,7 +11,7 @@ import {
 
 export {
   EscBluetoothPrinter,
-  BluetoothManager,
+  BluetoothPrinter,
   TscBluetoothPrinter,
   COMMANDS,
   EscNetPrinter,

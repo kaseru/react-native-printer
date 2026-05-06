@@ -9,7 +9,7 @@ import { connectToHost } from "./utils/net-connect";
 const {
   EscUsbPrinter: EscUsbPrinterModule,
   EscNetPrinter: EscNetPrinterModule,
-  BluetoothManager,
+  BluetoothPrinter,
   EscBluetoothPrinter,
   TscBluetoothPrinter,
   TscNetPrinter,
@@ -551,7 +551,7 @@ export {
   EscNetPrinter,
   EscUsbPrinter,
   EscNetPrinterEventEmitter,
-  BluetoothManager,
+  BluetoothPrinter,
   TscNetPrinter,
   TscUsbPrinterModule as TscUsbPrinter,
   EscBluetoothPrinter,

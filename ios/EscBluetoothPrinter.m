@@ -2,7 +2,7 @@
 #import <React/RCTBridge.h>
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "BluetoothManager.h"
+#import "BluetoothPrinter.h"
 #import "EscBluetoothPrinter.h"
 #import "ColumnTextSplitter.h"
 #import "ColumnPrintBleWriter.h"
@@ -86,14 +86,14 @@ RCT_EXPORT_METHOD(setWidth:(int) width)
 RCT_EXPORT_METHOD(printerInit:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if(BluetoothManager.isConnected){
+    if(BluetoothPrinter.isConnected){
         NSMutableData *data = [[NSMutableData alloc] init];
         Byte at[] = {'@'};
         [data appendBytes:ESC length:1];
         [data appendBytes:at length:1];
         pendingResolve = resolve;
         pendingReject = reject;
-        [BluetoothManager writeValue:data withDelegate:self];
+        [BluetoothPrinter writeValue:data withDelegate:self];
     }else{
         reject(@"COMMAND_NOT_SEND",@"COMMAND_NOT_SEND",nil);
     }
@@ -112,7 +112,7 @@ RCT_EXPORT_METHOD(printerLeftSpace:(int) sp
         return;
     }
     
-    if(BluetoothManager.isConnected){
+    if(BluetoothPrinter.isConnected){
         NSMutableData *data = [[NSMutableData alloc] init];
         Byte left[] = {'L'};
         Byte sp_up[] = {(sp%100)};
@@ -123,7 +123,7 @@ RCT_EXPORT_METHOD(printerLeftSpace:(int) sp
         [data appendBytes:sp_down length:1];
         pendingResolve = resolve;
         pendingReject = reject;
-        [BluetoothManager writeValue:data withDelegate:self];
+        [BluetoothPrinter writeValue:data withDelegate:self];
     }else{
         reject(@"COMMAND_NOT_SEND",@"COMMAND_NOT_SEND",nil);
     }
@@ -138,7 +138,7 @@ RCT_EXPORT_METHOD(printerUnderLine:(int)sp withResolver:(RCTPromiseResolveBlock)
           reject(@"COMMAND_NOT_SEND",@"INVALID_VALUE",nil);
         return;
     }
-    if(BluetoothManager.isConnected){
+    if(BluetoothPrinter.isConnected){
         NSMutableData *data = [[NSMutableData alloc] init];
         Byte under_line[] = {45};
         Byte spb[] = {sp};
@@ -150,7 +150,7 @@ RCT_EXPORT_METHOD(printerUnderLine:(int)sp withResolver:(RCTPromiseResolveBlock)
         [data appendBytes:spb length:1];
         pendingResolve = resolve;
         pendingReject = reject;
-        [BluetoothManager writeValue:data withDelegate:self];
+        [BluetoothPrinter writeValue:data withDelegate:self];
     }else{
         reject(@"COMMAND_NOT_SEND",@"COMMAND_NOT_SEND",nil);
     }
@@ -160,7 +160,7 @@ RCT_EXPORT_METHOD(printerUnderLine:(int)sp withResolver:(RCTPromiseResolveBlock)
 RCT_EXPORT_METHOD(printText:(NSString *) text withOptions:(NSDictionary *) options
                   resolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject)
 {NSLog(@"printing text...with options: %@",options);
-    if(!BluetoothManager.isConnected){
+    if(!BluetoothPrinter.isConnected){
           reject(@"COMMAND_NOT_SEND",@"COMMAND_NOT_SEND",nil);
     }else{
         @try{
@@ -243,13 +243,13 @@ RCT_EXPORT_METHOD(printText:(NSString *) text withOptions:(NSDictionary *) optio
   
     NSLog(@"Goting to write text : %@",text);
     NSLog(@"With data: %@",toSend);
-    [BluetoothManager writeValue:toSend withDelegate:delegate];
+    [BluetoothPrinter writeValue:toSend withDelegate:delegate];
 }
 
 RCT_EXPORT_METHOD(rotate:(NSInteger *)rotate
                   withResolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject)
 {
-    if(BluetoothManager.isConnected){
+    if(BluetoothPrinter.isConnected){
         //    //取消/选择90度旋转打印
        // public static byte[] ESC_V = new byte[] {ESC, 'V', 0x00 };
         NSMutableData *data = [[NSMutableData alloc] init];
@@ -259,7 +259,7 @@ RCT_EXPORT_METHOD(rotate:(NSInteger *)rotate
         [data appendBytes:rotateBytes length:1];
         pendingReject = reject;
         pendingResolve = resolve;
-        [BluetoothManager writeValue:data withDelegate:self];
+        [BluetoothPrinter writeValue:data withDelegate:self];
     }else{
            reject(@"COMMAND_NOT_SEND",@"COMMAND_NOT_SEND",nil);
     }
@@ -273,7 +273,7 @@ RCT_EXPORT_METHOD(rotate:(NSInteger *)rotate
 RCT_EXPORT_METHOD(printerAlign:(NSInteger *) align
                    withResolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject)
 {
-    if(BluetoothManager.isConnected){
+    if(BluetoothPrinter.isConnected){
         //if ((align < 0 || align > 2) && (align < 48 || align > 50)) return null;
         if((align < 0 || align > 2) && (align < 48 || align > 50)){
              reject(@"INVALD_PARAMETERS",@"INVALD_PARAMETERS",nil);
@@ -285,7 +285,7 @@ RCT_EXPORT_METHOD(printerAlign:(NSInteger *) align
             [toSend appendBytes:&align length:sizeof(align)];
             pendingReject =reject;
             pendingResolve =resolve;
-            [BluetoothManager writeValue:toSend withDelegate:self];
+            [BluetoothPrinter writeValue:toSend withDelegate:self];
         }
     }else{
          reject(@"COMMAND_NOT_SEND",@"COMMAND_NOT_SEND",nil);
@@ -299,7 +299,7 @@ RCT_EXPORT_METHOD(printColumn:(NSArray *)columnWidths
                   resolver:(RCTPromiseResolveBlock) resolve
                   rejecter:(RCTPromiseRejectBlock) reject)
 {
-    if(!BluetoothManager.isConnected){
+    if(!BluetoothPrinter.isConnected){
         reject(@"COMMAND_NOT_SEND",@"COMMAND_NOT_SEND",nil);
     }else{
         @try{
@@ -467,14 +467,14 @@ RCT_EXPORT_METHOD(setBlob:(NSInteger) sp
     [toSend appendBytes:&sp length:sizeof(sp)];
     pendingReject =reject;
     pendingResolve = resolve;
-    [BluetoothManager writeValue:toSend withDelegate:self];
+    [BluetoothPrinter writeValue:toSend withDelegate:self];
 }
 
 RCT_EXPORT_METHOD(printPic:(NSString *) base64encodeStr withOptions:(NSDictionary *) options
                   resolver:(RCTPromiseResolveBlock) resolve
                   rejecter:(RCTPromiseRejectBlock) reject)
 {
-    if(BluetoothManager.isConnected){
+    if(BluetoothPrinter.isConnected){
         @try{
             NSInteger nWidth = [[options valueForKey:@"width"] integerValue];
             if(!nWidth) nWidth = _deviceWidth;
@@ -558,7 +558,7 @@ RCT_EXPORT_METHOD(printBarCode:(NSString *) str withType:(NSInteger)
     
     pendingReject = reject;
     pendingResolve = resolve;
-    [BluetoothManager writeValue:toPrint withDelegate:self];
+    [BluetoothPrinter writeValue:toPrint withDelegate:self];
 }
 //  L:1,
 //M:0,
@@ -580,9 +580,9 @@ RCT_EXPORT_METHOD(printAndFeed:(NSInteger)lines
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if(BluetoothManager.isConnected){
+    if(BluetoothPrinter.isConnected){
         unsigned char cmd[3] = {0x1B, 0x64, (unsigned char)lines};
-        [BluetoothManager writeValue:[NSData dataWithBytes:cmd length:3] withDelegate:nil];
+        [BluetoothPrinter writeValue:[NSData dataWithBytes:cmd length:3] withDelegate:nil];
         resolve(@(YES));
     }else{
         reject(@"COMMAND_NOT_SEND",@"COMMAND_NOT_SEND",nil);
@@ -596,10 +596,10 @@ RCT_EXPORT_METHOD(openDrawer:(NSInteger)pin
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if(BluetoothManager.isConnected){
+    if(BluetoothPrinter.isConnected){
        // Lệnh chuẩn ESC/POS mở drawer pin 0 hoặc 2
         unsigned char cmd[5] = {0x1B, 0x70, (unsigned char)pin, (unsigned char)onTime, (unsigned char)offTime};
-        [BluetoothManager writeValue:[NSData dataWithBytes:cmd length:5] withDelegate:nil];
+        [BluetoothPrinter writeValue:[NSData dataWithBytes:cmd length:5] withDelegate:nil];
         resolve(@(YES));
     }else{
         reject(@"COMMAND_NOT_SEND",@"COMMAND_NOT_SEND",nil);
@@ -609,9 +609,9 @@ RCT_EXPORT_METHOD(openDrawer:(NSInteger)pin
 RCT_EXPORT_METHOD(cutOnePoint :(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if ([BluetoothManager isConnected]) {
+    if ([BluetoothPrinter isConnected]) {
         unsigned char cmd[4] = {0x1D, 0x56, 0x42, 0x00};  // GS V B 0 - partial cut
-        [BluetoothManager writeValue:[NSData dataWithBytes:cmd length:4] withDelegate:nil];
+        [BluetoothPrinter writeValue:[NSData dataWithBytes:cmd length:4] withDelegate:nil];
         resolve(@(YES));
     } else {
         reject(@"COMMAND_NOT_SEND", @"Máy in chưa kết nối hoặc không gửi được lệnh", nil);

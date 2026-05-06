@@ -6,14 +6,14 @@
 //  Copyright © 2018年 Facebook. All rights reserved.
 //
 #import <React/RCTBridge.h>
-#import "BluetoothManager.h"
+#import "BluetoothPrinter.h"
 #import "EscBluetoothPrinter.h"
 @interface ImagePrintBleWriter :NSObject<WriteDataToBleDelegate>
 @property NSData *toPrint;
 @property NSInteger width;
 @property NSInteger linesPerChunk;
 @property NSInteger now;
-@property BluetoothManager *printer;
+@property BluetoothPrinter *printer;
 @property RCTPromiseRejectBlock pendingReject;
 @property RCTPromiseResolveBlock pendingResolve;
 -(void) print;

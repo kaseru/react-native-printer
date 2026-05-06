@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		001000000000000000000001 /* BluetoothManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 002000000000000000000001 /* BluetoothManager.m */; };
+		001000000000000000000001 /* BluetoothPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 002000000000000000000001 /* BluetoothPrinter.m */; };
 		001000000000000000000002 /* EscBluetoothPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 002000000000000000000003 /* EscBluetoothPrinter.m */; };
 		001000000000000000000003 /* EscNetPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 002000000000000000000005 /* EscNetPrinter.m */; };
 		001000000000000000000004 /* TscBluetoothPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 00200000000000000000000F /* TscBluetoothPrinter.m */; };
@@ -80,8 +80,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		002000000000000000000001 /* BluetoothManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BluetoothManager.m; sourceTree = "<group>"; };
-		002000000000000000000002 /* BluetoothManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BluetoothManager.h; sourceTree = "<group>"; };
+		002000000000000000000001 /* BluetoothPrinter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BluetoothPrinter.m; sourceTree = "<group>"; };
+		002000000000000000000002 /* BluetoothPrinter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BluetoothPrinter.h; sourceTree = "<group>"; };
 		002000000000000000000003 /* EscBluetoothPrinter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EscBluetoothPrinter.m; sourceTree = "<group>"; };
 		002000000000000000000004 /* EscBluetoothPrinter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EscBluetoothPrinter.h; sourceTree = "<group>"; };
 		002000000000000000000005 /* EscNetPrinter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EscNetPrinter.m; sourceTree = "<group>"; };
@@ -124,8 +124,8 @@
 		004000000000000000000001 = {
 			isa = PBXGroup;
 			children = (
-				002000000000000000000002 /* BluetoothManager.h */,
-				002000000000000000000001 /* BluetoothManager.m */,
+				002000000000000000000002 /* BluetoothPrinter.h */,
+				002000000000000000000001 /* BluetoothPrinter.m */,
 				002000000000000000000004 /* EscBluetoothPrinter.h */,
 				002000000000000000000003 /* EscBluetoothPrinter.m */,
 				002000000000000000000006 /* EscNetPrinter.h */,
@@ -288,7 +288,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				001000000000000000000001 /* BluetoothManager.m in Sources */,
+				001000000000000000000001 /* BluetoothPrinter.m in Sources */,
 				001000000000000000000002 /* EscBluetoothPrinter.m in Sources */,
 				001000000000000000000003 /* EscNetPrinter.m in Sources */,
 				001000000000000000000004 /* TscBluetoothPrinter.m in Sources */,

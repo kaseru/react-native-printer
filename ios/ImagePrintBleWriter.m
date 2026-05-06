@@ -24,7 +24,7 @@
         } else if (_now >= [_toPrint length]) {
             // End cmd ASCII ESC M 0 CR LF
             unsigned char initPrinter[5] = {27, 77, 0, 13, 10};
-            [BluetoothManager writeValue:[NSData dataWithBytes:initPrinter length:5] withDelegate:self];
+            [BluetoothPrinter writeValue:[NSData dataWithBytes:initPrinter length:5] withDelegate:self];
             _now = -1;
             [NSThread sleepForTimeInterval:0.01f];
         } else {
@@ -49,7 +49,7 @@
         chunkSize = MIN(remaining, _linesPerChunk * bytesPerLine);
         NSData *subData = [_toPrint subdataWithRange:NSMakeRange(_now, chunkSize)];
         NSLog(@"Write data (%ld bytes, %ld lines)", (long)chunkSize, (long)_linesPerChunk);
-        [BluetoothManager writeValue:subData withDelegate:self];
+        [BluetoothPrinter writeValue:subData withDelegate:self];
         _now += chunkSize;
         [NSThread sleepForTimeInterval:0.01f];
     }
