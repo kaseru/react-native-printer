@@ -6,6 +6,7 @@
 //  Copyright © 2018年 Facebook. All rights reserved.
 //
 #import <React/RCTBridge.h>
+#import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 
@@ -14,7 +15,7 @@
 - (void) didWriteDataToBle: (BOOL)success;
 @end
 
-@interface BluetoothManager <CBCentralManagerDelegate,CBPeripheralDelegate> : RCTEventEmitter <RCTBridge>
+@interface BluetoothManager : RCTEventEmitter <RCTBridgeModule, CBCentralManagerDelegate, CBPeripheralDelegate>
 @property (strong, nonatomic) CBCentralManager      *centralManager;
 @property (nonatomic,copy) RCTPromiseResolveBlock scanResolveBlock;
 @property (nonatomic,copy) RCTPromiseRejectBlock scanRejectBlock;

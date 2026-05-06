@@ -390,7 +390,6 @@ RCT_EXPORT_METHOD(init:(RCTResponseSenderBlock)successCallback
 RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCallback
                   fail:(RCTResponseSenderBlock)errorCallback)
 {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePrinterConnectedNotification:) name:PrinterConnectedNotification object:nil];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self scan:successCallback];
     });
@@ -430,11 +429,6 @@ RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCallback
     [self cleanupStreams];
     is_scanning = NO;
     [self sendEventWithName:EVENT_SCANNER_RUNNING body:@NO];
-}
-
-- (void)handlePrinterConnectedNotification:(NSNotification *)notification
-{
-    (void)notification;
 }
 
 RCT_EXPORT_METHOD(connectPrinter:(NSString *)host

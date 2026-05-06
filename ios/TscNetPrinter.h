@@ -6,11 +6,11 @@
 //  Copyright © 2024 Facebook. All rights reserved.
 //
 
-#import <React/RCTBridge.h>
+#import <React/RCTBridgeModule.h>
 #import <React/RCTLog.h>
 #import "TscCommand.h"
 
-@interface TscNetPrinter : NSObject <RCTBridge>
+@interface TscNetPrinter : NSObject <RCTBridgeModule>
 
 @property (nonatomic, strong) NSOutputStream *outputStream;
 @property (nonatomic, strong) NSInputStream *inputStream;
