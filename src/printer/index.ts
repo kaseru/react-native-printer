@@ -391,6 +391,55 @@ const EscNetPrinter = {
   },
 };
 
+
+const bluetoothConnectWithTimeout = (
+  address: string,
+  timeoutMs: number = 2000
+): Promise<{ status: number; message: string }> =>
+  new Promise((resolve) => {
+    let settled = false;
+
+    BluetoothPrinter.connect(address).then(
+      () => {
+        if (settled) return;
+        settled = true;
+        resolve({ status: 1, message: "Connected" });
+      },
+      () => {
+        if (settled) return;
+        settled = true;
+        resolve({ status: 0, message: "Error" });
+      }
+    );
+
+    setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      resolve({ status: -1, message: "Timeout" });
+    }, timeoutMs);
+  });
+
+const connect = async (
+  address: string,
+  timeoutMs: number = 2000,
+  retryCount: number = 3
+): Promise<{ status: number; message: string }> => {
+  let result = { status: -1, message: "Timeout" };
+  for (let i = 0; i < retryCount; i += 1) {
+    result = await bluetoothConnectWithTimeout(address, timeoutMs);
+    if (result.status !== -1) return result;
+  }
+  return result;
+};
+
+const disconnect = (address: string): Promise<void> =>
+  new Promise((resolve, reject) => {
+    BluetoothPrinter.disconnect(address).then(
+      () => resolve(),
+      (error: Error) => reject(error)
+    );
+  });
+
 const EscNetPrinterEventEmitter =
   Platform.OS === "ios"
     ? new NativeEventEmitter(EscNetPrinterModule)
@@ -545,6 +594,9 @@ EscBluetoothPrinter.ALIGN = {
   CENTER: 1,
   RIGHT: 2,
 };
+
+EscBluetoothPrinter.connect = connect;
+EscBluetoothPrinter.disconnect = disconnect;
 
 export {
   COMMANDS,
