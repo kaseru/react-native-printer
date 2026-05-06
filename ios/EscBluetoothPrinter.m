@@ -83,7 +83,7 @@ RCT_EXPORT_METHOD(setWidth:(int) width)
 //    }
 //}
 
-RCT_EXPORT_METHOD(printerInit:(RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(init:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
     if(BluetoothPrinter.isConnected){

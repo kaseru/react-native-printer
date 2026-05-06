@@ -596,7 +596,6 @@ EscBluetoothPrinter.ALIGN = {
 };
 
 EscBluetoothPrinter.connect = connect;
-EscBluetoothPrinter.init = EscBluetoothPrinter.printerInit;
 EscBluetoothPrinter.disconnect = disconnect;
 
 export {

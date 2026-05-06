@@ -59,7 +59,7 @@ public class EscBluetoothPrinter extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    public void printerInit(final Promise promise){
+    public void init(final Promise promise){
         if(sendDataByte(PrinterCommand.POS_Set_PrtInit())){
             promise.resolve(null);
         }else{
