@@ -5,8 +5,8 @@ import { processColumnText } from "./utils/print-column";
 import { COMMANDS } from "./utils/printer-commands";
 import { connectToHost } from "./utils/net-connect";
 
-const RNUSBEscPrinter = NativeModules.XRNUSBEscPrinter || NativeModules.RNUSBEscPrinter;
-const RNNetEscPrinterLegacy = NativeModules.XRNNetEscPrinter || NativeModules.RNNetEscPrinter;
+const RNUSBEscPrinter = NativeModules.RNUSBEscPrinter;
+const RNNetEscPrinterLegacy = NativeModules.RNNetEscPrinter;
 const RNNetEscPrinterRaw = NativeModules.RNNetEscPrinterRaw;
 
 const getRNNetEscPrinter = () => {

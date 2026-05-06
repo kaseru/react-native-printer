@@ -92,6 +92,6 @@ public class RNUSBEscPrinterModule extends ReactContextBaseJavaModule implements
 
     @Override
     public String getName() {
-        return "XRNUSBEscPrinter";
+        return "RNUSBEscPrinter";
     }
 }

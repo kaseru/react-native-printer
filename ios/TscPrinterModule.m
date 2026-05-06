@@ -10,7 +10,7 @@
 #import <React/RCTLog.h>
 #import <React/RCTBridgeModule.h>
 #import <UIKit/UIKit.h>
-#import "RNBluetoothTscPrinter.h"
+#import "RNTscBluetoothPrinter.h"
 #import "ImageUtils.h"
 #import <Foundation/Foundation.h>
 #import <sys/socket.h>

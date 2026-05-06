@@ -1,18 +1,18 @@
 import { NativeModules } from 'react-native';
 import { NetEscPrinter, USBEscPrinter, COMMANDS } from './printer/thermal';
-import { BluetoothManager, BluetoothEscPrinter, BluetoothTscPrinter } from './printer/bluetooth';
+import { BluetoothManager, BluetoothEscPrinter, TscBluetoothPrinter } from './printer/bluetooth';
 
 export {
   BluetoothEscPrinter,
   BluetoothManager,
-  BluetoothTscPrinter,
+  TscBluetoothPrinter,
   COMMANDS,
   NetEscPrinter,
   USBEscPrinter,
 };
 
-export const TscNetPrinterModule = NativeModules.XTscPrinterModule || NativeModules.TscPrinterModule;
-export const TscUsbPrinterModule = NativeModules.XUsbPrinterModule || NativeModules.UsbPrinterModule;
+export const TscNetPrinterModule = NativeModules.TscNetPrinterModule;
+export const TscUsbPrinterModule = NativeModules.UsbPrinterModule;
 export function ping(host: string, timeoutMs: number = 1000) {
   if (TscNetPrinterModule?.ping) {
     return TscNetPrinterModule.ping(host, timeoutMs);

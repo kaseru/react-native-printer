@@ -1,5 +1,5 @@
 //
-//  RNBluetoothTscPrinter.m
+//  RNTscBluetoothPrinter.m
 //  RNBluetoothEscPrinter
 //
 //  Created by januslo on 2018/10/1.
@@ -7,11 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "RNBluetoothTscPrinter.h"
+#import "RNTscBluetoothPrinter.h"
 #import "RNTscCommand.h"
 #import "RNBluetoothManager.h"
 
-@implementation RNBluetoothTscPrinter
+@implementation RNTscBluetoothPrinter
 
 NSData *toPrint;
 RCTPromiseRejectBlock _pendingReject;
@@ -27,7 +27,7 @@ NSInteger now;
     return YES;
 }
 
-RCT_EXPORT_MODULE(BluetoothTscPrinter);
+RCT_EXPORT_MODULE(TscBluetoothPrinter);
 //printLabel(final ReadableMap options, final Promise promise)
 RCT_EXPORT_METHOD(printLabel:(NSDictionary *) options withResolve:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)

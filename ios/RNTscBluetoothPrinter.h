@@ -1,5 +1,5 @@
 //
-//  RNBluetoothTscPrinter.h
+//  RNTscBluetoothPrinter.h
 //  RNBluetoothEscPrinter
 //
 //  Created by januslo on 2018/10/1.
@@ -7,7 +7,7 @@
 //
 #import <React/RCTBridgeModule.h>
 #import "RNBluetoothManager.h"
-@interface RNBluetoothTscPrinter : NSObject <RCTBridgeModule,WriteDataToBleDelegate>
+@interface RNTscBluetoothPrinter : NSObject <RCTBridgeModule,WriteDataToBleDelegate>
 
 @end
 
