@@ -7,7 +7,7 @@ import {
   TscBluetoothPrinter,
   TscNetPrinter,
   TscUsbPrinter,
-} from './printer';
+} from "./printer";
 
 export {
   EscBluetoothPrinter,
@@ -21,8 +21,5 @@ export {
 };
 
 export function ping(host: string, timeoutMs: number = 1000) {
-  if (TscNetPrinter?.ping) {
-    return TscNetPrinter.ping(host, timeoutMs);
-  }
-  throw new Error('Network printer ping is not available');
+  return TscNetPrinter.ping(host, timeoutMs);
 }
