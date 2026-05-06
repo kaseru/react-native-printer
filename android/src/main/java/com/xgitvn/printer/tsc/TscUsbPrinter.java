@@ -66,7 +66,7 @@ public class TscUsbPrinter extends ReactContextBaseJavaModule {
 
     @Override
     public String getName() {
-        return "UsbPrinter";
+        return "TscUsbPrinter";
     }
 
     @ReactMethod

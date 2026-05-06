@@ -18,7 +18,7 @@ export {
 };
 
 export const TscNetPrinter = NativeModules.TscNetPrinter;
-export const TscUsbPrinter = NativeModules.UsbPrinter;
+export const TscUsbPrinter = NativeModules.TscUsbPrinter;
 export function ping(host: string, timeoutMs: number = 1000) {
   if (TscNetPrinter?.ping) {
     return TscNetPrinter.ping(host, timeoutMs);
