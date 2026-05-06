@@ -214,13 +214,6 @@ const EscUsbPrinter = {
     );
   },
 
-  printRaw: (text: string): void => {
-    if (Platform.OS === "ios") {
-      throwUnsupportedIOSUSB("ESC USB printing");
-    }
-    EscUsbPrinterModule.printRawData(text, (error: Error) => console.warn(error));
-  },
-
   printColumnsText: (
     texts: string[],
     columnWidth: number[],
@@ -357,13 +350,6 @@ const EscNetPrinter = {
         opts?.imageHeight ?? 0,
         (error: Error) => console.warn(error)
       );
-    }
-  },
-
-  printRaw: (text: string): void => {
-    if (Platform.OS === "ios") {
-    } else {
-      EscNetPrinterModule.printRawData(text, (error: Error) => console.warn(error));
     }
   },
 
