@@ -1,4 +1,3 @@
-import { NativeModules } from 'react-native';
 import {
   EscNetPrinter,
   EscUSBPrinter,
@@ -6,6 +5,8 @@ import {
   BluetoothManager,
   EscBluetoothPrinter,
   TscBluetoothPrinter,
+  TscNetPrinter,
+  TscUsbPrinter,
 } from './printer';
 
 export {
@@ -15,10 +16,10 @@ export {
   COMMANDS,
   EscNetPrinter,
   EscUSBPrinter,
+  TscNetPrinter,
+  TscUsbPrinter,
 };
 
-export const TscNetPrinter = NativeModules.TscNetPrinter;
-export const TscUsbPrinter = NativeModules.TscUsbPrinter;
 export function ping(host: string, timeoutMs: number = 1000) {
   if (TscNetPrinter?.ping) {
     return TscNetPrinter.ping(host, timeoutMs);

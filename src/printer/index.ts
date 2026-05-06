@@ -8,13 +8,13 @@ import { connectToHost } from "./utils/net-connect";
 
 const {
   EscUsbPrinter,
-  EscNetPrinter,
+  EscNetPrinter: EscNetPrinterModule,
   BluetoothManager,
   EscBluetoothPrinter,
   TscBluetoothPrinter,
+  TscNetPrinter,
+  TscUsbPrinter,
 } = NativeModules;
-
-const getEscNetPrinter = () => EscNetPrinter;
 
 export interface PrinterOptions {
   beep?: boolean;
@@ -226,10 +226,10 @@ const EscUSBPrinter = {
   },
 };
 
-const EscNetPrinterApi = {
+const EscNetPrinter = {
   init: (): Promise<void> =>
     new Promise((resolve, reject) =>
-      getEscNetPrinter().init(
+      EscNetPrinterModule.init(
         () => resolve(),
         (error: Error) => reject(error)
       )
@@ -237,7 +237,7 @@ const EscNetPrinterApi = {
 
   getDeviceList: (): Promise<IEscNetPrinter[]> =>
     new Promise((resolve, reject) =>
-      getEscNetPrinter().getDeviceList(
+      EscNetPrinterModule.getDeviceList(
         (printers: IEscNetPrinter[]) => resolve(printers),
         (error: Error) => reject(error)
       )
@@ -251,7 +251,7 @@ const EscNetPrinterApi = {
     new Promise(async (resolve, reject) => {
       try {
         await connectToHost(host, timeout);
-        getEscNetPrinter().connectPrinter(
+        EscNetPrinterModule.connectPrinter(
           host,
           port,
           (printer: IEscNetPrinter) => resolve(printer),
@@ -264,20 +264,20 @@ const EscNetPrinterApi = {
 
   closeConn: (): Promise<void> =>
     new Promise((resolve) => {
-      getEscNetPrinter().closeConn();
+      EscNetPrinterModule.closeConn();
       resolve();
     }),
 
   printText: (text: string, opts = {}): void => {
     if (Platform.OS === "ios") {
       const processedText = textPreprocessingIOS(text, false, false);
-      getEscNetPrinter().printRawData(
+      EscNetPrinterModule.printRawData(
         processedText.text,
         processedText.opts,
         (error: Error) => console.warn(error)
       );
     } else {
-      getEscNetPrinter().printRawData(textTo64Buffer(text, opts), (error: Error) =>
+      EscNetPrinterModule.printRawData(textTo64Buffer(text, opts), (error: Error) =>
         console.warn(error)
       );
     }
@@ -290,13 +290,13 @@ const EscNetPrinterApi = {
         opts?.cut ?? true,
         opts.beep ?? true
       );
-      getEscNetPrinter().printRawData(
+      EscNetPrinterModule.printRawData(
         processedText.text,
         processedText.opts,
         (error: Error) => console.warn(error)
       );
     } else {
-      getEscNetPrinter().printRawData(billTo64Buffer(text, opts), (error: Error) =>
+      EscNetPrinterModule.printRawData(billTo64Buffer(text, opts), (error: Error) =>
         console.warn(error)
       );
     }
@@ -304,11 +304,11 @@ const EscNetPrinterApi = {
 
   printImage: function (imgUrl: string, opts: PrinterImageOptions = {}) {
     if (Platform.OS === "ios") {
-      getEscNetPrinter().printImageData(imgUrl, opts, (error: Error) =>
+      EscNetPrinterModule.printImageData(imgUrl, opts, (error: Error) =>
         console.warn(error)
       );
     } else {
-      getEscNetPrinter().printImageData(
+      EscNetPrinterModule.printImageData(
         imgUrl,
         opts?.imageWidth ?? 0,
         opts?.imageHeight ?? 0,
@@ -319,11 +319,11 @@ const EscNetPrinterApi = {
 
   printImageBase64: function (Base64: string, opts: PrinterImageOptions = {}) {
     if (Platform.OS === "ios") {
-      getEscNetPrinter().printImageBase64(Base64, opts, (error: Error) =>
+      EscNetPrinterModule.printImageBase64(Base64, opts, (error: Error) =>
         console.warn(error)
       );
     } else {
-      getEscNetPrinter().printImageBase64(
+      EscNetPrinterModule.printImageBase64(
         Base64,
         opts?.imageWidth ?? 0,
         opts?.imageHeight ?? 0,
@@ -335,7 +335,7 @@ const EscNetPrinterApi = {
   printRaw: (text: string): void => {
     if (Platform.OS === "ios") {
     } else {
-      getEscNetPrinter().printRawData(text, (error: Error) => console.warn(error));
+      EscNetPrinterModule.printRawData(text, (error: Error) => console.warn(error));
     }
   },
 
@@ -354,22 +354,22 @@ const EscNetPrinterApi = {
     );
     if (Platform.OS === "ios") {
       const processedText = textPreprocessingIOS(result, false, false);
-      getEscNetPrinter().printRawData(
+      EscNetPrinterModule.printRawData(
         processedText.text,
         processedText.opts,
         (error: Error) => console.warn(error)
       );
     } else {
-      getEscNetPrinter().printRawData(textTo64Buffer(result, opts), (error: Error) =>
+      EscNetPrinterModule.printRawData(textTo64Buffer(result, opts), (error: Error) =>
         console.warn(error)
       );
     }
   },
 
   openDrawer: (pin: number = 0, onTime: number = 37, offTime: number = 80): void => {
-    EscNetPrinterApi.printText(COMMANDS.CASH_DRAWER.CD_KICK_2);
+    EscNetPrinter.printText(COMMANDS.CASH_DRAWER.CD_KICK_2);
     if (Platform.OS !== "ios") {
-      getEscNetPrinter().printRawData(
+      EscNetPrinterModule.printRawData(
         buildOpenDrawerCommandBase64(pin, onTime, offTime),
         (error: Error) => console.warn(error)
       );
@@ -379,7 +379,7 @@ const EscNetPrinterApi = {
 
 const EscNetPrinterEventEmitter =
   Platform.OS === "ios"
-    ? new NativeEventEmitter(getEscNetPrinter())
+    ? new NativeEventEmitter(EscNetPrinterModule)
     : new NativeEventEmitter();
 
 TscBluetoothPrinter.DIRECTION = {
@@ -523,10 +523,12 @@ EscBluetoothPrinter.ALIGN = {
 
 export {
   COMMANDS,
-  EscNetPrinter: EscNetPrinterApi,
+  EscNetPrinter,
   EscUSBPrinter,
   EscNetPrinterEventEmitter,
   BluetoothManager,
+  TscNetPrinter,
+  TscUsbPrinter,
   EscBluetoothPrinter,
   TscBluetoothPrinter,
 };
