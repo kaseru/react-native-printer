@@ -1,13 +1,15 @@
 package com.xgitvn.printer.core;
+import com.xgitvn.printer.esc.usb.EscUSBPrinter;
+import com.xgitvn.printer.esc.net.EscPrinterNetwork;
 
-import com.xgitvn.printer.bluetooth.BluetoothService;
-import com.xgitvn.printer.bluetooth.BluetoothManager;
-import com.xgitvn.printer.bluetooth.escpos.EscBluetoothPrinter;
-import com.xgitvn.printer.bluetooth.tsc.TscBluetoothPrinter;
-import com.xgitvn.printer.tsc.TscNetPrinter;
-import com.xgitvn.printer.tsc.TscUsbPrinter;
+import com.xgitvn.printer.core.BluetoothService;
+import com.xgitvn.printer.core.BluetoothManager;
+import com.xgitvn.printer.esc.bluetooth.EscBluetoothPrinter;
+import com.xgitvn.printer.tsc.bluetooth.TscBluetoothPrinter;
+import com.xgitvn.printer.tsc.net.TscNetPrinter;
+import com.xgitvn.printer.tsc.usb.TscUsbPrinter;
 import com.facebook.react.ReactPackage;
-import com.facebook.react.bridge.Native;
+import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 
@@ -21,9 +23,9 @@ import java.util.List;
 
 public class PrinterPackage implements ReactPackage {
     @Override
-    public List<Native> createNativeModules(ReactApplicationContext reactContext) {
+    public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         BluetoothService bluetoothService = new BluetoothService(reactContext);
-        return Arrays.asList(new Native[]{
+        return Arrays.asList(new NativeModule[]{
                 new EscUSBPrinter(reactContext),
                 new EscPrinterNetwork(reactContext),
                 new BluetoothManager(reactContext, bluetoothService),

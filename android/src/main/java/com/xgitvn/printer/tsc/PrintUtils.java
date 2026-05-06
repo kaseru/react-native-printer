@@ -9,7 +9,7 @@ import com.facebook.react.bridge.ReadableMap;
 
 import java.util.Vector;
 
-import com.xgitvn.printer.bluetooth.tsc.TscCommand;
+import com.xgitvn.printer.tsc.bluetooth.TscCommand;
 
 public class PrintUtils {
     public static byte[] getPrinterData(final ReadableMap options){
