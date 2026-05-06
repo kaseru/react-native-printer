@@ -10,4 +10,3 @@
 @interface TscBluetoothPrinter : NSObject <RCTBridge,WriteDataToBleDelegate>
 
 @end
-
