@@ -1,5 +1,5 @@
 //
-//  RNPPrintColumnBleWriteDelegate.m
+//  PrintColumnBleWriteDelegate.m
 //  EscBluetoothPrinter
 //
 //  Created by januslo on 2018/10/6.
@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "RNPPrintColumnBleWriteDelegate.h"
+#import "PrintColumnBleWriteDelegate.h"
 @implementation RNPPrintColumnBleWriteDelegate
 
 static NSMutableArray<NSMutableString *>  *columns;

@@ -1,5 +1,5 @@
 //
-//  RNPColumnSplitedString.m
+//  ColumnSplitedString.m
 //  EscBluetoothPrinter
 //
 //  Created by januslo on 2018/10/6.
@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "RNPColumnSplitedString.h"
+#import "ColumnSplitedString.h"
 
 @implementation RNPColumnSplitedString
 @end

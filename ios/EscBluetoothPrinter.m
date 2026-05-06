@@ -4,10 +4,10 @@
 #import <UIKit/UIKit.h>
 #import "BluetoothManager.h"
 #import "EscBluetoothPrinter.h"
-#import "RNPColumnSplitedString.h"
-#import "RNPPrintColumnBleWriteDelegate.h"
+#import "ColumnSplitedString.h"
+#import "PrintColumnBleWriteDelegate.h"
 #import "ImageUtils.h"
-#import "RNPPrintImageBleWriteDelegate.h"
+#import "PrintImageBleWriteDelegate.h"
 @implementation EscBluetoothPrinter
 
 static int WIDTH_58 = 384;

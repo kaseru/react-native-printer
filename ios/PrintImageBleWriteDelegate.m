@@ -1,5 +1,5 @@
 //
-//  RNPPrintImageBleWriteDelegate.m
+//  PrintImageBleWriteDelegate.m
 //  EscBluetoothPrinter
 //
 //  Created by januslo on 2018/10/8.
@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "RNPPrintImageBleWriteDelegate.h"
+#import "PrintImageBleWriteDelegate.h"
 
 @implementation RNPPrintImageBleWriteDelegate
 
