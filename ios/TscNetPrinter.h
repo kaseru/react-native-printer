@@ -17,7 +17,7 @@
 
 @end
 
-@interface MyTscCommand : TscCommand
+@interface RNPMyTscCommand : TscCommand
 
 -(void)addBitmap:(NSInteger) x y:(NSInteger) y
       bitmapMode:(NSInteger) mode width:(NSInteger) nWidth

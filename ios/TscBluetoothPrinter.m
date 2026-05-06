@@ -13,10 +13,10 @@
 
 @implementation TscBluetoothPrinter
 
-NSData *toPrint;
-RCTPromiseRejectBlock _pendingReject;
-RCTPromiseResolveBlock _pendingResolve;
-NSInteger now;
+static NSData *toPrint;
+static RCTPromiseRejectBlock _pendingReject;
+static RCTPromiseResolveBlock _pendingResolve;
+static NSInteger now;
 
 - (dispatch_queue_t)methodQueue
 {

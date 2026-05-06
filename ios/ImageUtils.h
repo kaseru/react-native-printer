@@ -1,5 +1,5 @@
 //
-//  ImageUtils.h
+//  RNPImageUtils.h
 //  EscBluetoothPrinter
 //
 //  Created by januslo on 2018/10/7.
@@ -7,7 +7,7 @@
 //
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-@interface ImageUtils :NSObject
+@interface RNPImageUtils :NSObject
 + (UIImage*)imagePadLeft:(NSInteger) left withSource: (UIImage*)source;
 + (uint8_t *)imageToGreyImage:(UIImage *)image;
 + (uint8_t *)imageToGreyImage:(UIImage *)image threshold:(uint8_t)threshold;

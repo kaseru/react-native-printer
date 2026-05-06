@@ -1,5 +1,5 @@
 //
-//  ImageUtils.m
+//  RNPImageUtils.m
 //  EscBluetoothPrinter
 //
 //  Created by januslo on 2018/10/7.
@@ -9,14 +9,14 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "ImageUtils.h"
-@implementation ImageUtils : NSObject
-int p0[] = { 0, 0x80 };
-int p1[] = { 0, 0x40 };
-int p2[] = { 0, 0x20 };
-int p3[] = { 0, 0x10 };
-int p4[] = { 0, 0x08 };
-int p5[] = { 0, 0x04 };
-int p6[] = { 0, 0x02 };
+@implementation RNPImageUtils : NSObject
+static int p0[] = { 0, 0x80 };
+static int p1[] = { 0, 0x40 };
+static int p2[] = { 0, 0x20 };
+static int p3[] = { 0, 0x10 };
+static int p4[] = { 0, 0x08 };
+static int p5[] = { 0, 0x04 };
+static int p6[] = { 0, 0x02 };
 
 + (UIImage*)imagePadLeft:(NSInteger) left withSource: (UIImage*)source
 {

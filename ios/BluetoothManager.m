@@ -11,15 +11,15 @@
 #import <CoreBluetooth/CoreBluetooth.h>
 @implementation BluetoothManager
 
-NSString *EVENT_DEVICE_ALREADY_PAIRED = @"EVENT_DEVICE_ALREADY_PAIRED";
-NSString *EVENT_DEVICE_DISCOVER_DONE = @"EVENT_DEVICE_DISCOVER_DONE";
-NSString *EVENT_DEVICE_FOUND = @"EVENT_DEVICE_FOUND";
-NSString *EVENT_CONNECTION_LOST = @"EVENT_CONNECTION_LOST";
-NSString *EVENT_UNABLE_CONNECT=@"EVENT_UNABLE_CONNECT";
-NSString *EVENT_CONNECTED=@"EVENT_CONNECTED";
+static NSString *EVENT_DEVICE_ALREADY_PAIRED = @"EVENT_DEVICE_ALREADY_PAIRED";
+static NSString *EVENT_DEVICE_DISCOVER_DONE = @"EVENT_DEVICE_DISCOVER_DONE";
+static NSString *EVENT_DEVICE_FOUND = @"EVENT_DEVICE_FOUND";
+static NSString *EVENT_CONNECTION_LOST = @"EVENT_CONNECTION_LOST";
+static NSString *EVENT_UNABLE_CONNECT=@"EVENT_UNABLE_CONNECT";
+static NSString *EVENT_CONNECTED=@"EVENT_CONNECTED";
 static NSArray<CBUUID *> *supportServices = nil;
 static NSDictionary *writeableCharactiscs = nil;
-bool hasListeners;
+static bool hasListeners;
 static CBPeripheral *connected;
 static BluetoothManager *instance;
 static NSObject<WriteDataToBleDelegate> *writeDataDelegate;// delegate of write data resule;

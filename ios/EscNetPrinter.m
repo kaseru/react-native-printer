@@ -11,16 +11,16 @@
 #import <React/RCTLog.h>
 #import <UIKit/UIKit.h>
 
-NSString *const EVENT_SCANNER_RESOLVED = @"scannerResolved";
-NSString *const EVENT_SCANNER_RUNNING = @"scannerRunning";
+static NSString *const EVENT_SCANNER_RESOLVED = @"scannerResolved";
+static NSString *const EVENT_SCANNER_RUNNING = @"scannerRunning";
 
 static const NSInteger kPrinterConnectTimeoutMs = 3000;
 static const NSInteger kPrinterWriteChunkSize = 4096;
 
-@interface PrivateIP : NSObject
+@interface RNPPrivateIP : NSObject
 @end
 
-@implementation PrivateIP
+@implementation RNPPrivateIP
 
 - (NSString *)getIPAddress {
     NSString *address = @"error";
@@ -398,7 +398,7 @@ RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCallback
 - (void)scan:(RCTResponseSenderBlock)successCallback
 {
     @try {
-        PrivateIP *privateIP = [[PrivateIP alloc] init];
+        RNPPrivateIP *privateIP = [[RNPPrivateIP alloc] init];
         NSString *localIP = [privateIP getIPAddress];
         is_scanning = YES;
         [self sendEventWithName:EVENT_SCANNER_RUNNING body:@YES];

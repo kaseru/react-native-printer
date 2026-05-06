@@ -1,5 +1,5 @@
 //
-//  PrintColumnBleWriteDelegate.m
+//  RNPPrintColumnBleWriteDelegate.m
 //  EscBluetoothPrinter
 //
 //  Created by januslo on 2018/10/6.
@@ -7,11 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "PrintColumnBleWriteDelegate.h"
-@implementation PrintColumnBleWriteDelegate
+#import "RNPPrintColumnBleWriteDelegate.h"
+@implementation RNPPrintColumnBleWriteDelegate
 
-NSMutableArray<NSMutableString *>  *columns;
-NSInteger maxRowCount;
+static NSMutableArray<NSMutableString *>  *columns;
+static NSInteger maxRowCount;
 
 - (void)didWriteDataToBle:(BOOL)success {NSLog(@"Call back deletgate: %lu",_now+1);
     if(_canceled){

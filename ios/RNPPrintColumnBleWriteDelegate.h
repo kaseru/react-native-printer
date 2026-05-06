@@ -1,5 +1,5 @@
 //
-//  PrintColumnBleWriteDelegate.h
+//  RNPPrintColumnBleWriteDelegate.h
 //  EscBluetoothPrinter
 //
 //  Created by januslo on 2018/10/6.
@@ -9,7 +9,7 @@
 #import "BluetoothManager.h"
 #import "EscBluetoothPrinter.h"
 
-@interface PrintColumnBleWriteDelegate:NSObject<WriteDataToBleDelegate>
+@interface RNPPrintColumnBleWriteDelegate:NSObject<WriteDataToBleDelegate>
 @property NSInteger now;
 @property Boolean error;
 @property RCTPromiseResolveBlock pendingResolve;

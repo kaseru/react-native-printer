@@ -4,39 +4,39 @@
 #import <UIKit/UIKit.h>
 #import "BluetoothManager.h"
 #import "EscBluetoothPrinter.h"
-#import "ColumnSplitedString.h"
-#import "PrintColumnBleWriteDelegate.h"
+#import "RNPColumnSplitedString.h"
+#import "RNPPrintColumnBleWriteDelegate.h"
 #import "ImageUtils.h"
-#import "PrintImageBleWriteDelegate.h"
+#import "RNPPrintImageBleWriteDelegate.h"
 @implementation EscBluetoothPrinter
 
-int WIDTH_58 = 384;
-int WIDTH_80 = 576;
-Byte ESC[] = {0x1b};
+static int WIDTH_58 = 384;
+static int WIDTH_80 = 576;
+static Byte ESC[] = {0x1b};
 //NSInteger ESC = 0x1b;
-Byte ESC_FS[] = {0x1c};
+static Byte ESC_FS[] = {0x1c};
 //NSInteger FS = 0x1C;
-Byte ESC_GS[] = {0x1D};
-Byte US[] = {0x1F};
-Byte DLE[] = {0x10};
-Byte DC4[] = {0x14};
-Byte DC1[] = {0x11};
-Byte SP[] = {0x20};
-Byte NL[] = {0x0A};
-Byte FF[] = {0x0C};
-Byte PIECE[] = {0xFF};
-Byte NUL[] =  {0x00};
-Byte SIGN[] = {0x21};//!
-Byte T[] = {0x74};//t
-Byte AND[] ={0x26}; //&
-Byte M[] = {0x4d};//M
-Byte V[] = {0x56};//V
-Byte A[] = {0x61};//a
-Byte E[] = {0x45};//E
-Byte G[] = {0x47};//G
+static Byte ESC_GS[] = {0x1D};
+static Byte US[] = {0x1F};
+static Byte DLE[] = {0x10};
+static Byte DC4[] = {0x14};
+static Byte DC1[] = {0x11};
+static Byte SP[] = {0x20};
+static Byte NL[] = {0x0A};
+static Byte FF[] = {0x0C};
+static Byte PIECE[] = {0xFF};
+static Byte NUL[] =  {0x00};
+static Byte SIGN[] = {0x21};//!
+static Byte T[] = {0x74};//t
+static Byte AND[] ={0x26}; //&
+static Byte M[] = {0x4d};//M
+static Byte V[] = {0x56};//V
+static Byte A[] = {0x61};//a
+static Byte E[] = {0x45};//E
+static Byte G[] = {0x47};//G
 
-RCTPromiseResolveBlock pendingResolve;
-RCTPromiseRejectBlock pendingReject;
+static RCTPromiseResolveBlock pendingResolve;
+static RCTPromiseRejectBlock pendingReject;
 
 -(id)init {
     if (self = [super init])  {
@@ -333,8 +333,8 @@ RCT_EXPORT_METHOD(printColumn:(NSArray *)columnWidths
                     NSInteger width =[[columnWidths objectAtIndex:i ] integerValue] - padding;//1 char padding
                     NSString *text = [columnTexts objectAtIndex:i]; //String.copyValueOf(columnTexts.getString(i).toCharArray());
                     NSLog(@"Text in column: %@",text);
-                    NSMutableArray<ColumnSplitedString *> *splited = [[NSMutableArray alloc] init];
-                    //List<ColumnSplitedString> splited = new ArrayList<ColumnSplitedString>();
+                    NSMutableArray<RNPColumnSplitedString *> *splited = [[NSMutableArray alloc] init];
+                    //List<RNPColumnSplitedString> splited = new ArrayList<RNPColumnSplitedString>();
                     int shorter = 0;
                     int counter = 0;
                    NSMutableString *temp = [[NSMutableString alloc] init];
@@ -349,7 +349,7 @@ RCT_EXPORT_METHOD(printColumn:(NSArray *)columnWidths
                         if(counter+l<width){
                             counter = counter+l;
                         }else{
-                            ColumnSplitedString *css = [[ColumnSplitedString alloc] init];
+                            RNPColumnSplitedString *css = [[RNPColumnSplitedString alloc] init];
                             css.str = temp;
                             css.shorter = shorter;
                             [splited addObject:css];
@@ -359,7 +359,7 @@ RCT_EXPORT_METHOD(printColumn:(NSArray *)columnWidths
                         }
                     }
                     if([temp length]>0) {
-                        ColumnSplitedString *css = [[ColumnSplitedString alloc] init];
+                        RNPColumnSplitedString *css = [[RNPColumnSplitedString alloc] init];
                         css.str = temp;
                         css.shorter = shorter;
                         [splited addObject:css];
@@ -367,7 +367,7 @@ RCT_EXPORT_METHOD(printColumn:(NSArray *)columnWidths
                     NSInteger align =[[columnAligns objectAtIndex:i] integerValue];
             
                     NSMutableArray *formated = [[NSMutableArray alloc] init];
-                    for(ColumnSplitedString *s in splited){
+                    for(RNPColumnSplitedString *s in splited){
                         NSMutableString *empty = [[NSMutableString alloc] init];
                         for(int w=0;w<(width+padding-s.shorter);w++){
                             [empty appendString:@" "];
@@ -428,7 +428,7 @@ RCT_EXPORT_METHOD(printColumn:(NSArray *)columnWidths
                 }
             
                 /** loops the rows and print **/
-            PrintColumnBleWriteDelegate *delegate = [[PrintColumnBleWriteDelegate alloc] init];
+            RNPPrintColumnBleWriteDelegate *delegate = [[RNPPrintColumnBleWriteDelegate alloc] init];
             delegate.now = 0;
             delegate.error = false;
             delegate.pendingReject = reject;
@@ -494,16 +494,16 @@ RCT_EXPORT_METHOD(printPic:(NSString *) base64encodeStr withOptions:(NSDictionar
             NSInteger imagWidth = jpgImage.size.width;
             NSInteger width = nWidth;//((int)(((nWidth*0.86)+7)/8))*8-7;
             CGSize size = CGSizeMake(width, imgHeight*width/imagWidth);
-            UIImage *scaled = [ImageUtils imageWithImage:jpgImage scaledToFillSize:size];
+            UIImage *scaled = [RNPImageUtils imageWithImage:jpgImage scaledToFillSize:size];
             if(paddingLeft>0){
-                scaled = [ImageUtils imagePadLeft:paddingLeft withSource:scaled];
+                scaled = [RNPImageUtils imagePadLeft:paddingLeft withSource:scaled];
                 size =[scaled size];
             }
             
-            unsigned char * graImage = [ImageUtils imageToGreyImage:scaled threshold:threshold];
-            unsigned char * formatedData = [ImageUtils format_K_threshold:graImage width:size.width height:size.height];
-            NSData *dataToPrint = [ImageUtils eachLinePixToCmd:formatedData nWidth:size.width nHeight:size.height nMode:0];
-            PrintImageBleWriteDelegate *delegate = [[PrintImageBleWriteDelegate alloc] init];
+            unsigned char * graImage = [RNPImageUtils imageToGreyImage:scaled threshold:threshold];
+            unsigned char * formatedData = [RNPImageUtils format_K_threshold:graImage width:size.width height:size.height];
+            NSData *dataToPrint = [RNPImageUtils eachLinePixToCmd:formatedData nWidth:size.width nHeight:size.height nMode:0];
+            RNPPrintImageBleWriteDelegate *delegate = [[RNPPrintImageBleWriteDelegate alloc] init];
             delegate.pendingResolve = resolve;
             delegate.pendingReject = reject;
             delegate.width = width;

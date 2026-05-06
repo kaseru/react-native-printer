@@ -166,10 +166,10 @@ bitmap:(UIImage *) b{
         CGFloat imgHeigth = b.size.height;
         NSInteger width = (nWidth + 7) / 8 * 8;
         NSInteger height = imgHeigth * width / imgWidth;
-        UIImage *resized = [ImageUtils imageWithImage:b scaledToFillSize:CGSizeMake(width, height)];
-        uint8_t * graybits = [ImageUtils imageToGreyImage:resized];
+        UIImage *resized = [RNPImageUtils imageWithImage:b scaledToFillSize:CGSizeMake(width, height)];
+        uint8_t * graybits = [RNPImageUtils imageToGreyImage:resized];
         NSInteger srcLen = (int)resized.size.width*resized.size.height;
-        NSData *codecontent = [ImageUtils pixToTscCmd:graybits width:srcLen];
+        NSData *codecontent = [RNPImageUtils pixToTscCmd:graybits width:srcLen];
         height = srcLen / width;
         width /= 8;
         NSString *str =[NSString stringWithFormat:@ "BITMAP %ld,%ld,%ld,%ld,%ld,",

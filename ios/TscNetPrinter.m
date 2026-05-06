@@ -20,9 +20,9 @@
 #import <unistd.h>
 #import <errno.h>
 
-@implementation MyTscCommand
+@implementation RNPMyTscCommand
 
-NSData* convertImageToBitmapBytes(UIImage *image) {
+static NSData* rnp_convertImageToBitmapBytes(UIImage *image) {
     if (!image) {
         NSLog(@"Error: Image is nil");
         return nil;
@@ -80,16 +80,16 @@ NSData* convertImageToBitmapBytes(UIImage *image) {
       CGFloat imgHeigth = b.size.height;
       NSInteger width = (nWidth + 7) / 8 * 8;
       NSInteger height = imgHeigth * width / imgWidth;
-      UIImage *resized = [ImageUtils imageWithImage:b scaledToFillSize:CGSizeMake(width, height)];
-      uint8_t * graybits = [ImageUtils imageToGreyImage:resized];
+      UIImage *resized = [RNPImageUtils imageWithImage:b scaledToFillSize:CGSizeMake(width, height)];
+      uint8_t * graybits = [RNPImageUtils imageToGreyImage:resized];
       NSInteger srcLen = (int)resized.size.width*resized.size.height;
-      // NSData *codecontent = [ImageUtils pixToTscCmd:graybits width:srcLen];
+      // NSData *codecontent = [RNPImageUtils pixToTscCmd:graybits width:srcLen];
       height = srcLen / width;
       width /= 8;
       NSString *str =[NSString stringWithFormat:@ "BITMAP %ld,%ld,%ld,%ld,%ld,",
                       x,y,width,height,mode];
       [self addStrToCommand:str];
-      NSData *bitmapData = convertImageToBitmapBytes(resized);
+      NSData *bitmapData = rnp_convertImageToBitmapBytes(resized);
       [self.command  appendData:bitmapData];
       [self addStrToCommand:@"\r\n"];
   }
@@ -230,7 +230,7 @@ RCT_EXPORT_METHOD(printLabel:(NSDictionary *) options withResolve:(RCTPromiseRes
   NSArray* reference = [options objectForKey:@"reference"];
   NSInteger sound = [[options valueForKey:@"sound"] integerValue];
   NSInteger speed = [[options valueForKey:@"speed"] integerValue];
-  MyTscCommand *tsc = [[MyTscCommand alloc] init];
+  RNPMyTscCommand *tsc = [[RNPMyTscCommand alloc] init];
   if(speed){
       [tsc addSpeed:[tsc findSpeedValue:speed]];
   }

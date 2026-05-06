@@ -7,6 +7,7 @@
 - [ ] Bo sung flow tim thiet bi Bluetooth o tang TypeScript
 - [ ] Bo sung flow tim may in WiFi/LAN o tang TypeScript
 - [ ] Kiem tra export de dam bao app cu van chay
+- [ ] Xu ly TscCommand
 
 ## Dinh huong ten ham
 
