@@ -1,7 +1,6 @@
 import { NativeModules } from 'react-native';
-import { NetEscPrinter, USBEscPrinter } from './legacy/thermal';
-import { BluetoothManager, BluetoothEscPrinter, BluetoothTscPrinter } from './legacy/bluetooth';
-import { COMMANDS } from './legacy/thermal';
+import { NetEscPrinter, USBEscPrinter, COMMANDS } from './printer/thermal';
+import { BluetoothManager, BluetoothEscPrinter, BluetoothTscPrinter } from './printer/bluetooth';
 
 export {
   BluetoothEscPrinter,
