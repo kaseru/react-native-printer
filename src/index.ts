@@ -1,6 +1,6 @@
 import {
   EscNetPrinter,
-  EscUSBPrinter,
+  EscUsbPrinter,
   COMMANDS,
   BluetoothManager,
   EscBluetoothPrinter,
@@ -15,7 +15,7 @@ export {
   TscBluetoothPrinter,
   COMMANDS,
   EscNetPrinter,
-  EscUSBPrinter,
+  EscUsbPrinter,
   TscNetPrinter,
   TscUsbPrinter,
 };
