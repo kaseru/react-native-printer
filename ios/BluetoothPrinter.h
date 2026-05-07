@@ -20,6 +20,7 @@
 @property (nonatomic,copy) RCTPromiseResolveBlock scanResolveBlock;
 @property (nonatomic,copy) RCTPromiseRejectBlock scanRejectBlock;
 @property (strong,nonatomic) NSMutableDictionary <NSString *,CBPeripheral *> *foundDevices;
+@property (strong,nonatomic) NSMutableDictionary <NSString *,NSDictionary *> *foundDeviceInfos;
 @property (strong,nonatomic) NSString *waitingConnect;
 @property (nonatomic,copy) RCTPromiseResolveBlock connectResolveBlock;
 @property (nonatomic,copy) RCTPromiseRejectBlock connectRejectBlock;

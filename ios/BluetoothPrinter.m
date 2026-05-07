@@ -26,6 +26,65 @@ static NSObject<WriteDataToBleDelegate> *writeDataDelegate;// delegate of write 
 static NSData *toWrite;
 static NSTimer *timer;
 
+- (NSDictionary *)buildDeviceInfoWithPeripheral:(CBPeripheral *)peripheral
+                             advertisementData:(NSDictionary<NSString *, id> *)advertisementData
+                                           RSSI:(NSNumber *)RSSI
+{
+    NSString *name = peripheral.name ? peripheral.name : @"";
+    NSMutableDictionary *info = [@{
+        @"address": peripheral.identifier.UUIDString,
+        @"name": name
+    } mutableCopy];
+
+    if (RSSI != nil) {
+        info[@"rssi"] = RSSI;
+    }
+
+    id localName = advertisementData[CBAdvertisementDataLocalNameKey];
+    if ([localName isKindOfClass:[NSString class]] && [(NSString *)localName length] > 0) {
+        info[@"localName"] = localName;
+    }
+
+    id connectable = advertisementData[CBAdvertisementDataIsConnectable];
+    if (connectable != nil) {
+        info[@"isConnectable"] = connectable;
+    }
+
+    id txPower = advertisementData[CBAdvertisementDataTxPowerLevelKey];
+    if (txPower != nil) {
+        info[@"txPowerLevel"] = txPower;
+    }
+
+    NSArray<CBUUID *> *serviceUUIDs = advertisementData[CBAdvertisementDataServiceUUIDsKey];
+    if ([serviceUUIDs isKindOfClass:[NSArray class]] && serviceUUIDs.count > 0) {
+        NSMutableArray<NSString *> *uuids = [NSMutableArray arrayWithCapacity:serviceUUIDs.count];
+        for (CBUUID *uuid in serviceUUIDs) {
+            [uuids addObject:uuid.UUIDString];
+        }
+        info[@"serviceUUIDs"] = uuids;
+    }
+
+    NSArray<CBUUID *> *overflowServiceUUIDs = advertisementData[CBAdvertisementDataOverflowServiceUUIDsKey];
+    if ([overflowServiceUUIDs isKindOfClass:[NSArray class]] && overflowServiceUUIDs.count > 0) {
+        NSMutableArray<NSString *> *uuids = [NSMutableArray arrayWithCapacity:overflowServiceUUIDs.count];
+        for (CBUUID *uuid in overflowServiceUUIDs) {
+            [uuids addObject:uuid.UUIDString];
+        }
+        info[@"overflowServiceUUIDs"] = uuids;
+    }
+
+    NSArray<CBUUID *> *solicitedServiceUUIDs = advertisementData[CBAdvertisementDataSolicitedServiceUUIDsKey];
+    if ([solicitedServiceUUIDs isKindOfClass:[NSArray class]] && solicitedServiceUUIDs.count > 0) {
+        NSMutableArray<NSString *> *uuids = [NSMutableArray arrayWithCapacity:solicitedServiceUUIDs.count];
+        for (CBUUID *uuid in solicitedServiceUUIDs) {
+            [uuids addObject:uuid.UUIDString];
+        }
+        info[@"solicitedServiceUUIDs"] = uuids;
+    }
+
+    return info;
+}
+
 +(Boolean)isConnected{
     return !(connected==nil);
 }
@@ -142,12 +201,16 @@ RCT_EXPORT_METHOD(scanDevices:(RCTPromiseResolveBlock)resolve
         self.scanResolveBlock = resolve;
         self.scanRejectBlock = reject;
         if(connected && connected.identifier){
-            NSDictionary *idAndName =@{@"address":connected.identifier.UUIDString,@"name":connected.name?connected.name:@""};
+            NSDictionary *idAndName = [self buildDeviceInfoWithPeripheral:connected advertisementData:@{} RSSI:nil];
             NSDictionary *peripheralStored = @{connected.identifier.UUIDString:connected};
             if(!self.foundDevices){
                 self.foundDevices = [[NSMutableDictionary alloc] init];
             }
+            if(!self.foundDeviceInfos){
+                self.foundDeviceInfos = [[NSMutableDictionary alloc] init];
+            }
             [self.foundDevices addEntriesFromDictionary:peripheralStored];
+            [self.foundDeviceInfos setObject:idAndName forKey:connected.identifier.UUIDString];
             if(hasListeners){
                 [self sendEventWithName:EVENT_DEVICE_FOUND body:@{@"device":idAndName}];
             }
@@ -241,6 +304,12 @@ RCT_EXPORT_METHOD(disconnect:(NSString *)address
         [self.centralManager stopScan];
         NSMutableArray *devices = [[NSMutableArray alloc] init];
         for(NSString *key in self.foundDevices){
+            NSDictionary *info = [self.foundDeviceInfos objectForKey:key];
+            if(info){
+                [devices addObject:info];
+                continue;
+            }
+
             NSLog(@"insert found devies:%@ =>%@",key,[self.foundDevices objectForKey:key]);
             NSString *name = [self.foundDevices objectForKey:key].name;
             if(!name){
@@ -308,12 +377,16 @@ RCT_EXPORT_METHOD(disconnect:(NSString *)address
 
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary<NSString *, id> *)advertisementData RSSI:(NSNumber *)RSSI{
     NSLog(@"did discover peripheral: %@",peripheral);
-    NSDictionary *idAndName =@{@"address":peripheral.identifier.UUIDString,@"name":peripheral.name?peripheral.name:@""};
+    NSDictionary *idAndName = [self buildDeviceInfoWithPeripheral:peripheral advertisementData:advertisementData RSSI:RSSI];
     NSDictionary *peripheralStored = @{peripheral.identifier.UUIDString:peripheral};
     if(!self.foundDevices){
         self.foundDevices = [[NSMutableDictionary alloc] init];
     }
+    if(!self.foundDeviceInfos){
+        self.foundDeviceInfos = [[NSMutableDictionary alloc] init];
+    }
     [self.foundDevices addEntriesFromDictionary:peripheralStored];
+    [self.foundDeviceInfos setObject:idAndName forKey:peripheral.identifier.UUIDString];
     if(hasListeners){
         [self sendEventWithName:EVENT_DEVICE_FOUND body:@{@"device":idAndName}];
     }

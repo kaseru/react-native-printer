@@ -4,6 +4,7 @@ import com.xgitvn.printer.core.BluetoothService;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -29,6 +30,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import android.os.ParcelUuid;
 /**
  * Created by januslo on 2018/9/22.
  */
@@ -410,6 +412,35 @@ public class BluetoothPrinter extends ReactContextBaseJavaModule
         return found;
     }
 
+    private JSONObject toDeviceJson(BluetoothDevice device) {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("name", device.getName());
+            obj.put("address", device.getAddress());
+            obj.put("bondState", device.getBondState());
+            obj.put("type", device.getType());
+            BluetoothClass bluetoothClass = device.getBluetoothClass();
+            if (bluetoothClass != null) {
+                obj.put("majorDeviceClass", bluetoothClass.getMajorDeviceClass());
+                obj.put("deviceClass", bluetoothClass.getDeviceClass());
+            }
+
+            ParcelUuid[] uuids = device.getUuids();
+            if (uuids != null && uuids.length > 0) {
+                JSONArray uuidArray = new JSONArray();
+                for (ParcelUuid uuid : uuids) {
+                    if (uuid != null) {
+                        uuidArray.put(uuid.toString());
+                    }
+                }
+                obj.put("uuids", uuidArray);
+            }
+        } catch (Exception e) {
+            //ignore
+        }
+        return obj;
+    }
+
     // The BroadcastReceiver that listens for discovered devices and
     // changes the title when discovery is finished
     private final BroadcastReceiver discoverReceiver = new BroadcastReceiver() {
@@ -422,12 +453,14 @@ public class BluetoothPrinter extends ReactContextBaseJavaModule
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
-                    JSONObject deviceFound = new JSONObject();
-                    try {
-                        deviceFound.put("name", device.getName());
-                        deviceFound.put("address", device.getAddress());
-                    } catch (Exception e) {
-                        //ignore
+                    JSONObject deviceFound = toDeviceJson(device);
+                    short rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
+                    if (rssi != Short.MIN_VALUE) {
+                        try {
+                            deviceFound.put("rssi", (int) rssi);
+                        } catch (Exception e) {
+                            //ignore
+                        }
                     }
                     if (!objectFound(deviceFound)) {
                         foundDevice.put(deviceFound);
