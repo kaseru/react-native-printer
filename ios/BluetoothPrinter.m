@@ -171,7 +171,7 @@ RCT_EXPORT_METHOD(isBluetoothEnabled:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
     CBManagerState state = [self.centralManager  state];
-    resolve(state == CBManagerStatePoweredOn?@"true":@"false");//canot pass boolean or int value to resolve directly.
+    resolve(@(state == CBManagerStatePoweredOn));
 }
 
 //enableBluetooth

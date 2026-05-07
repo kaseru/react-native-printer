@@ -100,6 +100,67 @@ static NSData* rnp_convertImageToBitmapBytes(UIImage *image) {
 
 RCT_EXPORT_MODULE(TscNetPrinter);
 
+static const NSInteger kTscPrinterConnectTimeoutMs = 3000;
+
+- (void)cleanupStreams {
+  if (self.outputStream) {
+    [self.outputStream close];
+    self.outputStream = nil;
+  }
+
+  if (self.inputStream) {
+    [self.inputStream close];
+    self.inputStream = nil;
+  }
+}
+
+- (BOOL)openSocketToHost:(NSString *)host port:(NSInteger)port error:(NSError **)error {
+  [self cleanupStreams];
+
+  CFReadStreamRef readStream = NULL;
+  CFWriteStreamRef writeStream = NULL;
+  CFStreamCreatePairWithSocketToHost(NULL, (__bridge CFStringRef)host, (UInt32)port, &readStream, &writeStream);
+
+  if (!readStream || !writeStream) {
+    if (error) {
+      *error = [NSError errorWithDomain:@"TscNetPrinter" code:500 userInfo:@{NSLocalizedDescriptionKey: @"Cannot create printer streams"}];
+    }
+    if (readStream) CFRelease(readStream);
+    if (writeStream) CFRelease(writeStream);
+    return NO;
+  }
+
+  self.inputStream = CFBridgingRelease(readStream);
+  self.outputStream = CFBridgingRelease(writeStream);
+
+  [self.outputStream open];
+  [self.inputStream open];
+
+  NSDate *deadline = [NSDate dateWithTimeIntervalSinceNow:(kTscPrinterConnectTimeoutMs / 1000.0)];
+  while ([deadline timeIntervalSinceNow] > 0) {
+    NSStreamStatus status = self.outputStream.streamStatus;
+    if (status == NSStreamStatusOpen) {
+      return YES;
+    }
+
+    if (status == NSStreamStatusError || status == NSStreamStatusClosed) {
+      if (error) {
+        *error = self.outputStream.streamError ?: self.inputStream.streamError ?: [NSError errorWithDomain:@"TscNetPrinter" code:501 userInfo:@{NSLocalizedDescriptionKey: @"Cannot open printer socket"}];
+      }
+      [self cleanupStreams];
+      return NO;
+    }
+
+    [[NSRunLoop mainRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
+  }
+
+  if (error) {
+    *error = [NSError errorWithDomain:@"TscNetPrinter" code:408 userInfo:@{NSLocalizedDescriptionKey: @"Printer socket connect timeout"}];
+  }
+  [self cleanupStreams];
+  return NO;
+}
+
 // Ping printer
 RCT_EXPORT_METHOD(ping:(NSString *)ip
                   timeout:(nonnull NSNumber *)timeoutMs
@@ -158,29 +219,23 @@ RCT_EXPORT_METHOD(ping:(NSString *)ip
 }
 
 // Phương thức kết nối đến máy in qua TCP, nhận IP và cổng từ tham số
-RCT_EXPORT_METHOD(connect:(NSString *)host port:(NSInteger)port) {
-  // Kiểm tra xem host có hợp lệ không
+RCT_EXPORT_METHOD(connect:(NSString *)host
+                  port:(NSInteger)port
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
   if (host == nil || host.length == 0) {
-    RCTLogError(@"Invalid host IP provided.");
+    reject(@"INVALID_HOST", @"Invalid host IP provided.", nil);
     return;
   }
-  
-  // Tạo cặp luồng để kết nối đến máy in
-  CFReadStreamRef readStream;
-  CFWriteStreamRef writeStream;
-  
-  // Tạo cặp stream để kết nối tới máy in
-  CFStreamCreatePairWithSocketToHost(NULL, (__bridge CFStringRef)host, (UInt32)port, &readStream, &writeStream);
-  
-  // Chuyển đổi đối tượng CFReadStreamRef và CFWriteStreamRef thành NSInputStream và NSOutputStream
-  self.inputStream = (__bridge_transfer NSInputStream *)readStream;
-  self.outputStream = (__bridge_transfer NSOutputStream *)writeStream;
-  
-  // Mở luồng
-  [self.outputStream open];
-  [self.inputStream open];
-  
-  RCTLogInfo(@"Connected to printer at %@:%ld", host, (long)port);
+
+  NSError *error = nil;
+  if ([self openSocketToHost:host port:port error:&error]) {
+    RCTLogInfo(@"Connected to printer at %@:%ld", host, (long)port);
+    resolve(@"Connected to printer successfully");
+    return;
+  }
+
+  reject(@"CONNECTION_FAILED", error.localizedDescription ?: @"Failed to connect to printer", error);
 }
 
 //RCT_EXPORT_METHOD(send:(NSString *)message resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -202,14 +257,11 @@ RCT_EXPORT_METHOD(connect:(NSString *)host port:(NSInteger)port) {
 //}
 
 // Phương thức đóng kết nối
-RCT_EXPORT_METHOD(disconnect) {
-  if (self.outputStream) {
-    [self.outputStream close];
-    [self.inputStream close];
-    self.outputStream = nil;
-    self.inputStream = nil;
-    RCTLogInfo(@"Connection closed");
-  }
+RCT_EXPORT_METHOD(disconnect:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+  [self cleanupStreams];
+  RCTLogInfo(@"Connection closed");
+  resolve(@"Connection closed successfully");
 }
 
 RCT_EXPORT_METHOD(printLabel:(NSDictionary *) options withResolve:(RCTPromiseResolveBlock)resolve

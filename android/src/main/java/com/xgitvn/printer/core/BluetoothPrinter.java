@@ -3,6 +3,7 @@ import com.xgitvn.printer.core.BluetoothService;
 
 
 import android.app.Activity;
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
@@ -12,12 +13,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import androidx.core.app.ActivityCompat;
+import android.os.Build;
 import androidx.core.content.ContextCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.facebook.react.bridge.*;
+import com.facebook.react.modules.core.PermissionAwareActivity;
+import com.facebook.react.modules.core.PermissionListener;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import org.json.JSONArray;
@@ -35,7 +37,7 @@ import android.os.ParcelUuid;
  * Created by januslo on 2018/9/22.
  */
 public class BluetoothPrinter extends ReactContextBaseJavaModule
-        implements ActivityEventListener, BluetoothServiceStateObserver {
+        implements ActivityEventListener, BluetoothServiceStateObserver, PermissionListener {
 
     private static final String TAG = "BluetoothPrinter";
     private final ReactApplicationContext reactContext;
@@ -51,6 +53,7 @@ public class BluetoothPrinter extends ReactContextBaseJavaModule
     // Intent request codes
     private static final int REQUEST_CONNECT_DEVICE = 1;
     private static final int REQUEST_ENABLE_BT = 2;
+    private static final int REQUEST_SCAN_PERMISSIONS = 3;
 
     public static final int MESSAGE_STATE_CHANGE = BluetoothService.MESSAGE_STATE_CHANGE;
     public static final int MESSAGE_READ = BluetoothService.MESSAGE_READ;
@@ -78,6 +81,7 @@ public class BluetoothPrinter extends ReactContextBaseJavaModule
     private BluetoothAdapter mBluetoothAdapter = null;
     // Member object for the services
     private BluetoothService mService = null;
+    private Promise pendingScanPromise = null;
 
     public BluetoothPrinter(ReactApplicationContext reactContext, BluetoothService bluetoothService) {
         super(reactContext);
@@ -177,15 +181,25 @@ public class BluetoothPrinter extends ReactContextBaseJavaModule
         if(adapter == null){
             promise.reject(EVENT_BLUETOOTH_NOT_SUPPORT);
         }else {
-            cancelDisCovery();
-            int permissionChecked = ContextCompat.checkSelfPermission(reactContext, android.Manifest.permission.ACCESS_FINE_LOCATION);
-            if (permissionChecked == PackageManager.PERMISSION_DENIED) {
-                // // TODO: 2018/9/21
-                ActivityCompat.requestPermissions(reactContext.getCurrentActivity(),
-                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                        1);
+            if (!hasScanPermissions()) {
+                PermissionAwareActivity activity = getPermissionAwareActivity();
+                if (activity == null) {
+                    promise.reject("ERR", "Activity doesn't support runtime Bluetooth permission requests");
+                    return;
+                }
+
+                pendingScanPromise = promise;
+                activity.requestPermissions(getRequiredScanPermissions(), REQUEST_SCAN_PERMISSIONS, this);
+                return;
             }
 
+            startDeviceDiscovery(promise, adapter);
+        }
+    }
+
+    private void startDeviceDiscovery(final Promise promise, BluetoothAdapter adapter) {
+        try {
+            cancelDisCovery();
 
             pairedDeivce = new JSONArray();
             foundDevice = new JSONArray();
@@ -210,7 +224,34 @@ public class BluetoothPrinter extends ReactContextBaseJavaModule
             } else {
                 promiseMap.put(PROMISE_SCAN, promise);
             }
+        } catch (SecurityException exception) {
+            promise.reject("ERR", "Bluetooth scan permissions were not granted", exception);
         }
+    }
+
+    private boolean hasScanPermissions() {
+        for (String permission : getRequiredScanPermissions()) {
+            if (ContextCompat.checkSelfPermission(reactContext, permission) != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private String[] getRequiredScanPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            return new String[]{Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT};
+        }
+        return new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
+    }
+
+    @Nullable
+    private PermissionAwareActivity getPermissionAwareActivity() {
+        Activity activity = getCurrentActivity();
+        if (activity instanceof PermissionAwareActivity) {
+            return (PermissionAwareActivity) activity;
+        }
+        return null;
     }
 
     @ReactMethod
@@ -230,7 +271,6 @@ public class BluetoothPrinter extends ReactContextBaseJavaModule
     public void disconnect(String address, final Promise promise){
         BluetoothAdapter adapter = this.getBluetoothAdapter();
         if (adapter!=null && adapter.isEnabled()) {
-            BluetoothDevice device = adapter.getRemoteDevice(address);
             try {
                 mService.stop();
             } catch (Exception e) {
@@ -386,6 +426,36 @@ public class BluetoothPrinter extends ReactContextBaseJavaModule
     @Override
     public void onNewIntent(Intent intent) {
 
+    }
+
+    @Override
+    public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode != REQUEST_SCAN_PERMISSIONS) {
+            return false;
+        }
+
+        Promise promise = pendingScanPromise;
+        pendingScanPromise = null;
+
+        if (promise == null) {
+            return true;
+        }
+
+        for (int grantResult : grantResults) {
+            if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                promise.reject("ERR", "Bluetooth scan permissions denied");
+                return true;
+            }
+        }
+
+        BluetoothAdapter adapter = this.getBluetoothAdapter();
+        if (adapter == null) {
+            promise.reject(EVENT_BLUETOOTH_NOT_SUPPORT);
+            return true;
+        }
+
+        startDeviceDiscovery(promise, adapter);
+        return true;
     }
 
     @Override

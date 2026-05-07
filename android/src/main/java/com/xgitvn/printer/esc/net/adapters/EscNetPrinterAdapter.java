@@ -234,6 +234,7 @@ public class EscNetPrinterAdapter implements PrinterAdapter {
                 } catch (IOException e) {
                     Log.e(LOG_TAG, "failed to print data" + rawData);
                     e.printStackTrace();
+                    errorCallback.invoke("failed to print data: " + e.getMessage());
                 }
             }
         }).start();

@@ -384,75 +384,99 @@ const normalizeBluetoothDevice = (rawDevice: unknown) => {
   };
 };
 
-const getDeviceList = async (callback: BluetoothScanCallback): Promise<void> => {
-  const seenAddresses = new Set<string>();
-  const subscriptions: { remove: () => void }[] = [];
-  let doneEmitted = false;
+const getDeviceList = (callback: BluetoothScanCallback): Promise<void> =>
+  new Promise((resolve, reject) => {
+    const seenAddresses = new Set<string>();
+    const subscriptions: { remove: () => void }[] = [];
+    let doneEmitted = false;
+    let settled = false;
 
-  const emitDone = () => {
-    if (doneEmitted) return;
-    doneEmitted = true;
-    callback(null, true);
-  };
+    const cleanup = () => {
+      subscriptions.forEach((subscription) => subscription?.remove());
+    };
 
-  const emitIfNew = (rawDevice: unknown) => {
+    const emitDone = () => {
+      if (doneEmitted) return;
+      doneEmitted = true;
+      callback(null, true);
+      if (settled) return;
+      settled = true;
+      cleanup();
+      resolve();
+    };
+
+    const emitError = (error: unknown) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      reject(error);
+    };
+
+    const emitIfNew = (rawDevice: unknown) => {
+      try {
+        const device = normalizeBluetoothDevice(rawDevice);
+        const deviceName = typeof device.device_name === 'string' ? device.device_name.trim() : '';
+        const key = typeof device.inner_mac_address === 'string' ? device.inner_mac_address : '';
+        if (!deviceName || !key || seenAddresses.has(key)) return;
+        seenAddresses.add(key);
+        callback(device, false);
+      } catch {
+        // Ignore malformed payload and continue scan flow.
+      }
+    };
+
     try {
-      const device = normalizeBluetoothDevice(rawDevice);
-      const deviceName = typeof device.device_name === 'string' ? device.device_name.trim() : '';
-      const key = typeof device.inner_mac_address === 'string' ? device.inner_mac_address : '';
-      if (!deviceName || !key || seenAddresses.has(key)) return;
-      seenAddresses.add(key);
-      callback(device, false);
-    } catch {
-      // Ignore malformed payload and continue scan flow.
+      if (Platform.OS === 'ios') {
+        const bluetoothEmitter = new NativeEventEmitter(BluetoothPrinter);
+        subscriptions.push(
+          bluetoothEmitter.addListener(BluetoothPrinter.EVENT_DEVICE_FOUND, (rsp: { device: unknown }) => {
+            emitIfNew(rsp?.device);
+          })
+        );
+        subscriptions.push(
+          bluetoothEmitter.addListener(BluetoothPrinter.EVENT_DEVICE_DISCOVER_DONE, () => {
+            emitDone();
+          })
+        );
+      } else {
+        subscriptions.push(
+          DeviceEventEmitter.addListener(BluetoothPrinter.EVENT_DEVICE_ALREADY_PAIRED, (rsp: { devices: unknown }) => {
+            try {
+              const devices = typeof rsp?.devices === 'string' ? JSON.parse(rsp.devices) : rsp?.devices;
+              if (!Array.isArray(devices)) return;
+              devices.forEach((device) => emitIfNew(device));
+            } catch {
+              // Ignore malformed payload and continue scan flow.
+            }
+          })
+        );
+
+        subscriptions.push(
+          DeviceEventEmitter.addListener(BluetoothPrinter.EVENT_DEVICE_FOUND, (rsp: { device: unknown }) => {
+            emitIfNew(rsp?.device);
+          })
+        );
+        subscriptions.push(
+          DeviceEventEmitter.addListener(BluetoothPrinter.EVENT_DEVICE_DISCOVER_DONE, () => {
+            emitDone();
+          })
+        );
+      }
+
+      BluetoothPrinter.scanDevices().then(
+        () => {
+          // Native scan completion should emit EVENT_DEVICE_DISCOVER_DONE.
+          // Keep a small fallback in case a platform build resolves without emitting it.
+          setTimeout(emitDone, 250);
+        },
+        (error: unknown) => {
+          emitError(error);
+        }
+      );
+    } catch (error) {
+      emitError(error);
     }
-  };
-
-  try {
-    if (Platform.OS === 'ios') {
-      const bluetoothEmitter = new NativeEventEmitter(BluetoothPrinter);
-      subscriptions.push(
-        bluetoothEmitter.addListener(BluetoothPrinter.EVENT_DEVICE_FOUND, (rsp: { device: unknown }) => {
-          emitIfNew(rsp?.device);
-        })
-      );
-      subscriptions.push(
-        bluetoothEmitter.addListener(BluetoothPrinter.EVENT_DEVICE_DISCOVER_DONE, () => {
-          emitDone();
-        })
-      );
-    } else {
-      subscriptions.push(
-        DeviceEventEmitter.addListener(BluetoothPrinter.EVENT_DEVICE_ALREADY_PAIRED, (rsp: { devices: unknown }) => {
-          try {
-            const devices = typeof rsp?.devices === 'string' ? JSON.parse(rsp.devices) : rsp?.devices;
-            if (!Array.isArray(devices)) return;
-            devices.forEach((device) => emitIfNew(device));
-          } catch {
-            // Ignore malformed payload and continue scan flow.
-          }
-        })
-      );
-
-      subscriptions.push(
-        DeviceEventEmitter.addListener(BluetoothPrinter.EVENT_DEVICE_FOUND, (rsp: { device: unknown }) => {
-          emitIfNew(rsp?.device);
-        })
-      );
-      subscriptions.push(
-        DeviceEventEmitter.addListener(BluetoothPrinter.EVENT_DEVICE_DISCOVER_DONE, () => {
-          emitDone();
-        })
-      );
-    }
-
-    await BluetoothPrinter.scanDevices();
-    // Some native builds resolve promise before discover-done event.
-    setTimeout(emitDone, 0);
-  } finally {
-    subscriptions.forEach((subscription) => subscription?.remove());
-  }
-};
+  });
 
 const EscNetPrinterEventEmitter = Platform.OS === 'ios' ? new NativeEventEmitter(EscNetPrinterModule) : new NativeEventEmitter();
 
