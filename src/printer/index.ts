@@ -360,6 +360,13 @@ const normalizeBluetoothDevice = (rawDevice: unknown) => {
 const getDeviceList = async (callback: BluetoothScanCallback): Promise<void> => {
   const seenAddresses = new Set<string>();
   const subscriptions: { remove: () => void }[] = [];
+  let doneEmitted = false;
+
+  const emitDone = () => {
+    if (doneEmitted) return;
+    doneEmitted = true;
+    callback(null, true);
+  };
 
   const emitIfNew = (rawDevice: unknown) => {
     try {
@@ -381,6 +388,11 @@ const getDeviceList = async (callback: BluetoothScanCallback): Promise<void> => 
           emitIfNew(rsp?.device);
         })
       );
+      subscriptions.push(
+        bluetoothEmitter.addListener(BluetoothPrinter.EVENT_DEVICE_DISCOVER_DONE, () => {
+          emitDone();
+        })
+      );
     } else {
       subscriptions.push(
         DeviceEventEmitter.addListener(BluetoothPrinter.EVENT_DEVICE_ALREADY_PAIRED, (rsp: { devices: unknown }) => {
@@ -399,10 +411,16 @@ const getDeviceList = async (callback: BluetoothScanCallback): Promise<void> => 
           emitIfNew(rsp?.device);
         })
       );
+      subscriptions.push(
+        DeviceEventEmitter.addListener(BluetoothPrinter.EVENT_DEVICE_DISCOVER_DONE, () => {
+          emitDone();
+        })
+      );
     }
 
     await BluetoothPrinter.scanDevices();
-    callback(null, true);
+    // Some native builds resolve promise before discover-done event.
+    setTimeout(emitDone, 0);
   } finally {
     subscriptions.forEach((subscription) => subscription?.remove());
   }
