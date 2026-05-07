@@ -12,6 +12,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.hardware.usb.UsbConstants;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
@@ -54,6 +55,10 @@ public class EscUSBPrinterAdapter implements PrinterAdapter {
     private UsbDeviceConnection mUsbDeviceConnection;
     private UsbInterface mUsbInterface;
     private UsbEndpoint mEndPoint;
+    private boolean mReceiverRegistered;
+    private Callback mPendingPermissionSuccessCallback;
+    private Callback mPendingPermissionErrorCallback;
+    private UsbDevice mPendingPermissionDevice;
     private static final String ACTION_USB_PERMISSION = "com.xgitvn.printer.EscUSBPrinter.USB_PERMISSION";
     private static final String EVENT_USB_DEVICE_ATTACHED = "usbAttached";
 
@@ -85,9 +90,17 @@ public class EscUSBPrinterAdapter implements PrinterAdapter {
                         assert usbDevice != null;
                         Log.i(LOG_TAG, "success to grant permission for device " + usbDevice.getDeviceId() + ", vendor_id: " + usbDevice.getVendorId() + " product_id: " + usbDevice.getProductId());
                         mUsbDevice = usbDevice;
+                        if (mPendingPermissionSuccessCallback != null && isPendingPermissionDevice(usbDevice)) {
+                            mPendingPermissionSuccessCallback.invoke(new EscUSBPrinterDevice(usbDevice).toRNWritableMap());
+                            clearPendingPermissionRequest();
+                        }
                     } else {
                         assert usbDevice != null;
                         Toast.makeText(context, "User refuses to obtain USB device permissions" + usbDevice.getDeviceName(), Toast.LENGTH_LONG).show();
+                        if (mPendingPermissionErrorCallback != null && isPendingPermissionDevice(usbDevice)) {
+                            mPendingPermissionErrorCallback.invoke("USB permission denied for device");
+                            clearPendingPermissionRequest();
+                        }
                     }
                 }
             } else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
@@ -110,12 +123,26 @@ public class EscUSBPrinterAdapter implements PrinterAdapter {
     public void init(ReactApplicationContext reactContext, Callback successCallback, Callback errorCallback) {
         this.mContext = reactContext;
         this.mUSBManager = (UsbManager) this.mContext.getSystemService(Context.USB_SERVICE);
-        this.mPermissionIndent = PendingIntent.getBroadcast(mContext, 0, new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
-        IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
-        filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-        filter.addAction(UsbManager.ACTION_USB_ACCESSORY_ATTACHED);
-        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-        mContext.registerReceiver(mUsbDeviceReceiver, filter);
+        Intent permissionIntent = new Intent(ACTION_USB_PERMISSION);
+        permissionIntent.setPackage(mContext.getPackageName());
+        this.mPermissionIndent = PendingIntent.getBroadcast(
+                mContext,
+                0,
+                permissionIntent,
+                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
+        );
+        if (!mReceiverRegistered) {
+            IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
+            filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+            filter.addAction(UsbManager.ACTION_USB_ACCESSORY_ATTACHED);
+            filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                mContext.registerReceiver(mUsbDeviceReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+            } else {
+                mContext.registerReceiver(mUsbDeviceReceiver, filter);
+            }
+            mReceiverRegistered = true;
+        }
         Log.v(LOG_TAG, "EscUSBPrinter initialized");
         successCallback.invoke();
     }
@@ -157,7 +184,8 @@ public class EscUSBPrinterAdapter implements PrinterAdapter {
             Log.i(LOG_TAG, "already selected device, do not need repeat to connect");
             if (!mUSBManager.hasPermission(mUsbDevice)) {
                 closeConnectionIfExists();
-                mUSBManager.requestPermission(mUsbDevice, mPermissionIndent);
+                requestPermission(mUsbDevice, successCallback, errorCallback);
+                return;
             }
             successCallback.invoke(new EscUSBPrinterDevice(mUsbDevice).toRNWritableMap());
             return;
@@ -171,8 +199,12 @@ public class EscUSBPrinterAdapter implements PrinterAdapter {
             if (usbDevice.getVendorId() == usbPrinterDeviceId.getVendorId() && usbDevice.getProductId() == usbPrinterDeviceId.getProductId()) {
                 Log.v(LOG_TAG, "request for device: vendor_id: " + usbPrinterDeviceId.getVendorId() + ", product_id: " + usbPrinterDeviceId.getProductId());
                 closeConnectionIfExists();
-                mUSBManager.requestPermission(usbDevice, mPermissionIndent);
-                successCallback.invoke(new EscUSBPrinterDevice(usbDevice).toRNWritableMap());
+                if (mUSBManager.hasPermission(usbDevice)) {
+                    mUsbDevice = usbDevice;
+                    successCallback.invoke(new EscUSBPrinterDevice(usbDevice).toRNWritableMap());
+                } else {
+                    requestPermission(usbDevice, successCallback, errorCallback);
+                }
                 return;
             }
         }
@@ -190,24 +222,28 @@ public class EscUSBPrinterAdapter implements PrinterAdapter {
             Log.e(LOG_TAG, "USB Manager is not initialized");
             return false;
         }
+        if (!mUSBManager.hasPermission(mUsbDevice)) {
+            Log.e(LOG_TAG, "USB permission is not granted");
+            return false;
+        }
 
         if (mUsbDeviceConnection != null) {
             Log.i(LOG_TAG, "USB Connection already connected");
             return true;
         }
 
-        UsbInterface usbInterface = mUsbDevice.getInterface(0);
-        for (int i = 0; i < usbInterface.getEndpointCount(); i++) {
-            final UsbEndpoint ep = usbInterface.getEndpoint(i);
-            if (ep.getType() == UsbConstants.USB_ENDPOINT_XFER_BULK) {
-                if (ep.getDirection() == UsbConstants.USB_DIR_OUT) {
+        for (int interfaceIndex = 0; interfaceIndex < mUsbDevice.getInterfaceCount(); interfaceIndex++) {
+            UsbInterface usbInterface = mUsbDevice.getInterface(interfaceIndex);
+            for (int endpointIndex = 0; endpointIndex < usbInterface.getEndpointCount(); endpointIndex++) {
+                final UsbEndpoint ep = usbInterface.getEndpoint(endpointIndex);
+                if (ep.getType() == UsbConstants.USB_ENDPOINT_XFER_BULK
+                        && ep.getDirection() == UsbConstants.USB_DIR_OUT) {
                     UsbDeviceConnection usbDeviceConnection = mUSBManager.openDevice(mUsbDevice);
                     if (usbDeviceConnection == null) {
                         Log.e(LOG_TAG, "failed to open USB Connection");
                         return false;
                     }
                     if (usbDeviceConnection.claimInterface(usbInterface, true)) {
-
                         mEndPoint = ep;
                         mUsbInterface = usbInterface;
                         mUsbDeviceConnection = usbDeviceConnection;
@@ -221,7 +257,27 @@ public class EscUSBPrinterAdapter implements PrinterAdapter {
                 }
             }
         }
-        return true;
+        Log.e(LOG_TAG, "No bulk OUT endpoint found");
+        return false;
+    }
+
+    private void requestPermission(UsbDevice usbDevice, Callback successCallback, Callback errorCallback) {
+        mPendingPermissionDevice = usbDevice;
+        mPendingPermissionSuccessCallback = successCallback;
+        mPendingPermissionErrorCallback = errorCallback;
+        mUSBManager.requestPermission(usbDevice, mPermissionIndent);
+    }
+
+    private boolean isPendingPermissionDevice(UsbDevice usbDevice) {
+        return usbDevice != null
+                && mPendingPermissionDevice != null
+                && usbDevice.getDeviceId() == mPendingPermissionDevice.getDeviceId();
+    }
+
+    private void clearPendingPermissionRequest() {
+        mPendingPermissionDevice = null;
+        mPendingPermissionSuccessCallback = null;
+        mPendingPermissionErrorCallback = null;
     }
 
 

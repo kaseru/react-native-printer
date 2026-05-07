@@ -22,6 +22,8 @@ import com.facebook.react.bridge.ReadableMap;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.os.Build;
+
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -31,6 +33,7 @@ public class TscUsbPrinter extends ReactContextBaseJavaModule {
 
     private final UsbManager usbManager;
     private UsbDevice printerDevice;
+    private Promise pendingConnectPromise;
 
     // BroadcastReceiver để xử lý kết quả cấp quyền USB
     private final BroadcastReceiver usbReceiver = new BroadcastReceiver() {
@@ -40,11 +43,22 @@ public class TscUsbPrinter extends ReactContextBaseJavaModule {
                 synchronized (this) {
                     UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                     if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
-                        if (device != null) {
-                            System.out.println("Permission granted for device ");
+                        if (device != null && pendingConnectPromise != null) {
+                            printerDevice = device;
+                            UsbDeviceConnection connection = usbManager.openDevice(printerDevice);
+                            if (connection != null) {
+                                connection.close();
+                                pendingConnectPromise.resolve("Printer connected successfully.");
+                            } else {
+                                pendingConnectPromise.reject("Error", "Failed to open connection to USB device.");
+                            }
+                            pendingConnectPromise = null;
                         }
                     } else {
-                        System.out.println("Permission denied for device ");
+                        if (pendingConnectPromise != null) {
+                            pendingConnectPromise.reject("Error", "USB permission denied.");
+                            pendingConnectPromise = null;
+                        }
                     }
                 }
             }
@@ -54,13 +68,13 @@ public class TscUsbPrinter extends ReactContextBaseJavaModule {
     public TscUsbPrinter(ReactApplicationContext reactContext) {
         super(reactContext);
         usbManager = (UsbManager) reactContext.getSystemService(Context.USB_SERVICE);
-        permissionIntent = PendingIntent.getBroadcast(reactContext, 0, new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_IMMUTABLE);
+        Intent permissionRequestIntent = new Intent(ACTION_USB_PERMISSION);
+        permissionRequestIntent.setPackage(reactContext.getPackageName());
+        permissionIntent = PendingIntent.getBroadcast(reactContext, 0, permissionRequestIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-            // Dành cho Android 12 (API 31) trở lên
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             getReactApplicationContext().registerReceiver(usbReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
         } else {
-            // Dành cho các phiên bản Android cũ hơn
             getReactApplicationContext().registerReceiver(usbReceiver, filter);
         }
     }
@@ -84,10 +98,9 @@ public class TscUsbPrinter extends ReactContextBaseJavaModule {
                 if (device.getVendorId() == vendorId && device.getProductId() == productId) {
                     printerDevice = device;
 
-                    // Kiểm tra quyền truy cập thiết bị USB
                     if (!usbManager.hasPermission(device)) {
+                        pendingConnectPromise = promise;
                         usbManager.requestPermission(device, permissionIntent);
-                        promise.reject("Error", "Requesting USB permission.");
                         return;
                     }
 
@@ -123,26 +136,39 @@ public class TscUsbPrinter extends ReactContextBaseJavaModule {
                 return;
             }
 
-            UsbInterface usbInterface = printerDevice.getInterface(0);
-            if (usbInterface == null) {
-                promise.reject("Error", "No interface found on the USB device.");
-                return;
-            }
-
+            UsbInterface usbInterface = null;
             UsbEndpoint endpoint = null;
-            for (int i = 0; i < usbInterface.getEndpointCount(); i++) {
-                UsbEndpoint ep = usbInterface.getEndpoint(i);
-                if (ep.getDirection() == UsbConstants.USB_DIR_OUT) {
-                    endpoint = ep;
+            for (int interfaceIndex = 0; interfaceIndex < printerDevice.getInterfaceCount(); interfaceIndex++) {
+                UsbInterface candidateInterface = printerDevice.getInterface(interfaceIndex);
+                for (int endpointIndex = 0; endpointIndex < candidateInterface.getEndpointCount(); endpointIndex++) {
+                    UsbEndpoint ep = candidateInterface.getEndpoint(endpointIndex);
+                    if (ep.getDirection() == UsbConstants.USB_DIR_OUT && ep.getType() == UsbConstants.USB_ENDPOINT_XFER_BULK) {
+                        usbInterface = candidateInterface;
+                        endpoint = ep;
+                        break;
+                    }
+                }
+                if (endpoint != null) {
                     break;
                 }
             }
+            if (usbInterface == null) {
+                connection.close();
+                promise.reject("Error", "No interface found on the USB device.");
+                return;
+            }
             if (endpoint == null) {
+                connection.close();
                 promise.reject("Error", "No endpoint found on the USB interface.");
                 return;
             }
 
-            // Kiểm tra dữ liệu đã được gửi thành công
+            if (!connection.claimInterface(usbInterface, true)) {
+                connection.close();
+                promise.reject("Error", "Failed to claim USB interface.");
+                return;
+            }
+
             int sentBytes = connection.bulkTransfer(endpoint, dataToSend, dataToSend.length, 5000);
             if (sentBytes > 0) {
                 System.out.println("Data written successfully.");
