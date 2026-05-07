@@ -300,7 +300,7 @@ const EscNetPrinter = {
   }
 };
 
-const bluetoothConnectWithTimeout = (address: string, timeoutMs: number = 2000): Promise<{ status: number, message: string }> =>
+const bluetoothConnectWithTimeout = (address: string, timeoutMs: number = 2000): Promise<{ status: number; message: string }> =>
   new Promise((resolve) => {
     let settled = false;
 
@@ -324,7 +324,7 @@ const bluetoothConnectWithTimeout = (address: string, timeoutMs: number = 2000):
     }, timeoutMs);
   });
 
-const connect = async (address: string, timeoutMs: number = 2000, retryCount: number = 3): Promise<{ status: number, message: string }> => {
+const connect = async (address: string, timeoutMs: number = 2000, retryCount: number = 3): Promise<{ status: number; message: string }> => {
   let result = { status: -1, message: 'Timeout' };
   for (let i = 0; i < retryCount; i += 1) {
     result = await bluetoothConnectWithTimeout(address, timeoutMs);
@@ -349,11 +349,38 @@ const normalizeBluetoothDevice = (rawDevice: unknown) => {
 
   const address = 'address' in safeDevice && typeof safeDevice.address === 'string' ? safeDevice.address : '';
   const name = 'name' in safeDevice && typeof safeDevice.name === 'string' ? safeDevice.name : '';
+  const majorDeviceClass = 'majorDeviceClass' in safeDevice && typeof safeDevice.majorDeviceClass === 'number' ? safeDevice.majorDeviceClass : undefined;
+  const deviceClass = 'deviceClass' in safeDevice && typeof safeDevice.deviceClass === 'number' ? safeDevice.deviceClass : undefined;
+  const bondState = 'bondState' in safeDevice && typeof safeDevice.bondState === 'number' ? safeDevice.bondState : undefined;
+  const type = 'type' in safeDevice && typeof safeDevice.type === 'number' ? safeDevice.type : undefined;
+  const rssi = 'rssi' in safeDevice && typeof safeDevice.rssi === 'number' ? safeDevice.rssi : undefined;
+  const localName = 'localName' in safeDevice && typeof safeDevice.localName === 'string' ? safeDevice.localName : undefined;
+  const isConnectable = 'isConnectable' in safeDevice && typeof safeDevice.isConnectable === 'boolean' ? safeDevice.isConnectable : undefined;
+  const txPowerLevel = 'txPowerLevel' in safeDevice && typeof safeDevice.txPowerLevel === 'number' ? safeDevice.txPowerLevel : undefined;
+
+  const toStringArray = (value: unknown): string[] | undefined => (Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : undefined);
+
+  const uuids = toStringArray('uuids' in safeDevice ? safeDevice.uuids : undefined);
+  const serviceUUIDs = toStringArray('serviceUUIDs' in safeDevice ? safeDevice.serviceUUIDs : undefined);
+  const overflowServiceUUIDs = toStringArray('overflowServiceUUIDs' in safeDevice ? safeDevice.overflowServiceUUIDs : undefined);
+  const solicitedServiceUUIDs = toStringArray('solicitedServiceUUIDs' in safeDevice ? safeDevice.solicitedServiceUUIDs : undefined);
 
   return {
     ...safeDevice,
     inner_mac_address: address,
-    device_name: name
+    device_name: name,
+    majorDeviceClass,
+    deviceClass,
+    bondState,
+    type,
+    rssi,
+    localName,
+    isConnectable,
+    txPowerLevel,
+    uuids,
+    serviceUUIDs,
+    overflowServiceUUIDs,
+    solicitedServiceUUIDs
   };
 };
 
@@ -371,8 +398,9 @@ const getDeviceList = async (callback: BluetoothScanCallback): Promise<void> => 
   const emitIfNew = (rawDevice: unknown) => {
     try {
       const device = normalizeBluetoothDevice(rawDevice);
+      const deviceName = typeof device.device_name === 'string' ? device.device_name.trim() : '';
       const key = typeof device.inner_mac_address === 'string' ? device.inner_mac_address : '';
-      if (!key || seenAddresses.has(key)) return;
+      if (!deviceName || !key || seenAddresses.has(key)) return;
       seenAddresses.add(key);
       callback(device, false);
     } catch {
