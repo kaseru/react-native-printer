@@ -83,13 +83,15 @@ public class TscNetPrinter extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void closeConnection(Promise promise) {
+    public void disconnect(Promise promise) {
         try {
             if (outputStream != null) {
                 outputStream.close();
+                outputStream = null;
             }
             if (socket != null) {
                 socket.close();
+                socket = null;
             }
             promise.resolve("Connection closed successfully");
         } catch (Exception e) {

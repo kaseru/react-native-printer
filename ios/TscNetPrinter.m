@@ -202,7 +202,7 @@ RCT_EXPORT_METHOD(connect:(NSString *)host port:(NSInteger)port) {
 //}
 
 // Phương thức đóng kết nối
-RCT_EXPORT_METHOD(closeConnection) {
+RCT_EXPORT_METHOD(disconnect) {
   if (self.outputStream) {
     [self.outputStream close];
     [self.inputStream close];

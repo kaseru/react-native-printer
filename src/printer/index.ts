@@ -278,8 +278,10 @@ const EscNetPrinter = {
           (printer: IEscNetPrinter) => resolve(printer),
           (error: Error) => reject(error)
         );
-      } catch (error) {
-        reject(error?.message || `Connect to ${host} fail`);
+      } catch (error: unknown) {
+        const message =
+          error instanceof Error ? error.message : `Connect to ${host} fail`;
+        reject(message);
       }
     }),
 
@@ -450,11 +452,19 @@ const TscUsbPrinterModule =
     ? {
         connect: (..._args: unknown[]) =>
           rejectUnsupportedIOSUSB("TSC USB printing"),
-        closeConnection: () => Promise.resolve(),
+        disconnect: () => Promise.resolve(),
         printLabel: (..._args: unknown[]) =>
           rejectUnsupportedIOSUSB("TSC USB printing"),
       }
     : TscUsbPrinter;
+
+const TscNetPrinterModule = {
+  ...TscNetPrinter,
+  disconnect: (...args: unknown[]) =>
+    (TscNetPrinter as { disconnect: (...innerArgs: unknown[]) => unknown }).disconnect(
+      ...args
+    ),
+};
 
 TscBluetoothPrinter.DIRECTION = {
   FORWARD: 0,
@@ -604,7 +614,7 @@ export {
   EscUsbPrinter,
   EscNetPrinterEventEmitter,
   BluetoothPrinter,
-  TscNetPrinter,
+  TscNetPrinterModule as TscNetPrinter,
   TscUsbPrinterModule as TscUsbPrinter,
   EscBluetoothPrinter,
   TscBluetoothPrinter,

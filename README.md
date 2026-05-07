@@ -167,7 +167,7 @@ This table lists methods exported by native modules and exposed to JS.
 | `TscNetPrinter` | `ping` | `TscNetPrinter.ping` | `TscNetPrinter.ping` | Supported on both platforms |
 | `TscNetPrinter` | `connect` | `TscNetPrinter.connect` | `TscNetPrinter.connect` | Supported on both platforms |
 | `TscNetPrinter` | `printLabel` | `TscNetPrinter.printLabel` | `TscNetPrinter.printLabel` | Supported on both platforms |
-| `TscNetPrinter` | `closeConnection` | `TscNetPrinter.closeConnection` | `TscNetPrinter.closeConnection` | Supported on both platforms |
+| `TscNetPrinter` | `disconnect` | `TscNetPrinter.disconnect` | `TscNetPrinter.disconnect` | Supported on both platforms |
 | `TscNetPrinter` | `sendDataToPrinter` | `TscNetPrinter.sendDataToPrinter` | Not exported | Android only |
 | `TscBluetoothPrinter` | `printLabel` | `TscBluetoothPrinter.printLabel` | `TscBluetoothPrinter.printLabel` | Supported on both platforms |
 | `TscUsbPrinter` | `connect` | `TscUsbPrinter.connect` | Not available | Android only |
