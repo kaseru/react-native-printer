@@ -110,3 +110,74 @@ if (ok) {
 - `TscBluetoothPrinter`
 - `COMMANDS`
 - `ping(host, timeoutMs?)`
+
+## Native bridge mapping (JS -> Android/iOS)
+
+This table lists methods exported by native modules and exposed to JS.
+
+| JS module | JS method | Android native | iOS native | Notes |
+|---|---|---|---|---|
+| `EscNetPrinter` | `init` | `EscPrinterNetwork.init` | `EscNetPrinter.init` | Supported on both platforms |
+| `EscNetPrinter` | `getDeviceList` | `EscPrinterNetwork.getDeviceList` | `EscNetPrinter.getDeviceList` | Supported on both platforms |
+| `EscNetPrinter` | `connect` | `EscPrinterNetwork.connect` | `EscNetPrinter.connect` | Supported on both platforms |
+| `EscNetPrinter` | `disconnect` | `EscPrinterNetwork.disconnect` | `EscNetPrinter.disconnect` | Supported on both platforms |
+| `EscNetPrinter` | `printText` | `EscPrinterNetwork.printRawData` via JS wrapper | `EscNetPrinter.printRawData` via JS wrapper | Supported on both platforms |
+| `EscNetPrinter` | `printBill` | `EscPrinterNetwork.printRawData` via JS wrapper | `EscNetPrinter.printRawData` via JS wrapper | Supported on both platforms |
+| `EscNetPrinter` | `printImage` | `EscPrinterNetwork.printImageData` | `EscNetPrinter.printImageData` | Supported on both platforms |
+| `EscNetPrinter` | `printImageBase64` | `EscPrinterNetwork.printImageBase64` | `EscNetPrinter.printImageBase64` | Supported on both platforms |
+| `EscNetPrinter` | `printColumnsText` | `EscPrinterNetwork.printRawData` via JS wrapper | `EscNetPrinter.printRawData` via JS wrapper | Supported on both platforms |
+| `EscNetPrinter` | `openDrawer` | `EscPrinterNetwork.printRawData` via JS wrapper | `EscNetPrinter.printRawData` via JS wrapper | iOS sends text path; Android can send raw pulse bytes |
+| `EscNetPrinter` | `printRaw` (native direct) | Not exported | `EscNetPrinter.printRaw` | iOS-only native helper |
+| `EscNetPrinter` | `sendHex` (native direct) | Not exported | `EscNetPrinter.sendHex` | iOS-only native helper |
+| `EscUsbPrinter` | `init` | `EscUSBPrinter.init` | Not available | Android only |
+| `EscUsbPrinter` | `getDeviceList` | `EscUSBPrinter.getDeviceList` | Not available | Android only |
+| `EscUsbPrinter` | `connect` | `EscUSBPrinter.connect` | Not available | Android only |
+| `EscUsbPrinter` | `disconnect` | `EscUSBPrinter.disconnect` | Not available | iOS JS wrapper resolves/throws unsupported |
+| `EscUsbPrinter` | `printText` | `EscUSBPrinter.printRawData` via JS wrapper | Not available | Android only |
+| `EscUsbPrinter` | `printBill` | `EscUSBPrinter.printRawData` via JS wrapper | Not available | Android only |
+| `EscUsbPrinter` | `printImage` | `EscUSBPrinter.printImageData` | Not available | Android only |
+| `EscUsbPrinter` | `printImageBase64` | `EscUSBPrinter.printImageBase64` | Not available | Android only |
+| `EscUsbPrinter` | `printColumnsText` | `EscUSBPrinter.printRawData` via JS wrapper | Not available | Android only |
+| `EscUsbPrinter` | `openDrawer` | `EscUSBPrinter.printRawData` via JS wrapper | Not available | Android only |
+| `BluetoothPrinter` | `isBluetoothEnabled` | `BluetoothPrinter.isBluetoothEnabled` | `BluetoothPrinter.isBluetoothEnabled` | Supported on both platforms |
+| `BluetoothPrinter` | `enableBluetooth` | `BluetoothPrinter.enableBluetooth` | `BluetoothPrinter.enableBluetooth` | Supported on both platforms |
+| `BluetoothPrinter` | `disableBluetooth` | `BluetoothPrinter.disableBluetooth` | `BluetoothPrinter.disableBluetooth` | Supported on both platforms |
+| `BluetoothPrinter` | `scanDevices` | `BluetoothPrinter.scanDevices` | `BluetoothPrinter.scanDevices` | Supported on both platforms |
+| `BluetoothPrinter` | `connect` | `BluetoothPrinter.connect` | `BluetoothPrinter.connect` | Supported on both platforms |
+| `BluetoothPrinter` | `disconnect` | `BluetoothPrinter.disconnect` | `BluetoothPrinter.disconnect` | Supported on both platforms |
+| `BluetoothPrinter` | `unpaire` | `BluetoothPrinter.unpaire` | Not available | Android only |
+| `BluetoothPrinter` | `isDeviceConnected` | `BluetoothPrinter.isDeviceConnected` | Not available | Android only |
+| `BluetoothPrinter` | `getConnectedDeviceAddress` | `BluetoothPrinter.getConnectedDeviceAddress` | Not available | Android only |
+| `BluetoothPrinter` | `stopScan` | Not available | `BluetoothPrinter.stopScan` | iOS only |
+| `EscBluetoothPrinter` | `init` | `EscBluetoothPrinter.init` | `EscBluetoothPrinter.init` | Supported on both platforms |
+| `EscBluetoothPrinter` | `printText` | `EscBluetoothPrinter.printText` | `EscBluetoothPrinter.printText` | Supported on both platforms |
+| `EscBluetoothPrinter` | `printColumn` | `EscBluetoothPrinter.printColumn` | `EscBluetoothPrinter.printColumn` | Supported on both platforms |
+| `EscBluetoothPrinter` | `printPic` | `EscBluetoothPrinter.printPic` | `EscBluetoothPrinter.printPic` | Supported on both platforms |
+| `EscBluetoothPrinter` | `printerAlign` | `EscBluetoothPrinter.printerAlign` | `EscBluetoothPrinter.printerAlign` | Supported on both platforms |
+| `EscBluetoothPrinter` | `printerUnderLine` | `EscBluetoothPrinter.printerUnderLine` | `EscBluetoothPrinter.printerUnderLine` | Supported on both platforms |
+| `EscBluetoothPrinter` | `printerLeftSpace` | `EscBluetoothPrinter.printerLeftSpace` | `EscBluetoothPrinter.printerLeftSpace` | Supported on both platforms |
+| `EscBluetoothPrinter` | `printAndFeed` | `EscBluetoothPrinter.printAndFeed` | `EscBluetoothPrinter.printAndFeed` | Supported on both platforms |
+| `EscBluetoothPrinter` | `printBarCode` | `EscBluetoothPrinter.printBarCode` | `EscBluetoothPrinter.printBarCode` | Supported on both platforms |
+| `EscBluetoothPrinter` | `openDrawer` | `EscBluetoothPrinter.openDrawer` | `EscBluetoothPrinter.openDrawer` | Supported on both platforms |
+| `EscBluetoothPrinter` | `cutOnePoint` | `EscBluetoothPrinter.cutOnePoint` | `EscBluetoothPrinter.cutOnePoint` | Supported on both platforms |
+| `EscBluetoothPrinter` | `setWidth` | `EscBluetoothPrinter.setWidth` | `EscBluetoothPrinter.setWidth` | Supported on both platforms |
+| `EscBluetoothPrinter` | `rotate` | `EscBluetoothPrinter.rotate` | `EscBluetoothPrinter.rotate` | Signature differs slightly by platform |
+| `EscBluetoothPrinter` | `setBlob` | `EscBluetoothPrinter.setBlob` | `EscBluetoothPrinter.setBlob` | Supported on both platforms |
+| `EscBluetoothPrinter` | `printQRCode` | `EscBluetoothPrinter.printQRCode` | Not exported in current iOS module | Android only in current bridge |
+| `TscNetPrinter` | `ping` | `TscNetPrinter.ping` | `TscNetPrinter.ping` | Supported on both platforms |
+| `TscNetPrinter` | `connect` | `TscNetPrinter.connect` | `TscNetPrinter.connect` | Supported on both platforms |
+| `TscNetPrinter` | `printLabel` | `TscNetPrinter.printLabel` | `TscNetPrinter.printLabel` | Supported on both platforms |
+| `TscNetPrinter` | `closeConnection` | `TscNetPrinter.closeConnection` | `TscNetPrinter.closeConnection` | Supported on both platforms |
+| `TscNetPrinter` | `sendDataToPrinter` | `TscNetPrinter.sendDataToPrinter` | Not exported | Android only |
+| `TscBluetoothPrinter` | `printLabel` | `TscBluetoothPrinter.printLabel` | `TscBluetoothPrinter.printLabel` | Supported on both platforms |
+| `TscUsbPrinter` | `connect` | `TscUsbPrinter.connect` | Not available | Android only |
+| `TscUsbPrinter` | `printLabel` | `TscUsbPrinter.printLabel` | Not available | Android only |
+| `TscUsbPrinter` | `getDevices` | `TscUsbPrinter.getDevices` | Not available | Android only |
+
+### Guidance and platform support notes
+
+- Prefer `EscNetPrinter` for cross-platform ESC/POS over LAN.
+- Use `EscUsbPrinter` and `TscUsbPrinter` only on Android.
+- `ping(host, timeoutMs?)` uses `TscNetPrinter.ping` to pre-check network reachability.
+- iOS `EscNetPrinter` includes low-level helpers (`printRaw`, `sendHex`) that are not exposed by Android.
+- Bluetooth capability sets are similar but not identical across Android/iOS; verify method availability before relying on platform-specific calls.
