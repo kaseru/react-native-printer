@@ -246,14 +246,14 @@ RCT_EXPORT_METHOD(printText:(NSString *) text withOptions:(NSDictionary *) optio
     [BluetoothPrinter writeValue:toSend withDelegate:delegate];
 }
 
-RCT_EXPORT_METHOD(rotate:(NSInteger *)rotate
+RCT_EXPORT_METHOD(rotate:(NSInteger)rotate
                   withResolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject)
 {
     if(BluetoothPrinter.isConnected){
         //    //取消/选择90度旋转打印
        // public static byte[] ESC_V = new byte[] {ESC, 'V', 0x00 };
         NSMutableData *data = [[NSMutableData alloc] init];
-        Byte rotateBytes[] = {(int)rotate};
+        Byte rotateBytes[] = {(Byte)rotate};
         [data appendBytes:ESC length:1];
         [data appendBytes:V length:1];
         [data appendBytes:rotateBytes length:1];
@@ -270,7 +270,7 @@ RCT_EXPORT_METHOD(rotate:(NSInteger *)rotate
 //        }
 }
 
-RCT_EXPORT_METHOD(printerAlign:(NSInteger *) align
+RCT_EXPORT_METHOD(printerAlign:(NSInteger)align
                    withResolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject)
 {
     if(BluetoothPrinter.isConnected){
@@ -279,10 +279,11 @@ RCT_EXPORT_METHOD(printerAlign:(NSInteger *) align
              reject(@"INVALD_PARAMETERS",@"INVALD_PARAMETERS",nil);
         }else{
             //{ESC, 'a', 0x00 }
+            Byte alignByte = (Byte)align;
             NSMutableData *toSend = [[NSMutableData alloc] init];
             [toSend appendBytes:ESC length:sizeof(ESC)];
             [toSend appendBytes:A length:sizeof(A)];
-            [toSend appendBytes:&align length:sizeof(align)];
+            [toSend appendBytes:&alignByte length:sizeof(alignByte)];
             pendingReject =reject;
             pendingResolve =resolve;
             [BluetoothPrinter writeValue:toSend withDelegate:self];
