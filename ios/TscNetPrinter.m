@@ -256,6 +256,42 @@ RCT_EXPORT_METHOD(connect:(NSString *)host
 //  }
 //}
 
+- (BOOL)writeData:(NSData *)data error:(NSError **)error {
+  if (!self.outputStream || self.outputStream.streamStatus != NSStreamStatusOpen) {
+    if (error) {
+      *error = [NSError errorWithDomain:@"TscNetPrinter" code:502 userInfo:@{NSLocalizedDescriptionKey: @"Printer socket is not connected"}];
+    }
+    return NO;
+  }
+
+  const uint8_t *bytes = data.bytes;
+  NSUInteger offset = 0;
+  NSDate *deadline = [NSDate dateWithTimeIntervalSinceNow:10];
+  while (offset < data.length && [deadline timeIntervalSinceNow] > 0) {
+    if (!self.outputStream.hasSpaceAvailable) {
+      [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+      continue;
+    }
+
+    NSInteger bytesWritten = [self.outputStream write:bytes + offset maxLength:data.length - offset];
+    if (bytesWritten > 0) {
+      offset += bytesWritten;
+      continue;
+    }
+
+    if (error) {
+      *error = self.outputStream.streamError ?: [NSError errorWithDomain:@"TscNetPrinter" code:503 userInfo:@{NSLocalizedDescriptionKey: @"Failed to write printer data"}];
+    }
+    return NO;
+  }
+
+  if (offset == data.length) return YES;
+  if (error) {
+    *error = [NSError errorWithDomain:@"TscNetPrinter" code:504 userInfo:@{NSLocalizedDescriptionKey: @"Printer write timed out"}];
+  }
+  return NO;
+}
+
 // Phương thức đóng kết nối
 RCT_EXPORT_METHOD(disconnect:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
@@ -344,16 +380,12 @@ RCT_EXPORT_METHOD(printLabel:(NSDictionary *) options withResolve:(RCTPromiseRes
       [tsc addSound:2 interval:100];
   }
  
-  // Ghi dữ liệu từ NSMutableData vào NSOutputStream
   NSData *dataToSend = tsc.command;
-  NSString *base64String = [dataToSend base64EncodedStringWithOptions:0];
-  NSInteger bytesWritten = [self.outputStream write:[dataToSend bytes] maxLength:[dataToSend length]];
-
-  // Kiểm tra xem dữ liệu có được ghi thành công không
-  if (bytesWritten == [dataToSend length]) {
+  NSError *error = nil;
+  if ([self writeData:dataToSend error:&error]) {
     resolve(@"In thành công!!!");
   } else {
-    reject(@"SEND_ERROR", @"In thất bại!!!", nil);
+    reject(@"SEND_ERROR", error.localizedDescription ?: @"In thất bại!!!", error);
   }
 }
 
