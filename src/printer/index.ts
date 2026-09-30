@@ -490,7 +490,9 @@ const TscUsbPrinterModule =
     : TscUsbPrinter;
 
 const TscNetPrinterModule = {
-  ...TscNetPrinter,
+  ping: (...args: unknown[]) => TscNetPrinter.ping(...args),
+  connect: (...args: unknown[]) => TscNetPrinter.connect(...args),
+  printLabel: (...args: unknown[]) => TscNetPrinter.printLabel(...args),
   disconnect: (...args: unknown[]) => TscNetPrinter.disconnect(...args)
 };
 
