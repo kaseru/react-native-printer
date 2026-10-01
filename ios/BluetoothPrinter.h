@@ -17,6 +17,8 @@
 
 @interface BluetoothPrinter : RCTEventEmitter <RCTBridgeModule, CBCentralManagerDelegate, CBPeripheralDelegate>
 @property (strong, nonatomic) CBCentralManager      *centralManager;
+@property (strong, nonatomic) NSMutableArray *isEnabledResolveBlocks;
+@property (assign, nonatomic) NSUInteger isEnabledRequestGeneration;
 @property (nonatomic,copy) RCTPromiseResolveBlock scanResolveBlock;
 @property (nonatomic,copy) RCTPromiseRejectBlock scanRejectBlock;
 @property (strong,nonatomic) NSMutableDictionary <NSString *,CBPeripheral *> *foundDevices;

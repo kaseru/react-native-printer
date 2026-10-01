@@ -167,11 +167,50 @@ RCT_EXPORT_MODULE(BluetoothPrinter);
 
 
 //isBluetoothEnabled
+- (void)resolveBluetoothEnabledRequests:(CBManagerState)state
+{
+    if (!self.isEnabledResolveBlocks.count) {
+        return;
+    }
+
+    self.isEnabledRequestGeneration += 1;
+
+    NSArray *resolveBlocks = [self.isEnabledResolveBlocks copy];
+    [self.isEnabledResolveBlocks removeAllObjects];
+    NSNumber *isEnabled = @(state == CBManagerStatePoweredOn);
+    [resolveBlocks enumerateObjectsUsingBlock:^(RCTPromiseResolveBlock resolve, NSUInteger index, BOOL *stop) {
+        resolve(isEnabled);
+    }];
+}
+
 RCT_EXPORT_METHOD(isBluetoothEnabled:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-    CBManagerState state = [self.centralManager  state];
-    resolve(@(state == CBManagerStatePoweredOn));
+    CBManagerState state = [self.centralManager state];
+    if (state != CBManagerStateUnknown && state != CBManagerStateResetting) {
+        resolve(@(state == CBManagerStatePoweredOn));
+        return;
+    }
+
+    if (!self.isEnabledResolveBlocks) {
+        self.isEnabledResolveBlocks = [[NSMutableArray alloc] init];
+    }
+    [self.isEnabledResolveBlocks addObject:[resolve copy]];
+
+    NSUInteger requestGeneration = self.isEnabledRequestGeneration;
+    if (self.isEnabledResolveBlocks.count > 1) {
+        return;
+    }
+
+    __weak typeof(self) weakSelf = self;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        if (!strongSelf || strongSelf.isEnabledRequestGeneration != requestGeneration) {
+            return;
+        }
+
+        [strongSelf resolveBluetoothEnabledRequests:strongSelf.centralManager.state];
+    });
 }
 
 //enableBluetooth
@@ -373,6 +412,11 @@ RCT_EXPORT_METHOD(disconnect:(NSString *)address
  **/
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central{
     NSLog(@"%ld",(long)central.state);
+    if (central.state == CBManagerStateUnknown || central.state == CBManagerStateResetting) {
+        return;
+    }
+
+    [self resolveBluetoothEnabledRequests:central.state];
 }
 
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary<NSString *, id> *)advertisementData RSSI:(NSNumber *)RSSI{
