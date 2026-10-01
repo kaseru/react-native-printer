@@ -49,6 +49,8 @@ static const NSInteger kPrinterWriteChunkSize = 4096;
 @property (nonatomic, strong) NSOutputStream *outputStream;
 @property (nonatomic, copy) NSString *connectedHost;
 @property (nonatomic, strong) NSNumber *connectedPort;
+@property (nonatomic, assign) BOOL isFirstWrite;
+@property (nonatomic, assign) BOOL safePadding;
 @end
 
 @implementation EscNetPrinter
@@ -111,6 +113,8 @@ RCT_EXPORT_MODULE()
 
     self.inputStream.delegate = self;
     self.outputStream.delegate = self;
+    self.isFirstWrite = YES;
+    self.safePadding = YES; // Default to YES
 
     [self.inputStream scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
     [self.outputStream scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
@@ -154,6 +158,17 @@ RCT_EXPORT_MODULE()
             *error = [NSError errorWithDomain:@"EscNetPrinter" code:503 userInfo:@{NSLocalizedDescriptionKey: @"Printer is not connected"}];
         }
         return NO;
+    }
+
+    if (self.isFirstWrite) {
+        self.isFirstWrite = NO;
+        if (self.safePadding) {
+            NSMutableData *paddedData = [NSMutableData data];
+            uint8_t dummy[] = {0x00, 0x00, 0x00}; // Hardware Wi-Fi serial bridges often drop the first byte. Pad with harmless NULLs.
+            [paddedData appendBytes:dummy length:sizeof(dummy)];
+            [paddedData appendData:data];
+            data = paddedData;
+        }
     }
 
     const uint8_t *buffer = (const uint8_t *)data.bytes;
@@ -457,8 +472,10 @@ RCT_EXPORT_METHOD(printRawData:(NSString *)text
     @try {
         NSNumber *beepPtr = [options valueForKey:@"beep"];
         NSNumber *cutPtr = [options valueForKey:@"cut"];
+        NSNumber *safePadPtr = [options valueForKey:@"safePadding"];
         BOOL beep = (BOOL)[beepPtr intValue];
         BOOL cut = (BOOL)[cutPtr intValue];
+        if (safePadPtr != nil) self.safePadding = [safePadPtr boolValue];
 
         NSError *error = nil;
         NSData *data = [self escposDataForText:text ?: @""];
@@ -485,6 +502,9 @@ RCT_EXPORT_METHOD(printImageData:(NSString *)imgUrl
         if (!connected_ip) {
             [NSException raise:@"Invalid connection" format:@"Can't connect to printer"];
         }
+        
+        NSNumber *safePadPtr = [options valueForKey:@"safePadding"];
+        if (safePadPtr != nil) self.safePadding = [safePadPtr boolValue];
 
         NSURL *url = [NSURL URLWithString:imgUrl];
         NSData *imageData = [NSData dataWithContentsOfURL:url];
@@ -515,6 +535,9 @@ RCT_EXPORT_METHOD(printImageBase64:(NSString *)base64Qr
             return;
         }
 
+        NSNumber *safePadPtr = [options valueForKey:@"safePadding"];
+        if (safePadPtr != nil) self.safePadding = [safePadPtr boolValue];
+
         NSData *imageData = [[NSData alloc] initWithBase64EncodedString:base64Qr options:NSDataBase64DecodingIgnoreUnknownCharacters];
         if (!imageData) {
             NSString *result = [@"data:image/png;base64," stringByAppendingString:base64Qr];
@@ -543,6 +566,9 @@ RCT_EXPORT_METHOD(printBill:(NSString *)text
                   fail:(RCTResponseSenderBlock)errorCallback)
 {
     @try {
+        NSNumber *safePadPtr = [options valueForKey:@"safePadding"];
+        if (safePadPtr != nil) self.safePadding = [safePadPtr boolValue];
+        
         NSMutableData *data = [NSMutableData data];
         if (text != nil && text.length > 0) {
             [data appendData:[self escposDataForText:text]];
