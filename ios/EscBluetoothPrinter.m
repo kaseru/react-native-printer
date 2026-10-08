@@ -45,7 +45,6 @@ static RCTPromiseRejectBlock pendingReject;
     return self;
 }
 
-
 - (dispatch_queue_t)methodQueue
 {
     return dispatch_get_main_queue();
@@ -54,7 +53,6 @@ static RCTPromiseRejectBlock pendingReject;
 {
     return YES;
 }
-
 
 /**
  * Exports the constants to javascritp.
@@ -107,7 +105,7 @@ RCT_EXPORT_METHOD(printerLeftSpace:(int) sp
                   withResolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if(sp>255 || sp<0){
+   if(sp>255 || sp<0){
         reject(@"COMMAND_NOT_SEND",@"INVALID_VALUE",nil);
         return;
     }
@@ -200,7 +198,7 @@ RCT_EXPORT_METHOD(printText:(NSString *) text withOptions:(NSDictionary *) optio
 }
 -(void) textPrint:(NSString *) text
        inEncoding:(NSString *) encoding
-     withCodePage:(NSInteger) codePage
+    withCodePage:(NSInteger) codePage
        widthTimes:(NSInteger) widthTimes
       heightTimes:(NSInteger) heightTimes
          fontType:(NSInteger) fontType
@@ -566,13 +564,20 @@ RCT_EXPORT_METHOD(printBarCode:(NSString *) str withType:(NSInteger)
 //Q:3,
 //H:2
 - (void) didWriteDataToBle: (BOOL)success{
-    if(success){
-        pendingResolve(nil);
-    }else{NSLog(@"REJECT<REJECT<REJECT<REJECT<REJECT<");
-        pendingReject(@"COMMAND_NOT_SEND",@"COMMAND_NOT_SEND",nil);
-    }
+    RCTPromiseResolveBlock resolve = pendingResolve;
+    RCTPromiseRejectBlock reject = pendingReject;
     pendingReject = nil;
     pendingResolve = nil;
+
+    if(success){
+        if(resolve){
+            resolve(nil);
+        }
+    }else{NSLog(@"REJECT<REJECT<REJECT<REJECT<REJECT<");
+        if(reject){
+            reject(@"COMMAND_NOT_SEND",@"COMMAND_NOT_SEND",nil);
+        }
+    }
     [NSThread sleepForTimeInterval:0.05f];//slow down
 }
 
@@ -598,7 +603,7 @@ RCT_EXPORT_METHOD(openDrawer:(NSInteger)pin
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
     if(BluetoothPrinter.isConnected){
-       // Lệnh chuẩn ESC/POS mở drawer pin 0 hoặc 2
+       // Lệnh chuẩn ESC/POS mở drawer pin 0 or 2
         unsigned char cmd[5] = {0x1B, 0x70, (unsigned char)pin, (unsigned char)onTime, (unsigned char)offTime};
         [BluetoothPrinter writeValue:[NSData dataWithBytes:cmd length:5] withDelegate:nil];
         resolve(@(YES));
