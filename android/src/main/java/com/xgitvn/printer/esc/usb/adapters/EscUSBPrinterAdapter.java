@@ -85,9 +85,21 @@ public class EscUSBPrinterAdapter implements PrinterAdapter {
             String action = intent.getAction();
             if (ACTION_USB_PERMISSION.equals(action)) {
                 synchronized (this) {
-                    UsbDevice usbDevice = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                    UsbDevice usbDevice;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        usbDevice = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE, UsbDevice.class);
+                    } else {
+                        usbDevice = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                    }
+                    if (usbDevice == null) {
+                        Log.e(LOG_TAG, "UsbDevice is null from intent");
+                        if (mPendingPermissionErrorCallback != null) {
+                            mPendingPermissionErrorCallback.invoke("USB device is null in broadcast intent");
+                            clearPendingPermissionRequest();
+                        }
+                        return;
+                    }
                     if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
-                        assert usbDevice != null;
                         Log.i(LOG_TAG, "success to grant permission for device " + usbDevice.getDeviceId() + ", vendor_id: " + usbDevice.getVendorId() + " product_id: " + usbDevice.getProductId());
                         mUsbDevice = usbDevice;
                         if (mPendingPermissionSuccessCallback != null && isPendingPermissionDevice(usbDevice)) {
@@ -95,7 +107,6 @@ public class EscUSBPrinterAdapter implements PrinterAdapter {
                             clearPendingPermissionRequest();
                         }
                     } else {
-                        assert usbDevice != null;
                         Toast.makeText(context, "User refuses to obtain USB device permissions" + usbDevice.getDeviceName(), Toast.LENGTH_LONG).show();
                         if (mPendingPermissionErrorCallback != null && isPendingPermissionDevice(usbDevice)) {
                             mPendingPermissionErrorCallback.invoke("USB permission denied for device");
